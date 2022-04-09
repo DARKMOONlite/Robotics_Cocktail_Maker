@@ -1,2 +1,4 @@
-# Robotics_Cocktail_Maker
-Matlab Code used to create a robot able to make and serve cocktails.
+# This folder is to hold all obj files and code related to the initilisation of objects into the scene
+
+
+
