@@ -7,7 +7,7 @@ Student ID 1: 13611140
 
 Student Name 2: Leroy Heta
 
-Student ID 2:
+Student ID 2: 12576296
 
 Student Name 3: Jiahui Huang
 
