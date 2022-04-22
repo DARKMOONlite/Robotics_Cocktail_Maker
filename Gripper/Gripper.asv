@@ -17,8 +17,8 @@ classdef Gripper < handle
         function self = Gripper()
             
             hold on
-            %self.models = [self.Finger(0), self.Finger(1), self.Finger(2)];
-            self.model = self.Finger(1)
+            self.models = [self.Finger(0), self.Finger(1), self.Finger(2)];
+            %self.model = self.Finger(1)
             self.Model_Fingers
              
 %             self.Finger(1)
@@ -65,81 +65,101 @@ classdef Gripper < handle
             finger = model;
            
         end
+
+
+
+function Palm(self)
+L1 = Link('d',0.001,'a',0.001,'alpha',0,'offset',0);
+palm_model = SerialLink([L1],'name','palm');
+
+end
 %% This function places the ply models of the gripper onto the arms
 function Model_Fingers(self)
  [x,y] = size(self.models)
-for finger_count = 1:y
-%  finger_count
-%         for linkIndex = 0:self.models(finger_count).n
-%             linkIndex
-%             [ faceData, vertexData, plyData{linkIndex + 1} ] = plyread(['Gripper/PLY_Files/Part',num2str(linkIndex),'.PLY'],'tri'); %#ok<AGROW>
-%              self.models(finger_count).faces{linkIndex + 1} = faceData;
-%              self.models(finger_count).points{linkIndex + 1} = vertexData;
-%         end
-%             
-%             self.models(finger_count).plot3d(zeros(1,self.models(finger_count).n));
-%             if isempty(findobj(get(gca,'Children'),'Type','Light'))
-%                 camlight
-%             end  
-%     for linkIndex = 0:self.models(finger_count).n
-%         linkIndex
-%         handles = findobj('Tag', self.models(finger_count).name);
-% 
-%         h = get(handles,'UserData')
-% 
-%         %try 
-%             %self.h = h.link(linkIndex+1).Children
-%             h.link(linkIndex+1).Children.FaceVertexCData = [plyData{linkIndex+1}.vertex.red ...
-%                                                           , plyData{linkIndex+1}.vertex.green ...
-%                                                           , plyData{linkIndex+1}.vertex.blue]/255;
-% %             h.link(linkIndex+1).Children.FaceColor = [plyData{linkIndex+1}.face.red ...
-% %                                                           , plyData{linkIndex+1}.face.green ...
-% %                                                           , plyData{linkIndex+1}.face.blue]/255;
-%             h.link(linkIndex+1).Children.FaceColor = 'interp';
-%         %catch ME_1
-%             %disp(ME_1);
-%             %continue;
-%        % end
-%     end
-% 
-% s
-% end
+for count = 1:y
 
-            for linkIndex = 0:self.models().n
-                [ faceData, vertexData, plyData{linkIndex + 1} ] =plyread(['Gripper/PLY_Files/Part',num2str(linkIndex),'.PLY'],'tri'); %#ok<AGROW>
-                self.model.faces{linkIndex + 1} = faceData;
-                self.model.points{linkIndex + 1} = vertexData;
+
+            for linkIndex = 0:self.models(1,count).n
+                [ faceData, vertexData, plyData{linkIndex + 1} ] =plyread(['Gripper/PLY_Files/Part',num2str(linkIndex),'.PLY'],'tri'); 
+                self.models(1,count).faces{linkIndex + 1} = faceData;
+                self.models(1,count).points{linkIndex + 1} = vertexData;
             end
 
             
             % Display robot
-            self.model.plot3d(zeros(1,self.model.n),'noarrow','workspace',self.workspace);
+            self.models(1,count).plot3d(zeros(1,self.models(1,count).n),'noarrow','workspace',self.workspace);
             if isempty(findobj(get(gca,'Children'),'Type','Light'))
                 camlight
             end  
-            self.model.delay = 0;
+            self.models(1,count).delay = 0;
 
             % Try to correctly colour the arm (if colours are in ply file data)
-            for linkIndex = 0:self.model.n
-                handles = findobj('Tag', self.model.name);
+            for linkIndex = 0:self.models(1,count).n
+                handles = findobj('Tag', self.models(1,count).name);
                 h = get(handles,'UserData');
                 try 
-                    h.link(linkIndex+1).Children.FaceVertexCData = [plyData{linkIndex+1}.vertex.red ...
-                                                                  , plyData{linkIndex+1}.vertex.green ...
-                                                                  , plyData{linkIndex+1}.vertex.blue]/255;
-                    h.link(linkIndex+1).Children.FaceColor = 'interp';
+%                     h.link(linkIndex+1).Children.FaceVertexCData = [plyData{linkIndex+1}.vertex.red ...
+%                                                                   , plyData{linkIndex+1}.vertex.green ...
+%                                                                   , plyData{linkIndex+1}.vertex.blue]/255;
+                    h.link(linkIndex+1).Children.FaceVertexCData = [plyData{linkIndex+1}.face.red ...
+                                                                  , plyData{linkIndex+1}.face.green ...
+                                                                  , plyData{linkIndex+1}.face.blue]/255;
+                    h.link(linkIndex+1).Children.FaceColor = 'flat';
                 catch ME_1
                     disp(ME_1);
                     continue;
                 end
             end
 
+%             for linkIndex = 0:self.model.n
+%                 [ faceData, vertexData, plyData{linkIndex + 1} ] =plyread(['Gripper/PLY_Files/Part',num2str(linkIndex),'.PLY'],'tri'); %#ok<AGROW>
+%                 self.model.faces{linkIndex + 1} = faceData;
+%                 self.model.points{linkIndex + 1} = vertexData;
+%             end
+% 
+%             
+%             % Display robot
+%             self.model.plot3d(zeros(1,self.model.n),'noarrow','workspace',self.workspace);
+%             if isempty(findobj(get(gca,'Children'),'Type','Light'))
+%                 camlight
+%             end  
+%             self.model.delay = 0;
+% 
+%             % Try to correctly colour the arm (if colours are in ply file data)
+%             for linkIndex = 0:self.model.n
+%                 handles = findobj('Tag', self.model.name);
+%                 h = get(handles,'UserData');
+%                 try 
+% %                     h.link(linkIndex+1).Children.FaceVertexCData = [plyData{linkIndex+1}.vertex.red ...
+% %                                                                   , plyData{linkIndex+1}.vertex.green ...
+% %                                                                   , plyData{linkIndex+1}.vertex.blue]/255;
+%                     h.link(linkIndex+1).Children.FaceVertexCData = [plyData{linkIndex+1}.face.red ...
+%                                                                   , plyData{linkIndex+1}.face.green ...
+%                                                                   , plyData{linkIndex+1}.face.blue]/255;
+%                     h.link(linkIndex+1).Children.FaceColor = 'flat';
+%                 catch ME_1
+%                     disp(ME_1);
+%                     continue;
+%                 end
+%             end
+% 
+%   
 
 
-  
-
-end
 end
     end
-end
+    function Model_Palm(self)
+
+
+
+    end
+    
+    
+    
+    end
+
+
+
+
+    end
 

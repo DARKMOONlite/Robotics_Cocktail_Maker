@@ -15,4 +15,7 @@ g = Gripper;
 %g.Finger(1);
 
 hold off
-matlab.graphics.primitive.Patch
+%matlab.graphics.primitive.Patch
+
+
+
