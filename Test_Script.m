@@ -9,6 +9,10 @@ set(Axis_Control,'CameraViewAngleMode','Manual');
 hold on
 % robot = UR10
 
+x = 0:pi/100:2*pi;
+
+
+
 g = Gripper;
 
 
@@ -17,5 +21,7 @@ g = Gripper;
 hold off
 %matlab.graphics.primitive.Patch
 
+
+ g.encompassing_grip(0.03)
 
 
