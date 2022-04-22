@@ -67,8 +67,8 @@ classdef Gripper < handle
         end
 %% This function places the ply models of the gripper onto the arms
 function Model_Fingers(self)
-% %  [x,y] = size(self.models)
-% % for finger_count = 1:y
+ [x,y] = size(self.models)
+for finger_count = 1:y
 %  finger_count
 %         for linkIndex = 0:self.models(finger_count).n
 %             linkIndex
@@ -105,7 +105,7 @@ function Model_Fingers(self)
 % s
 % end
 
-            for linkIndex = 0:self.model.n
+            for linkIndex = 0:self.models().n
                 [ faceData, vertexData, plyData{linkIndex + 1} ] =plyread(['Gripper/PLY_Files/Part',num2str(linkIndex),'.PLY'],'tri'); %#ok<AGROW>
                 self.model.faces{linkIndex + 1} = faceData;
                 self.model.points{linkIndex + 1} = vertexData;
@@ -124,13 +124,10 @@ function Model_Fingers(self)
                 handles = findobj('Tag', self.model.name);
                 h = get(handles,'UserData');
                 try 
-%                     h.link(linkIndex+1).Children.FaceVertexCData = [plyData{linkIndex+1}.vertex.red ...
-%                                                                   , plyData{linkIndex+1}.vertex.green ...
-%                                                                   , plyData{linkIndex+1}.vertex.blue]/255;
-                    h.link(linkIndex+1).Children.FaceVertexCData = [plyData{linkIndex+1}.face.red ...
-                                                                  , plyData{linkIndex+1}.face.green ...
-                                                                  , plyData{linkIndex+1}.face.blue]/255;
-                    h.link(linkIndex+1).Children.FaceColor = 'flat';
+                    h.link(linkIndex+1).Children.FaceVertexCData = [plyData{linkIndex+1}.vertex.red ...
+                                                                  , plyData{linkIndex+1}.vertex.green ...
+                                                                  , plyData{linkIndex+1}.vertex.blue]/255;
+                    h.link(linkIndex+1).Children.FaceColor = 'interp';
                 catch ME_1
                     disp(ME_1);
                     continue;
@@ -141,7 +138,7 @@ function Model_Fingers(self)
 
   
 
-
+end
 end
     end
 end
