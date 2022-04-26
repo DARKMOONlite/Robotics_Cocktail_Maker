@@ -1,0 +1,12 @@
+clc;
+clf;
+clear all;
+
+%% central location
+base = transl(0,0,0);
+
+environment = Environment(base);
+
+%% Environment is built
+[PuttingSimulatedObjectsIntoTheEnvironment] = environment.build(base);
+hold on;
