@@ -5,12 +5,14 @@ classdef Gripper < handle
     properties
  
         models;
+        model;
         palm_model;
-        workspace = [-1 1 -1 1 -0.5 0.5];
-        relative_finger_t = cat(3,cat(3,[0,0,-1,-0.01421;0,1,0,0.0365;1,0,0,0.0611;0,0,0,1],[0,0,1,0.0141;0,-1,0,0;1,0,0,0.0611;0,0,0,1]),[0,0,-1,-0.01421;0,1,0,-0.0365;1,0,0,0.0611;0,0,0,1])
+        workspace = [-0.2 0.2 -0.2 0.2 -0.1 0.4];
+        relative_finger_t = cat(3,cat(3,[0,0,-1,-0.00627;0,1,0,0.0365;1,0,0,0.0611;0,0,0,1],[0,0,1,0.00616;0,-1,0,0;1,0,0,0.0611;0,0,0,1]),[0,0,-1,-0.00627;0,1,0,-0.0365;1,0,0,0.0611;0,0,0,1])
+        % relative_finger_t = cat(3,cat(3,[0,0,-1,-0.01421;0,1,0,0.0365;1,0,0,0.0611;0,0,0,1],[0,0,1,0.0141;0,-1,0,0;1,0,0,0.0611;0,0,0,1]),[0,0,-1,-0.01421;0,1,0,-0.0365;1,0,0,0.0611;0,0,0,1])
        palm_width = 0.089;
        finger_joint_lengths = [0.05715,0.0381,0.0382]
-
+        current_joints = [0,0,0,0;0,0,0,0;0,0,0,0]
 
        joint_pos;
 
@@ -29,7 +31,7 @@ classdef Gripper < handle
 
             hold on
             self.models = [self.Finger(0), self.Finger(1), self.Finger(2)];
-            %self.model = self.Finger(1)
+%             self.model = self.Finger(1)
             self.Model_Fingers
              self.Palm
              
@@ -55,25 +57,25 @@ classdef Gripper < handle
             else
             L1.qlim = [0 0];
             end
-            L2.qlim = [-25 20.96]*pi/180;
-            L3.qlim = [-45 0]*pi/180;
+            L2.qlim = [-20.96 25]*pi/180;
+            L3.qlim = [0 45]*pi/180;
             L4.qlim = [-45 45]*pi/180;
             if(finger_num==0)
-            model = SerialLink([L1 L2 L3 L4], 'name', 'finger0');
+            model = SerialLink([L1 L2 L3 L4], 'name', 'finger1');
             model.base = self.relative_finger_t(:,:,1);
 %             model.base = transl(-0.01416,0.03651,0.06112)*troty(-pi/2);
             
 
             end
             if(finger_num==1)
-            model = SerialLink([L1 L2 L3 L4], 'name', 'finger1');
+            model = SerialLink([L1 L2 L3 L4], 'name', 'finger2');
             model.base = self.relative_finger_t(:,:,2);
            % model.base = transl(0.01413,0,0.06112)*troty(-pi/2)*trotx(pi);
             
 
             end
             if(finger_num==2)
-            model = SerialLink([L1 L2 L3 L4], 'name', 'finger2');
+            model = SerialLink([L1 L2 L3 L4], 'name', 'finger3');
             model.base = self.relative_finger_t(:,:,3);
             %model.base = transl(-0.01416,-0.03651,0.06112)*troty(-pi/2);
            
@@ -95,8 +97,8 @@ end
 
 %% This function places the ply models of the gripper onto the arms
 function Model_Fingers(self)
- [~,y] = size(self.models)
-for count = 1:y
+
+for count = 1:size(self.models,2)
 
 
             for linkIndex = 0:self.models(1,count).n
@@ -130,6 +132,7 @@ for count = 1:y
                     continue;
                 end
             end
+    self.models(1,count).plot([0,0,0,0],'scale',0.25,'noarrow','fps',30, 'nowrist','nojaxes')
 end
 end
 
@@ -144,7 +147,7 @@ end
 
             
             % Display robot
-            self.palm_model.plot3d(zeros(1,self.palm_model.n),'noarrow','workspace',self.workspace);
+            self.palm_model.plot3d(zeros(1,self.palm_model.n),'noarrow');
             if isempty(findobj(get(gca,'Children'),'Type','Light'))
                 camlight
             end  
@@ -194,7 +197,7 @@ end
 
     %% function to grip a large object by wrapping the fingers around it.
     function encompassing_grip(self,radius)
-        if radius >= self.palm_width/2
+        if radius >= 0.155/2
             error("the Provided Radius is too large at : %f m",radius)
         end
     %Step 1 move the 1st joint to be in contact with the object assuming
@@ -211,7 +214,7 @@ for num = 1:3
     [angle(num)] = self.encomp_finger_angle(object,self.finger_joint_lengths(num),num);
 
 end
-
+self.joint_pos
 
 %Requires animation to do smooth movement
     
@@ -230,7 +233,7 @@ function [angle] = encomp_finger_angle(self,object,length,count)
 
 dist_centroid = sqrt((self.joint_pos(1,count)-object(1))^2+(self.joint_pos(2,count)-object(2))^2)
     tangental = sqrt(dist_centroid^2-object(2)^2)
-    angle =  2*acos(tangental/dist_centroid);
+    angle =  2*acos(tangental/dist_centroid)
 
     if count == 1 % if this is the first joint (behaves differently)
         angle = pi/2-angle;
@@ -247,8 +250,46 @@ dist_centroid = sqrt((self.joint_pos(1,count)-object(1))^2+(self.joint_pos(2,cou
 end
 
 
+%% Animate A general function for animating all the fingers of the hand
+function  animate(self,Q)
+    steps = 30;
 
 
+    q(1,:) = -self.current_joints(1,:);
+    q(2,:) = -self.current_joints(2,:);
+    q(3,:) = -self.current_joints(3,:);
+    if size(Q,3) ==3
+        qe(1,:) = self.models(1).ikcon(Q);
+        qe(2,:) = self.models(2).ikcon(Q);
+        qe(3,:) = self.models(3).ikcon(Q);
+    else
+        qe(1,:) = -Q(1,:);
+        qe(2,:) = -Q(2,:);
+        qe(3,:) = -Q(3,:);
+    end
+    s = lspb(0,1,steps); % Method 2: Trapezoidal Velocity Profile
+    qMatrix = nan(steps,self.models(1).n,size(self.models,2));
+    for i = 1:steps
+        for j = 1:size(self.models,2)
+            qMatrix(i,:,j) = (1-s(i))*q(j,:) + s(i)*qe(j,:);
+        end
+    end
+
+    for i = 1:steps
+        for j=1:size(self.models,2)
+            self.models(j).plot(qMatrix(i,:,j));
+        end
+        drawnow;
+        pause(0.01);
+    end
+
+self.current_joints = -qe;
+
+
+    
+
+
+end
 
 
 
