@@ -23,25 +23,25 @@ x = 0:pi/100:2*pi;
 
 
 g = Gripper;
-
-
-%g.Finger(1);
+% T = transl(0,0,0.2)*trotz(20,"deg")*troty(45,"deg")
+% g.palm_model.base
+% g.move_gripper(T)
 
 hold off
 %matlab.graphics.primitive.Patch
 
 
- g.encompassing_grip(0.077)
+%  g.encompassing_grip(0.077)
 
 
 
-Q = [0,0.5,0.5,0.5;0,0,0,0;0,0,0,0];
-g.animate(Q);
-Q = [0,0,0,0;0,0,0.5,0.5;0,0,0,0];
-g.animate(Q);
-Q = [0,0.5,0.5,0.5;0,0.5,0.5,0.5;0,0.5,0.5,0.5]
-g.animate(Q);
-Q = [0,0,0,0;0,0,0,0;0,0,0,0]
-g.animate(Q);
+% Q = [0,0.5,0.5,0.5;0,0,0,0;0,0,0,0];
+% g.animate(Q);
+% Q = [0,0,0,0;0,0,0.5,0.5;0,0,0,0];
+% g.animate(Q);
+% Q = [0,0.5,0.5,0.5;0,0.5,0.5,0.5;0,0.5,0.5,0.5]
+% g.animate(Q);
+% Q = [0,0,0,0;0,0,0,0;0,0,0,0]
+% g.animate(Q);
 Q = [9*pi/180,0.38,0,-0.38;0,0.38,0,-0.38;-9*pi/180,0.38,0,-0.38]
 g.animate(Q);

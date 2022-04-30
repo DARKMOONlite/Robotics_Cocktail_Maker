@@ -71,8 +71,8 @@ classdef Gripper < handle
     %% A function to pick up small objects by pinching them with the fingers
     function pinch_grip(self,diameter,dis_to_palm)
         
-        obj_pos = [0,0,0;0,0,0;0,0,0];
-        obj
+        pos()
+        
 
         % Determine Position of fingers relative to palm
 
