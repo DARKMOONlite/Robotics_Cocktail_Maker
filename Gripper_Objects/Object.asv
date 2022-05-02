@@ -46,8 +46,9 @@ classdef Object
         function move_object(self,T_mat)
                
                 
-                transformed_Vertices = [Bricks.Vertices,ones(size(self.Vertices,1),1)]/self.T_form' *T_mat';
-                set(self.Vertices,'Vertices',transformed_Vertices(:,1:3))
+                transformed_Vertices = [Bricks.Vertices(:,:,self.I),ones(size(Bricks.Vertices,1),1)]/Bricks.BrickTrans(:,:,self.I)' *T_mat';
+                
+                set(self.,'Vertices',transformed_Vertices(:,1:3))
                 
                 drawnow
                 pause(0.01);
