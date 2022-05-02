@@ -23,8 +23,7 @@ x = 0:pi/100:2*pi;
 
 
 g = Gripper;
-% T = transl(0,0,0.2)*trotz(20,"deg")*troty(45,"deg")
-% g.palm_model.base
+
 % g.move_gripper(T)
 
 hold off
