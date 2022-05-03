@@ -21,7 +21,7 @@ function varargout = untitledGUI(varargin)
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 % Edit the above text to modify the response to help untitledGUI
-% Last Modified by GUIDE v2.5 02-May-2022 20:52:51
+% Last Modified by GUIDE v2.5 03-May-2022 19:51:37
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -108,6 +108,13 @@ data = guidata(hObject);
 data.model = model; 
 guidata(hObject,data); 
   
+set(handles.pushbutton2,'Enable','off')
+set(handles.pushbutton3,'Enable','off')
+set(handles.pushbutton8,'Enable','off')
+set(handles.pushbutton5,'Enable','off')
+set(handles.pushbutton6,'Enable','off')
+set(handles.pushbutton7,'Enable','off')
+set(handles.pushbutton9,'Enable','on')
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -225,12 +232,12 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-q = handles.model.getpos; 
-tr = handles.model.fkine(q); 
-tr(1,4) = tr(1,4) - 0.01; 
-newQ = handles.model.ikcon(tr,q); 
-handles.model.animate(newQ); 
-
+set(handles.pushbutton2,'Enable','off')
+set(handles.pushbutton3,'Enable','off')
+set(handles.pushbutton8,'Enable','off')
+set(handles.pushbutton5,'Enable','off')
+set(handles.pushbutton6,'Enable','off')
+set(handles.pushbutton7,'Enable','off')
 % --- Executes on button press in pushbutton5. (+y)
 function pushbutton5_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton5 (see GCBO)
@@ -274,3 +281,16 @@ tr = handles.model.fkine(q);
 tr(3,4) = tr(3,4) - 0.01; 
 newQ = handles.model.ikcon(tr,q); 
 handles.model.animate(newQ); 
+
+
+% --- Executes on button press in pushbutton9. (Start button)
+function pushbutton9_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton9 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(handles.pushbutton2,'Enable','on')
+set(handles.pushbutton3,'Enable','on')
+set(handles.pushbutton8,'Enable','on')
+set(handles.pushbutton5,'Enable','on')
+set(handles.pushbutton6,'Enable','on')
+set(handles.pushbutton7,'Enable','on')
