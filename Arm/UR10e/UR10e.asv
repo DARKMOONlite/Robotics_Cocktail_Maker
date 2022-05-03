@@ -93,13 +93,13 @@ classdef UR10e < handle
         end
         %% Animates UR10e from current EE position to another EE position
         function animate(self, pos)
-            step = 30;
+            step = 60;
             currentQ = self.model.getpos();
             finalQ = transl(pos) * trotx(pi);
             
-            move = self.model.ikine(finalQ, currentQ, [1 1 1 1 1 1]);
+            move = self.model.ikine(finalQ, self.model.getpos(), [1 1 1 1 1 1]);
             
-            traj = jtraj(currentQ, move, step); %traj from current position to new position
+            traj = jtraj(currentQ, finalQ, step); %traj from current position to new position
             
             for i = 1:step
                 q = traj(i,:);
