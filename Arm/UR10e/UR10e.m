@@ -8,7 +8,9 @@ classdef UR10e < handle
                
         %> If we have a tool model which will replace the final links model, combined ply file of the tool model and the final link models
         toolModelFilename = []; % Available are: 'DabPrintNozzleTool.ply';        
-        toolParametersFilename = []; % Available are: 'DabPrintNozzleToolParameters.mat';        
+        toolParametersFilename = []; % Available are: 'DabPrintNozzleToolParameters.mat';    
+        currentJoints = [];
+        
     end
     
     methods%% Class for UR10 robot simulation
@@ -23,7 +25,8 @@ classdef UR10e < handle
             
             self.GetUR10eRobot();
             self.PlotAndColourRobot();%robot,workspace);
-
+            self.model.plot([0 0 0 0 0 0], 'scale', 0.25, 'noarrow');
+            self.currentJoints = ([0 0 0 0 0 0]);
             drawnow            
             % camzoom(2)
             % campos([6.9744    3.5061    1.8165]);
@@ -94,17 +97,17 @@ classdef UR10e < handle
         %% Animates UR10e from current EE position to another EE position
         function animate(self, pos)
             step = 30;
-            currentQ = self.model.getpos();
-            finalQ = transl(pos) * trotx(pi);
+            currentQ = self.currentJoints;
             
-            move = self.model.ikine(finalQ, currentQ, [1 1 1 1 1 1]);
+                    
+            move = self.model.ikcon(pos);
+            qMatrix = jtraj(currentQ, move, step); %traj from current position to new position
             
-            traj = jtraj(currentQ, move, step); %traj from current position to new position
-            
-            for i = 1:step
-                q = traj(i,:);
-                self.model.animate(q);
-                drawnow();
+            %q = traj(i,:)
+            %self.model.animate(q);
+            for i = 1:size(qMatrix, 1)
+                self.model.plot(qMatrix(i,:));
+                self.currentJoints = (qMatrix(i,:))
             end
         end      
     end
