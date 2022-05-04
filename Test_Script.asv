@@ -19,18 +19,16 @@ Axis_Control.Clipping = "off";
 set(Axis_Control,'CameraViewAngleMode','Manual');
 hold on
 % robot = UR10
-% 
-g = Gripper;
-% 
-% UR10e =  UR10e();
-Objects_(1) = R_Object("Gin",10,10,[0,0,1],"Large");
-% T = transl(0,0,2)
-% Objects_(1).move_object(T)
 
-% g = Gripper;
-% 
+x = 0:pi/100:2*pi;
+
+UR10e =  UR10e;
+
+UR10e.model.fkine(UR10e.currentJoints)
+g = Gripper;
+
 % g.move_gripper(T)
-drawnow
+
 hold off
 %matlab.graphics.primitive.Patch
 

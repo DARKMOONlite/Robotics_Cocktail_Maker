@@ -7,7 +7,7 @@ classdef Gripper < handle
         models;
         model;
         palm_model;
-        
+            palm_depth = 0.09208;z
          palm_width = 0.089;
        finger_joint_lengths = [0.05715,0.0381,0.0382]
         current_joints = [0,0,0,0;0,0,0,0;0,0,0,0]
@@ -69,7 +69,7 @@ classdef Gripper < handle
     
     
     %% A function to pick up small objects by pinching them with the fingers
-    function pinch_grip(self,diameter,dis_to_palm)
+    function [finger_angles, distance] = pinch_grip(self,diameter,dis_to_palm)
         
         obj_pos = [0,0,0;0,0,0;0,0,0];
         obj
@@ -86,7 +86,7 @@ classdef Gripper < handle
 
 
     %% function to grip a large object by wrapping the fingers around it.
-    function encompassing_grip(self,radius)
+    function [finger_angles] = encompassing_grip(self,radius)
         if radius >= 0.155/2
             error("the Provided Radius is too large at : %f m",radius)
         end
@@ -104,13 +104,8 @@ for num = 1:3
     [angle(num)] = self.encomp_finger_angle(object,self.finger_joint_lengths(num),num);
 
 end
-self.joint_pos
-
     
-
-  
-    
-
+finger_angles = angle;
 
 
     end
@@ -164,12 +159,59 @@ end
 
 %% Generalised Grab function to grab any object  TBD
 function grab_position =  Grab_Object(self,obj)
+
+    if obj_data.Object_Type =="Large"
+        
+    
+
+        finger_angles = encompassing_grip(obj.Diameter/2) % check if this works, i'm getting weird prompt from matlab when i use this function
+        dist = obj.Diamter/2+self.palm_depth;
+
+        theta = atan2(obj.T_form(1,4),obj.T_form(2,4))
+        angle = trotz(theta);
+        dx = dist*sin(theta);
+        dy = dist*cos(theta);
+        dz = obj.Height/2; 
+
+        grap_position(:,:,1) = transl(obj.T_form(1,4)-dx,obj.T_form(2,4)-dy,obj.T_form(3,4)+dz)*angle*trotz(90,"deg"); %  last rotation is to ensure that gripper is facing horizontally
+        grap_position(:,:,2) = transl(obj.T_form(1,4)+dx,obj.T_form(2,4)+dy,obj.T_form(3,4)+dz)*angle*trotz(90,"deg");
+        % if the object is large i want to grab it from the side closest to
+        % the robot if possible otherwise grab it from the oposite side
+    else
+        if obj_data.Object_Type =="Small"
+
+        else %calls if object is neither set as large or small
+            error("unrecognised object type")
+
+        end
+
+        % small objects should always be grabed from above. therefore the
+        % end effector should always point down.
+
+    end
+
+
+
+
     
 
 
 end
+%% Function to either pour drink into glass or shaker
+
+function position = pour_position(self,obj){ 
+        
+    }
 
 
+
+
+    end
+
+    function pour(self){
+        
+        
+        }
 
     end
 
