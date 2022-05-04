@@ -14,18 +14,11 @@ classdef UR10e < handle
     end
     
     methods%% Class for UR10 robot simulation
-        function self = UR10e(toolModelAndTCPFilenames)
-%             if 0 < nargin
-%                 if length(toolModelAndTCPFilenames) ~= 2
-%                     error('Please pass a cell with two strings, toolModelFilename and toolCenterPointFilename');
-%                 end
-%                 self.toolModelFilename = toolModelAndTCPFilenames{1};
-%                 self.toolParametersFilename = toolModelAndTCPFilenames{2};
-%             end
+        function self = UR10e()
             
             self.GetUR10eRobot();
             self.PlotAndColourRobot();%robot,workspace);
-            self.model.plot([0 0 0 0 0 0], 'scale', 0.25, 'noarrow');
+            self.model.plot([0 0 0 0 0 0], 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow');
             self.currentJoints = ([0 0 0 0 0 0]);
             drawnow            
             % camzoom(2)
@@ -44,13 +37,14 @@ classdef UR10e < handle
             name = ['UR_10_',datestr(now,'yyyymmddTHHMMSSFFF')];
 
             L1 = Link('d',0.1807,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]), 'offset', 0);
-            L2 = Link('d',0,'a',-0.6127,'alpha',0,'qlim', deg2rad([-360 360]), 'offset',0); % was 'offset',pi/2
-            L3 = Link('d',0,'a',-0.5716,'alpha',0,'qlim', deg2rad([-360 360]), 'offset', 0);
+            L2 = Link('d',0+0.15,'a',-0.6127,'alpha',0,'qlim', deg2rad([-180 180]), 'offset', 0); % was 'offset',pi/2
+            L3 = Link('d',0-0.15,'a',-0.5716,'alpha',0,'qlim', deg2rad([-360 360]), 'offset', 0);
             L4 = Link('d',0.17415,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]),'offset', 0); % was 'offset',pi/2
             L5 = Link('d',0.11985,'a',0,'alpha',-pi/2,'qlim',deg2rad([-360,360]), 'offset',0);
             L6 = Link('d',0.11655,'a',0,'alpha',0,'qlim',deg2rad([-360,360]), 'offset', 0);
 
             self.model = SerialLink([L1 L2 L3 L4 L5 L6],'name',name);
+            self.model.plotopt = ('noname');
         end
 
         %% PlotAndColourRobot
