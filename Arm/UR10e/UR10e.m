@@ -15,11 +15,18 @@ classdef UR10e < handle
     
     methods%% Class for UR10 robot simulation
         function self = UR10e()
+<<<<<<< HEAD
 
             
             self.GetUR10eRobot();
             self.PlotAndColourRobot();
             self.model.plot([0 0 0 0 0 0], 'scale', 0.05, 'noarrow');
+=======
+            
+            self.GetUR10eRobot();
+            self.PlotAndColourRobot();%robot,workspace);
+            self.model.plot([0 0 0 0 0 0], 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow');
+>>>>>>> ARM
             self.currentJoints = ([0 0 0 0 0 0]);
             
             
@@ -37,13 +44,14 @@ classdef UR10e < handle
             name = ['UR_10_',datestr(now,'yyyymmddTHHMMSSFFF')];
 
             L1 = Link('d',0.1807,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]), 'offset', 0);
-            L2 = Link('d',0,'a',-0.6127,'alpha',0,'qlim', deg2rad([-360 360]), 'offset',0); % was 'offset',pi/2
-            L3 = Link('d',0,'a',-0.5716,'alpha',0,'qlim', deg2rad([-360 360]), 'offset', 0);
+            L2 = Link('d',0+0.15,'a',-0.6127,'alpha',0,'qlim', deg2rad([-180 180]), 'offset', 0); % was 'offset',pi/2
+            L3 = Link('d',0-0.15,'a',-0.5716,'alpha',0,'qlim', deg2rad([-360 360]), 'offset', 0);
             L4 = Link('d',0.17415,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]),'offset', 0); % was 'offset',pi/2
             L5 = Link('d',0.11985,'a',0,'alpha',-pi/2,'qlim',deg2rad([-360,360]), 'offset',0);
             L6 = Link('d',0.11655,'a',0,'alpha',0,'qlim',deg2rad([-360,360]), 'offset', 0);
 
             self.model = SerialLink([L1 L2 L3 L4 L5 L6],'name',name);
+            self.model.plotopt = ('noname');
         end
 
         %% PlotAndColourRobot
