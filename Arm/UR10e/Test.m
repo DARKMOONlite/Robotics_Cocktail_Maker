@@ -13,6 +13,6 @@ UR10e = UR10e();
 %UR5 = UR5(false);
 
 %%
-pos = transl(0.2, 0.8, 0.5);
+pos = transl(0.6, 0.8, 0.5);
 
 UR10e.animate(pos)
