@@ -52,16 +52,14 @@ classdef R_Object
         end
 
 
-%% Creates corners of a bounding box around an object. for object avoidance 
+
         function corner_points = boundingbox(self)
-                m=0;
-                dx = 0.03;
-            corner_points = zeros(8,3);
-                for i =-1:2:1
-                    for j = -1:2:1
-                        for k = -1:2:1
-                            m = m+1;
-                            corner_points(m,:) = [k*(self.Diameter/2+dx)+self.T_form(1,4), j*(self.Diameter/2+dx)+self.T_form(2,4),i*(self.Height+dx)+self.T_form(3,4)];
+
+           
+                for i =1:2
+                    for j = 1:2
+                        for k = 1:2
+                            corner_points(i+j+k)
 
 
                         end
