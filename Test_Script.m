@@ -1,7 +1,7 @@
 clear all
 clc
 clear figure
-
+close
 addpath(genpath('Gripper'))
 
 try
