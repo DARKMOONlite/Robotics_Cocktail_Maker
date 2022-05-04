@@ -10,31 +10,24 @@ classdef UR10e < handle
         toolModelFilename = []; % Available are: 'DabPrintNozzleTool.ply';        
         toolParametersFilename = []; % Available are: 'DabPrintNozzleToolParameters.mat';    
         currentJoints = [];
-        
+        Objects_;
     end
     
     methods%% Class for UR10 robot simulation
-        function self = UR10e(toolModelAndTCPFilenames)
-%             if 0 < nargin
-%                 if length(toolModelAndTCPFilenames) ~= 2
-%                     error('Please pass a cell with two strings, toolModelFilename and toolCenterPointFilename');
-%                 end
-%                 self.toolModelFilename = toolModelAndTCPFilenames{1};
-%                 self.toolParametersFilename = toolModelAndTCPFilenames{2};
-%             end
+        function self = UR10e()
+
             
             self.GetUR10eRobot();
-            self.PlotAndColourRobot();%robot,workspace);
-            self.model.plot([0 0 0 0 0 0], 'scale', 0.25, 'noarrow');
+            self.PlotAndColourRobot();
+            self.model.plot([0 0 0 0 0 0], 'scale', 0.05, 'noarrow');
             self.currentJoints = ([0 0 0 0 0 0]);
-            drawnow            
-            % camzoom(2)
-            % campos([6.9744    3.5061    1.8165]);
+            
+            
 
-%             camzoom(4)
-%             view([122,14]);
-%             camzoom(8)
-%             teach(self.model);
+            
+            
+            drawnow            
+
         end
 
         %% GetUR10Robot
@@ -73,7 +66,7 @@ classdef UR10e < handle
                 warning('Please check the joint limits. They may be unsafe')
             end
             % Display robot
-            self.model.plot3d(zeros(1,self.model.n),'noarrow','workspace',self.workspace);
+            self.model.plot3d(zeros(1,self.model.n));
             if isempty(findobj(get(gca,'Children'),'Type','Light'))
                 camlight
             end  
@@ -95,7 +88,7 @@ classdef UR10e < handle
             end
         end
         %% Animates UR10e from current EE position to another EE position
-        function animate(self, pos)
+        function basic_animate(self, pos)
             step = 30;
             currentQ = self.currentJoints;
             
@@ -110,5 +103,37 @@ classdef UR10e < handle
                 self.currentJoints = (qMatrix(i,:))
             end
         end      
+        %% Animates UR10e to go to a specific position based on obj_data
+        function comp_animate(self, gripper, obj_data)
+            if obj_data.Object_Type =="Large"
+                % determine position to move gripper to, therefore the
+                % position to move end effector to
+            else
+                
+
+            end
+
+            step = 30;
+            q1= self.currentJoints;
+            q2 = self.model.ikcon(pos);
+            qMatrix = jtraj(q1, q2, step); %traj from current position to new position
+
+            for i = 1:size(qMatrix, 1)
+                self.model.plot(qMatrix(i,:));
+                self.currentJoints = (qMatrix(i,:))
+                T_Form = self.model.fkine(qMatrix(i,:))
+                gripper.move_gripper(T_Form);
+                obj_data.move_object(T_Form);
+            end
+                    
+           
+        end   
+
+    %% Accepts a code from the GUI and runs the procedure to make a drink
+        function run(self, gripper, code)
+
+            
+
+        end
     end
 end

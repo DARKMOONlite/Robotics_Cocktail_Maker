@@ -1,4 +1,4 @@
-classdef Object
+classdef R_Object
     %OBJECT Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -13,8 +13,9 @@ classdef Object
     end
     
     methods
-        function self = Object(PLY_file,Radius,Height,Position,Type);
-            if size(Position,1) ~= 3
+        function self = R_Object(PLY_File,Radius,Height,Position,Type);
+            Position
+            if size(Position,2) ~= 3
             error("Not enough values in Position")
             end
             if strcmp(Type,"Large") && strcmp(Type,"Small")
@@ -28,8 +29,9 @@ classdef Object
             self.T_form = transl(Position(1),Position(2),Position(3));
 
 
-            
-            self.model_obj(PLY_file);
+            hold on
+            self.model = PlaceObject("Objects/Parts/"+PLY_File+".ply",self.Position);
+
             self.Vertices(:,:) = get(self.model,'Vertices')
 
             self.Diameter = Radius;
@@ -37,22 +39,19 @@ classdef Object
             
               
         end
-        
-        function model_obj(self,PLY_File)
-                self.model = PlaceObject("Gripper_Objects/Parts/",PLY_File,".ply",self.Position);
-                
-        end
 
         function move_object(self,T_mat)
                
                 
-                transformed_Vertices = [Bricks.Vertices,ones(size(self.Vertices,1),1)]/self.T_form' *T_mat';
-                set(self.Vertices,'Vertices',transformed_Vertices(:,1:3))
+                transformed_Vertices = [self.Vertices,ones(size(self.Vertices,1),1)]/self.T_form' *T_mat';
+                set(self.model,'Vertices',transformed_Vertices(:,1:3))
                 
                 drawnow
                 pause(0.01);
 
         end
+
+        
     end
 end
 
