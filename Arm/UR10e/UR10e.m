@@ -25,7 +25,7 @@ classdef UR10e < handle
             
             self.GetUR10eRobot();
             self.PlotAndColourRobot();%robot,workspace);
-            self.model.plot([0 0 0 0 0 0]);
+            self.model.plot([0 0 0 0 0 0], 'scale', 0.25, 'noarrow');
             self.currentJoints = ([0 0 0 0 0 0]);
             drawnow            
             % camzoom(2)
