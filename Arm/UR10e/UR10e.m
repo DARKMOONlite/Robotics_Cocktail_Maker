@@ -136,4 +136,10 @@ classdef UR10e < handle
 
         end
     end
+%% Put methods in here if you want to make them private
+    methods (Access = private)
+    
+
+
+    end
 end
