@@ -69,7 +69,7 @@ classdef Gripper < handle
     
     
     %% A function to pick up small objects by pinching them with the fingers
-    function [finger_angles, distance] = pinch_grip(self,diameter,dis_to_palm)
+    function pinch_grip(self,diameter,dis_to_palm)
         
         obj_pos = [0,0,0;0,0,0;0,0,0];
         obj
@@ -173,17 +173,11 @@ function grab_position =  Grab_Object(self,obj)
         dy = dist*cos(theta);
         dz = obj.Height/2; 
 
-        grap_position(:,:,1) = transl(obj.T_form(1,4)-dx,obj.T_form(2,4)-dy,obj.T_form(3,4)+dz)*angle*trotz(90,"deg"); %  last rotation is to ensure that gripper is facing horizontally
-        grap_position(:,:,2) = transl(obj.T_form(1,4)+dx,obj.T_form(2,4)+dy,obj.T_form(3,4)+dz)*angle*trotz(90,"deg");
+        grap_position(:,:,1) = transl(obj.T_form(1,4)-dx,obj.T_form(2,4)-dy,obj.T_form(3,4)-dz)*angle*trotz(90,"deg"); %  last rotation is to ensure that gripper is facing horizontally
+        
         % if the object is large i want to grab it from the side closest to
         % the robot if possible otherwise grab it from the oposite side
     else
-        if obj_data.Object_Type =="Small"
-
-        else %calls if object is neither set as large or small
-            error("unrecognised object type")
-
-        end
 
         % small objects should always be grabed from above. therefore the
         % end effector should always point down.
@@ -197,25 +191,11 @@ function grab_position =  Grab_Object(self,obj)
 
 
 end
-%% Function to either pour drink into glass or shaker
-
-function position = pour_position(self,obj){ 
-
-        
-    }
-
 
 
 
     end
 
-    function pour(self){
-        
-        
-        }
-
-    end
-    end
     methods (Access = private) % Certain Functions have been made private as they are only needed by this class and are used by other functions
 
         %% Function to determine how much a finger has to bend to grab something
