@@ -89,7 +89,7 @@ classdef UR10e < handle
             end
         end
         %% Animates UR10e from current EE position to another EE position
-        function animate(self, pos)
+        function basicAnimate(self, pos)
             step = 30;
             currentQ = self.currentJoints;
             
@@ -104,5 +104,43 @@ classdef UR10e < handle
                 self.currentJoints = (qMatrix(i,:))
             end
         end      
+        %% Animates UR10e to go to a specific position based on obj_data
+        function compAnimate(self, gripper, obj_data)
+            if obj_data.Object_Type =="Large"
+                % determine position to move gripper to, therefore the
+                % position to move end effector to
+            else
+                
+
+            end
+
+            step = 30;
+            q1= self.currentJoints;
+            q2 = self.model.ikcon(pos);
+            qMatrix = jtraj(q1, q2, step); %traj from current position to new position
+
+            for i = 1:size(qMatrix, 1)
+                self.model.plot(qMatrix(i,:));
+                self.currentJoints = (qMatrix(i,:))
+                T_Form = self.model.fkine(qMatrix(i,:))
+                gripper.move_gripper(T_Form);
+                obj_data.move_object(T_Form);
+            end
+                    
+           
+        end   
+
+    %% Accepts a code from the GUI and runs the procedure to make a drink
+        function run(self, gripper, code)
+
+            
+
+        end
+    end
+%% Put methods in here if you want to make them private
+    methods (Access = private)
+    
+
+
     end
 end

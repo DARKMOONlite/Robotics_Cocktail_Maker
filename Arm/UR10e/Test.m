@@ -15,4 +15,4 @@ UR10e = UR10e();
 %%
 pos = transl(0.6, 0.8, 0.5);
 
-UR10e.animate(pos)
+UR10e.basicAnimate(pos)
