@@ -22,7 +22,7 @@ x = 0:pi/100:2*pi;
 
 
 
-g = Gripper;
+g = Gripper();
 
 
 %g.Finger(1);

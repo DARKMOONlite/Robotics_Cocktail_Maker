@@ -10,9 +10,18 @@ set(0,'DefaultFigureWindowStyle','docked');
 hold on
 
 UR10e = UR10e();
-%UR5 = UR5(false);
+%g = Gripper;
 
 %%
-pos = transl(0.6, 0.8, 0.5);
+pos = transl(0.6, 0.8, 0.5)* trotx(3*pi/2);;
+UR10e.moveBasic(pos)
 
-UR10e.basicAnimate(pos)
+%%
+%pos2 = transl(0.6, -0.4, 0.3) * trotx(3*pi/2) * troty(pi/2) * trotz(pi);;
+pos2 = transl(0.6, -0.4, 0.3) * trotx(3*pi/2) * troty(pi/2);
+UR10e.moveBasic(pos2);
+
+%%
+UR10e.pour(1);
+
+%%

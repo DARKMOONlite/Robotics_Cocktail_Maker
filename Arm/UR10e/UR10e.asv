@@ -18,8 +18,9 @@ classdef UR10e < handle
             
             self.GetUR10eRobot();
             self.PlotAndColourRobot();%robot,workspace);
-            self.model.plot([0 0 0 0 0 0], 'scale', 0.25, 'noarrow', 'nobase', 'notiles', 'nojoints');
+            self.model.plot([0 0 0 0 0 0], 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow');
             self.currentJoints = ([0 0 0 0 0 0]);
+            self.safePosJoints1 = 
             drawnow            
             % camzoom(2)
             % campos([6.9744    3.5061    1.8165]);
@@ -37,10 +38,10 @@ classdef UR10e < handle
             name = ['UR_10_',datestr(now,'yyyymmddTHHMMSSFFF')];
 
             L1 = Link('d',0.1807,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]), 'offset', 0);
-            L2 = Link('d',0,'a',-0.6127,'alpha',0,'qlim', deg2rad([-180 180]), 'offset', 0); % was 'offset',pi/2
-            L3 = Link('d',0,'a',-0.5716,'alpha',0,'qlim', deg2rad([-360 360]), 'offset', 0);
+            L2 = Link('d',0+0.15,'a',-0.6127,'alpha',0,'qlim', deg2rad([90 270]), 'offset', pi); % was 'offset',pi/2
+            L3 = Link('d',0-0.15,'a',-0.5716,'alpha',0,'qlim', deg2rad([-160 160]), 'offset', 0);
             L4 = Link('d',0.17415,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]),'offset', 0); % was 'offset',pi/2
-            L5 = Link('d',0.11985,'a',0,'alpha',-pi/2,'qlim',deg2rad([-360,360]), 'offset',0);
+            L5 = Link('d',0.11985,'a',0,'alpha',-pi/2,'qlim',deg2rad([-90 90]), 'offset', 0);
             L6 = Link('d',0.11655,'a',0,'alpha',0,'qlim',deg2rad([-360,360]), 'offset', 0);
 
             self.model = SerialLink([L1 L2 L3 L4 L5 L6],'name',name);
@@ -89,20 +90,84 @@ classdef UR10e < handle
             end
         end
         %% Animates UR10e from current EE position to another EE position
-        function animate(self, pos)
+        function moveBasic(self, pos)
             step = 30;
             currentQ = self.currentJoints;
             
                     
-            move = self.model.ikcon(pos);
-            qMatrix = jtraj(currentQ, move, step); %traj from current position to new position
-            
-            %q = traj(i,:)
-            %self.model.animate(q);
+            newQ = self.model.ikcon(pos, [1 1 1 1 1 1]);
+            qMatrix = jtraj(currentQ, newQ, step); %traj from current position to new position
+
             for i = 1:size(qMatrix, 1)
                 self.model.plot(qMatrix(i,:));
                 self.currentJoints = (qMatrix(i,:))
             end
         end      
+        %% Animates UR10e to go to a specific position based on obj_data
+        function move(self, gripper, obj_data)
+            if obj_data.Object_Type == "Large"
+                % determine position to move gripper to, therefore the
+                % position to move end effector to
+            else
+                
+
+            end
+
+            step = 30;
+            q1 = self.currentJoints;
+            q2 = self.model.ikcon(pos);
+            qMatrix = jtraj(q1, q2, step); %traj from current position to new position
+
+            for i = 1:size(qMatrix, 1)
+                self.model.plot(qMatrix(i,:));
+                self.currentJoints = (qMatrix(i,:))
+                T_Form = self.model.fkine(qMatrix(i,:))
+                gripper.move_gripper(T_Form);
+                obj_data.move_object(T_Form);
+            end
+                    
+           
+        end   
+    %% Rotates final UR10e link to pour a drink
+    function pour(self,seconds)
+%   function pour(self, gripper, obj_data)
+        step = 30;
+        temp1 = self.currentJoints;
+        temp2 = [self.currentJoints(1), self.currentJoints(2), self.currentJoints(3), self.currentJoints(4), self.currentJoints(5), self.currentJoints(6) + pi/6]
+        q1 = temp1;
+        q2 = temp2;
+        
+        qMatrix1 = jtraj(q1, q2, step);
+        for i = 1:size(qMatrix1, 1)
+                self.model.plot(qMatrix1(i,:));
+                self.currentJoints = (qMatrix1(i,:))
+%                 T_Form = self.model.fkine(qMatrix1(i,:))
+%                 gripper.move_gripper(T_Form);
+%                 obj_data.move_object(T_Form);
+        end
+        
+        pause(seconds);
+        
+        qMatrix2 = jtraj(q2, q1, step);
+        for i = 1:size(qMatrix2, 1)
+                self.model.plot(qMatrix2(i,:));
+                self.currentJoints = (qMatrix2(i,:))
+%                 T_Form = self.model.fkine(qMatrix2(i,:))
+%                 gripper.move_gripper(T_Form);
+%                 obj_data.move_object(T_Form);
+        end
+    end
+    %% Accepts a code from the GUI and runs the procedure to make a drink
+        function run(self, gripper, code)
+
+            
+
+        end
+    end
+%% Put methods in here if you want to make them private
+    methods (Access = private)
+    
+
+
     end
 end
