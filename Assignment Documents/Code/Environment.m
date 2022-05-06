@@ -4,9 +4,10 @@
 classdef Environment < handle
     properties
       
-     
+        
         workspace = [-2.5 2.5 -2.5 2.5 0 2.5];  %workspace area 
         
+
        
           
     end
@@ -33,13 +34,21 @@ function [PuttingSimulatedObjectsIntoTheEnvironment] = build(self,base)
 
 % clf
 %% Load the table downloaded from http://tf3dm.com/3d-model/wooden-table-49763.html vertex colours added with Blender
-[f,v,data] = plyread('table.ply','tri');
+[f,v,data] = plyread('Bar.ply','tri');
+
+tableVertexCount = size(v,1);
 % Scale the colours to be 0-to-1 (they are originally 0-to-255
 vertexColours = [data.vertex.red, data.vertex.green, data.vertex.blue] / 255;
 % Then plot the trisurf
-tableMesh_h = trisurf(f,v(:,1) ,v(:,2), v(:,3) + 0.6...
-    ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
+midPoint = sum(v)/tableVertexCount;
+        tableVerts = v - repmat(midPoint,tableVertexCount,1);
 
+        tableMesh_h = trisurf(f,v(:,1) ,v(:,2), v(:,3) ...
+    ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
+transformationMatrix = makehgtform('translate',[0,0,1.1]); % new transform
+        rotationMatrix = makehgtform('xrotate',deg2rad(90)); % new rotation
+        Points = [transformationMatrix * rotationMatrix * [tableVerts,ones(tableVertexCount,1)]']';
+        tableMesh_h.Vertices = Points(:,1:3); % Plots these new points
 % clf
 %% Load cabinet
 [f,v,data] = plyread('cabinet.ply','tri');
@@ -93,14 +102,14 @@ HardHatMesh_h = trisurf(f,v(:,1) -2,v(:,2) -2, v(:,3) +0.4 ...
         x = [-2.5 2.5]; %plot image these coordinates on x axis 
         y = [-2.5 2.5]; %plot image with these coordinates on y axis
         z = [0 0; 0 0]; %plot image with these coordinates on z axis 
-        surf(x, y, z,'CData',imread('floor.jpg'),'FaceColor','texturemap');
+        surf(x, y, z,'CData',imread('floor2.jpg'),'FaceColor','texturemap');
 
 %% Load Lab
  
         x = [2.5 -2.5];
         y = [2.5 2.5];
         z = [2.5 2.5; 0 0];
-        surf(x, y, z,'CData',imread('Lab.jpg'),'FaceColor','texturemap');
+        surf(x, y, z,'CData',imread('bar.jfif'),'FaceColor','texturemap');
 %% Load stop button
 [f,v,data] = plyread('StopButton.ply','tri');
 
@@ -117,20 +126,20 @@ transformationMatrix = makehgtform('translate',[0.85,-0.35,0.7]); % new transfor
         Points = [transformationMatrix * rotationMatrix * [StopButtonVerts,ones(StopButtonVertexCount,1)]']';
         StopButtonMesh_h.Vertices = Points(:,1:3); % Plots these new points
 %% Load Bar table 
-[f,v,data] = plyread('table.ply','tri');
-
-StopButtonVertexCount = size(v,1);
-midPoint = sum(v)/StopButtonVertexCount;
-        StopButtonVerts = v - repmat(midPoint,StopButtonVertexCount,1);
-% Scale the colours to be 0-to-1 (they are originally 0-to-255
-vertexColours = [data.vertex.red, data.vertex.green, data.vertex.blue] / 255;
-% Then plot the trisurf
-StopButtonMesh_h = trisurf(f,v(:,1)  ,v(:,2) , v(:,3)   ...
-    ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
-transformationMatrix = makehgtform('translate',[2,0,0.3]); % new transform
-        rotationMatrix = makehgtform('zrotate',deg2rad(90)); % new rotation
-        Points = [transformationMatrix * rotationMatrix * [StopButtonVerts,ones(StopButtonVertexCount,1)]']';
-        StopButtonMesh_h.Vertices = Points(:,1:3); % Plots these new points
+% [f,v,data] = plyread('table.ply','tri');
+% 
+% StopButtonVertexCount = size(v,1);
+% midPoint = sum(v)/StopButtonVertexCount;
+%         StopButtonVerts = v - repmat(midPoint,StopButtonVertexCount,1);
+% % Scale the colours to be 0-to-1 (they are originally 0-to-255
+% vertexColours = [data.vertex.red, data.vertex.green, data.vertex.blue] / 255;
+% % Then plot the trisurf
+% StopButtonMesh_h = trisurf(f,v(:,1)  ,v(:,2) , v(:,3)   ...
+%     ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
+% transformationMatrix = makehgtform('translate',[2,0,0.3]); % new transform
+%         rotationMatrix = makehgtform('zrotate',deg2rad(90)); % new rotation
+%         Points = [transformationMatrix * rotationMatrix * [StopButtonVerts,ones(StopButtonVertexCount,1)]']';
+%         StopButtonMesh_h.Vertices = Points(:,1:3); % Plots these new points
         
 %% Stop Button
 [f,v,data] = plyread('StopButton.ply','tri');
