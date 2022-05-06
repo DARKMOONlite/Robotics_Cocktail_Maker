@@ -10,6 +10,7 @@ classdef UR10e < handle
         toolModelFilename = []; % Available are: 'DabPrintNozzleTool.ply';        
         toolParametersFilename = []; % Available are: 'DabPrintNozzleToolParameters.mat';    
         currentJoints = [];
+        safePosJoints1 = [];
         
     end
     
@@ -20,7 +21,7 @@ classdef UR10e < handle
             self.PlotAndColourRobot();%robot,workspace);
             self.model.plot([0 0 0 0 0 0], 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow');
             self.currentJoints = ([0 0 0 0 0 0]);
-            self.safePosJoints1 = 
+            % self.safePosJoints1 = ([]);
             drawnow            
             % camzoom(2)
             % campos([6.9744    3.5061    1.8165]);

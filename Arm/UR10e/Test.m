@@ -17,8 +17,8 @@ pos = transl(0.6, 0.8, 0.5)* trotx(3*pi/2);;
 UR10e.moveBasic(pos)
 
 %%
-%pos2 = transl(0.6, -0.4, 0.3) * trotx(3*pi/2) * troty(pi/2) * trotz(pi);;
-pos2 = transl(0.6, -0.4, 0.3) * trotx(3*pi/2) * troty(pi/2);
+pos2 = transl(0.6, -0.4, 0.3) * trotx(3*pi/2) * troty(pi/2) * trotz(pi);;
+%pos2 = transl(0.6, -0.4, 0.3) * trotx(3*pi/2) * troty(pi/2);
 UR10e.moveBasic(pos2);
 
 %%
