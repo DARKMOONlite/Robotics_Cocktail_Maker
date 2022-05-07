@@ -23,7 +23,6 @@ hold on
 % 
 UR10e =  UR10e();
 UR10e.model.animate
-SerialLink/plot
 % Objects_(1) = R_Object("Gin",10,10,[0,0,1],"Large");
 % T = transl(0,0,2)
 % Objects_(1).move_object(T)

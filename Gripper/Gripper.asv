@@ -69,7 +69,7 @@ classdef Gripper < handle
     
     
     %% A function to pick up small objects by pinching them with the fingers
-    function [finger_angles, distance] = pinch_grip(self,obj,dis_to_palm)
+    function [finger_angles, distance] = pinch_grip(self,diameter,dis_to_palm)
         
         obj_pos = [0,0,0;0,0,0;0,0,0];
         obj
@@ -180,12 +180,6 @@ function grab_position =  Grab_Object(self,obj)
     else
         if obj_data.Object_Type =="Small"
 
-            
-
-
-
-
-
         else %calls if object is neither set as large or small
             error("unrecognised object type")
 
@@ -216,15 +210,14 @@ function position = pour_position(self,obj,held_obj)
          vz = sqrt(1+y^2);
 
          direction = [1/vz,vy/vz]; % this is a vecor that points perpendicular to the vector from the base to the cup
-            direction = direction*sin(60*pi/180);
+            direction = direction*
            delta = atan2(obj.T_form(1,4),obj.T_form(2,4)); %% this line will need to be edited during testing
             
             % the rotation is based on the necessary rotation of the end
             % effector for whatever direction it may be facing.
             %The first transl relates to the object, while the 2nd relates
             %to what we are pouring
-            
-         position = trotz(delta)+transl(obj.T_form(1,4),obj.T_form(2,4),obj.Height)+(transl(direction(1),direction(2),cos(60*pi/180))*held_obj.Height/2)
+         position = trotz(delta)+transl(obj.T_form(1,4),obj.T_form(2,4),obj.Height)+transl()
 
 
 

@@ -15,18 +15,15 @@ classdef UR10e < handle
     
     methods%% Class for UR10 robot simulation
         function self = UR10e()
-<<<<<<< HEAD
+
 
             
-            self.GetUR10eRobot();
-            self.PlotAndColourRobot();
-            self.model.plot([0 0 0 0 0 0], 'scale', 0.05, 'noarrow');
-=======
-            
+
+       
             self.GetUR10eRobot();
             self.PlotAndColourRobot();%robot,workspace);
             self.model.plot([0 0 0 0 0 0], 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow');
->>>>>>> ARM
+
             self.currentJoints = ([0 0 0 0 0 0]);
             
             
