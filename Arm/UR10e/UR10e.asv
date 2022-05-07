@@ -15,10 +15,15 @@ classdef UR10e < handle
     
     methods%% Class for UR10 robot simulation
         function self = UR10e()
+
+
             
+
+       
             self.GetUR10eRobot();
             self.PlotAndColourRobot();%robot,workspace);
-            self.model.plot([0 0 0 0 0 0], 'scale', 0.25, 'noarrow', 'nobase', 'notiles', 'nojoints');
+            self.model.plot([0 0 0 0 0 0], 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow');
+
             self.currentJoints = ([0 0 0 0 0 0]);
             
             
@@ -36,8 +41,8 @@ classdef UR10e < handle
             name = ['UR_10_',datestr(now,'yyyymmddTHHMMSSFFF')];
 
             L1 = Link('d',0.1807,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]), 'offset', 0);
-            L2 = Link('d',0,'a',-0.6127,'alpha',0,'qlim', deg2rad([-180 180]), 'offset', 0); % was 'offset',pi/2
-            L3 = Link('d',0,'a',-0.5716,'alpha',0,'qlim', deg2rad([-360 360]), 'offset', 0);
+            L2 = Link('d',0+0.15,'a',-0.6127,'alpha',0,'qlim', deg2rad([-180 180]), 'offset', 0); % was 'offset',pi/2
+            L3 = Link('d',0-0.15,'a',-0.5716,'alpha',0,'qlim', deg2rad([-360 360]), 'offset', 0);
             L4 = Link('d',0.17415,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]),'offset', 0); % was 'offset',pi/2
             L5 = Link('d',0.11985,'a',0,'alpha',-pi/2,'qlim',deg2rad([-360,360]), 'offset',0);
             L6 = Link('d',0.11655,'a',0,'alpha',0,'qlim',deg2rad([-360,360]), 'offset', 0);
@@ -104,18 +109,39 @@ classdef UR10e < handle
             end
         end      
         %% Animates UR10e to go to a specific position based on obj_data
-        function comp_animate(self, gripper, obj_data)
-            if obj_data.Object_Type =="Large"
+        function comp_animate(self, gripper, obj,motiontype,destination)
+            if obj.Object_Type =="Large"
                 % determine position to move gripper to, therefore the
                 % position to move end effector to
             else
-                
+            end
+
+
+            switch motiontype
+% The steps the arm must go through: Goto (goes to just before the object),
+% Grab (moves forward to pick object up), MoveWith(utilises destination and makes object follow with arm)
+% Move Just moves the arm to the destination with disreguard for the object
+
+                case "GoTo"
+                    
+
+                    
+
+                case "Grab"
+
+                case "Pickup"
+                    q2 = self.model.ikcon(destination);
 
             end
+ 
+                
+                %% we need to actually make the gripper be slightly away and then move in to grasp it.
+
+
 
             step = 30;
             q1= self.currentJoints;
-            q2 = self.model.ikcon(pos);
+            
             qMatrix = jtraj(q1, q2, step); %traj from current position to new position
 
             for i = 1:size(qMatrix, 1)
@@ -123,7 +149,9 @@ classdef UR10e < handle
                 self.currentJoints = (qMatrix(i,:))
                 T_Form = self.model.fkine(qMatrix(i,:))
                 gripper.move_gripper(T_Form);
-                obj_data.move_object(T_Form);
+                if motiontype == "Pickup" 
+                    obj.move_object(T_Form);
+                end
             end
                     
            
@@ -135,5 +163,53 @@ classdef UR10e < handle
             
 
         end
+    end
+%% Put methods in here if you want to make them private
+    methods (Access = private)
+    
+
+
+        %% function that will close the shaker and then shake the drink
+        function shake(self,shaker_top,shaker_bottom)
+
+            % pick up shaker top and put it on shaker bottom
+
+                % go to shaker top
+
+                %Grip shaker top
+
+                % move to above shaker with shaker top
+
+                % move down onto shaker
+
+        % now with shaker top ontop of shaker bottom.
+            
+            % pick up shaker bottom
+
+            % raise above robot to shaker pose
+
+            %shake shaker
+
+
+            % return to shaker original position
+
+            % take shaker top off
+
+
+            % place shaker top back
+
+
+
+
+
+           
+
+
+        end
+
+
+
+
+
     end
 end

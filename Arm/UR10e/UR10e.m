@@ -109,18 +109,24 @@ classdef UR10e < handle
             end
         end      
         %% Animates UR10e to go to a specific position based on obj_data
-        function comp_animate(self, gripper, obj_data)
-            if obj_data.Object_Type =="Large"
+        function comp_animate(self, gripper, obj,motiontype,destination)
+            if obj.Object_Type =="Large"
                 % determine position to move gripper to, therefore the
                 % position to move end effector to
             else
-                
-
             end
+
+
+
+                
+                %% we need to actually make the gripper be slightly away and then move in to grasp it.
+
+
 
             step = 30;
             q1= self.currentJoints;
-            q2 = self.model.ikcon(pos);
+            q2 = self.model.ikcon(destination);
+
             qMatrix = jtraj(q1, q2, step); %traj from current position to new position
 
             for i = 1:size(qMatrix, 1)
@@ -128,7 +134,9 @@ classdef UR10e < handle
                 self.currentJoints = (qMatrix(i,:))
                 T_Form = self.model.fkine(qMatrix(i,:))
                 gripper.move_gripper(T_Form);
-                obj_data.move_object(T_Form);
+                if motiontype == "Pickup" 
+                    obj.move_object(T_Form);
+                end
             end
                     
            
@@ -144,6 +152,48 @@ classdef UR10e < handle
 %% Put methods in here if you want to make them private
     methods (Access = private)
     
+
+
+        %% function that will close the shaker and then shake the drink
+        function shake(self,shaker_top,shaker_bottom)
+
+            % pick up shaker top and put it on shaker bottom
+
+                % go to shaker top
+
+                %Grip shaker top
+
+                % move to above shaker with shaker top
+
+                % move down onto shaker
+
+        % now with shaker top ontop of shaker bottom.
+            
+            % pick up shaker bottom
+
+            % raise above robot to shaker pose
+
+            %shake shaker
+
+
+            % return to shaker original position
+
+            % take shaker top off
+
+
+            % place shaker top back
+
+
+
+
+
+           
+
+
+        end
+
+
+
 
 
     end

@@ -162,7 +162,8 @@ function grab_position =  Grab_Object(self,obj)
 
     if obj_data.Object_Type =="Large"
         
-    
+
+        inter_dist = 0.05 % the distance away the gripper should get to before going in to grab the object
 
         finger_angles = encompassing_grip(obj.Diameter/2) % check if this works, i'm getting weird prompt from matlab when i use this function
         dist = obj.Diamter/2+self.palm_depth;
@@ -173,8 +174,14 @@ function grab_position =  Grab_Object(self,obj)
         dy = dist*cos(theta);
         dz = obj.Height/2; 
 
-        grap_position(:,:,1) = transl(obj.T_form(1,4)-dx,obj.T_form(2,4)-dy,obj.T_form(3,4)+dz)*angle*trotz(90,"deg"); %  last rotation is to ensure that gripper is facing horizontally
-        grap_position(:,:,2) = transl(obj.T_form(1,4)+dx,obj.T_form(2,4)+dy,obj.T_form(3,4)+dz)*angle*trotz(90,"deg");
+        inter_x = 0.05*sin(theta) % same structure as above, but this just dictates how far away the hand should be before it reaches for the object
+        inter_y = 0.05*cos(theta)
+        
+
+        grap_position(:,:,1) = transl(obj.T_form(1,4)-dx,obj.T_form(2,4)-dy,obj.T_form(3,4)+dz)*angle*troty(90,"deg"); %  last rotation is to ensure that gripper is facing horizontally
+        grap_position(:,:,2) = transl(obj.T_form(1,4)-dx-inter_x,obj.T_form(2,4)-dy-inter_y,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
+        grap_position(:,:,3) = transl(obj.T_form(1,4)+dx,obj.T_form(2,4)+dy,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
+        grap_position(:,:,4) = transl(obj.T_form(1,4)+dx+inter_x,obj.T_form(2,4)+dy+inter_y,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
         % if the object is large i want to grab it from the side closest to
         % the robot if possible otherwise grab it from the oposite side
     else
