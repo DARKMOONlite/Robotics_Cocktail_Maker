@@ -39,11 +39,11 @@ classdef UR10e < handle
             name = ['UR_10_',datestr(now,'yyyymmddTHHMMSSFFF')];
 
             L1 = Link('d',0.1807,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]), 'offset', 0);
-            L2 = Link('d',0+0.15,'a',-0.6127,'alpha',0,'qlim', deg2rad([90 270]), 'offset', pi); % was 'offset',pi/2
+            L2 = Link('d',0+0.15,'a',-0.6127,'alpha',0,'qlim', deg2rad([0 180]), 'offset', pi); % was 'offset',pi/2
             L3 = Link('d',0-0.15,'a',-0.5716,'alpha',0,'qlim', deg2rad([-160 160]), 'offset', 0);
-            L4 = Link('d',0.17415,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]),'offset', 0); % was 'offset',pi/2
+            L4 = Link('d',0.17415,'a',0,'alpha',pi/2,'qlim',deg2rad([0 360]),'offset', 3*pi/2); % was 'offset',pi/2
             L5 = Link('d',0.11985,'a',0,'alpha',-pi/2,'qlim',deg2rad([-90 90]), 'offset', 0);
-            L6 = Link('d',0.11655,'a',0,'alpha',0,'qlim',deg2rad([-360,360]), 'offset', 0);
+            L6 = Link('d',0.11655,'a',0,'alpha',0,'qlim',deg2rad([0 360]), 'offset', 0);
 
             self.model = SerialLink([L1 L2 L3 L4 L5 L6],'name',name);
             self.model.plotopt = ('noname');
@@ -69,6 +69,7 @@ classdef UR10e < handle
                 warning('Please check the joint limits. They may be unsafe')
             end
             % Display robot
+            self.model.base = transl(0,0,0);
             self.model.plot3d(zeros(1,self.model.n),'noarrow','workspace',self.workspace);
             if isempty(findobj(get(gca,'Children'),'Type','Light'))
                 camlight
@@ -90,7 +91,22 @@ classdef UR10e < handle
                 end
             end
         end
-        %% Animates UR10e from current EE position to another EE position
+        %% Animates UR10e from current EE position to another EE position using animate
+        function moveBasicA(self, pos)
+            step = 60;
+            currentQ = self.currentJoints;
+            
+                    
+            newQ = self.model.ikcon(pos, [1 1 1 1 1 1]);
+            qMatrix = jtraj(currentQ, newQ, step); %traj from current position to new position
+
+            for i = 1:size(qMatrix, 1)
+                self.model.animate(qMatrix(i,:));
+                self.currentJoints = (qMatrix(i,:))
+                drawnow();
+            end
+        end      
+                %% Animates UR10e from current EE position to another EE position using plot
         function moveBasic(self, pos)
             step = 30;
             currentQ = self.currentJoints;

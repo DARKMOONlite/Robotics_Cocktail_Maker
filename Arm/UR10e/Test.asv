@@ -11,14 +11,20 @@ hold on
 
 UR10e = UR10e();
 %g = Gripper;
+UR10e.model.base = transl(0,0,1.2);
 
-drinks = [
+posDrinks = [-1.35 0.4 1.7;
+             -0.7 0.4 1.7;
+             -0.25 0.4 1.7;
+             0.2 0.4 1.7;
+             0.7 0.4 1.7;
+             1.35 0.4 1.7;];
 %%
 pos = transl(0.6, 0.8, 0.5)* trotx(3*pi/2);;
 UR10e.moveBasic(pos)
 
 %%
-pos2 = transl(-1.35, 0.4, 1.7) * trotx(3*pi/2) * troty(pi/2) * trotz(pi);;
+pos2 = transl(posDrinks(2,:)) * trotx(pi/2) * troty(3*pi/2) * trotz(0);;
 %pos2 = transl(0.6, -0.4, 0.3) * trotx(3*pi/2) * troty(pi/2);
 UR10e.moveBasic(pos2);
 
