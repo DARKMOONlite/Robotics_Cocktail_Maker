@@ -19,7 +19,7 @@ classdef UR10e < handle
             
             self.GetUR10eRobot();
             self.PlotAndColourRobot();%robot,workspace);
-            self.model.plot([0 0 0 0 0 0], 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow');
+            self.model.plot([0 0 0 0 0 0], 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow'); %comment out if using animate
             self.currentJoints = ([0 0 0 0 0 0]);
             % self.safePosJoints1 = ([]);
             drawnow            
@@ -40,10 +40,10 @@ classdef UR10e < handle
 
             L1 = Link('d',0.1807,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]), 'offset', 0);
             L2 = Link('d',0+0.15,'a',-0.6127,'alpha',0,'qlim', deg2rad([0 180]), 'offset', pi); % was 'offset',pi/2
-            L3 = Link('d',0-0.15,'a',-0.5716,'alpha',0,'qlim', deg2rad([-160 160]), 'offset', 0);
-            L4 = Link('d',0.17415,'a',0,'alpha',pi/2,'qlim',deg2rad([0 360]),'offset', 3*pi/2); % was 'offset',pi/2
-            L5 = Link('d',0.11985,'a',0,'alpha',-pi/2,'qlim',deg2rad([-90 ]), 'offset', pi);
-            L6 = Link('d',0.11655,'a',0,'alpha',0,'qlim',deg2rad([0 360]), 'offset', 0);
+            L3 = Link('d',0-0.15,'a',-0.5716,'alpha',0,'qlim', deg2rad([-150 150]), 'offset', 0);
+            L4 = Link('d',0.17415,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]),'offset', 0); % was 'offset',pi/2
+            L5 = Link('d',0.11985,'a',0,'alpha',-pi/2,'qlim',deg2rad([-120 120]), 'offset', 0);
+            L6 = Link('d',0.11655,'a',0,'alpha',0,'qlim',deg2rad([-360 360]), 'offset', 0);
 
             self.model = SerialLink([L1 L2 L3 L4 L5 L6],'name',name);
             self.model.plotopt = ('noname');
@@ -120,7 +120,7 @@ classdef UR10e < handle
                 self.currentJoints = (qMatrix(i,:))
             end
         end      
-        %% Animates UR10e to go to a specific position based on obj_data
+        %% Animates UR10e to go to a specific position based on obj_data **NOT COMPLETE**
         function move(self, gripper, obj_data)
             if obj_data.Object_Type == "Large"
                 % determine position to move gripper to, therefore the
@@ -150,7 +150,7 @@ classdef UR10e < handle
 %   function pour(self, gripper, obj_data)
         step = 30;
         temp1 = self.currentJoints;
-        temp2 = [self.currentJoints(1), self.currentJoints(2), self.currentJoints(3), self.currentJoints(4), self.currentJoints(5), self.currentJoints(6) + pi/6]
+        temp2 = [self.currentJoints(1), self.currentJoints(2), self.currentJoints(3), self.currentJoints(4), self.currentJoints(5), self.currentJoints(6) + pi/3]
         q1 = temp1;
         q2 = temp2;
         
