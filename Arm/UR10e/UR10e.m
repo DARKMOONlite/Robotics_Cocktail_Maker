@@ -11,6 +11,8 @@ classdef UR10e < handle
 %         toolParametersFilename = []; % Available are: 'DabPrintNozzleToolParameters.mat';    
         currentJoints = [];
 %         safePosJoints1 = [];
+
+        Estop = 0;
         
     end
     
@@ -182,6 +184,19 @@ classdef UR10e < handle
             
 
         end
+
+
+        function is_safe = checkEStop(self)
+            if self.Estop == 1
+                is_safe = 0
+            else
+                is_safe = 1;
+
+            end
+        end
+
+
+
     end
 %% Put methods in here if you want to make them private
     methods (Access = private)
