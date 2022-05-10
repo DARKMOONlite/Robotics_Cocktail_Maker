@@ -71,3 +71,5 @@ UR10e.model.animate
 % g.animate(Q);
 % Q = [9*pi/180,0.38,0,-0.38;0,0.38,0,-0.38;-9*pi/180,0.38,0,-0.38]
 % g.animate(Q);
+%%
+makeDrink(10);
