@@ -350,7 +350,7 @@ function position = pour_position(self,obj,held_obj)
                         continue;
                     end
                 end
-                self.models(1,count).plot([0,0,0,0],'scale',0.25,'noarrow','fps',30, 'nowrist','nojaxes')
+                self.models(1,count).plot([0,0,0,0],'scale',0.25,'noarrow','fps',30, 'nowrist','nojaxes','workspace',self.workspace)
             end
         end
 
@@ -365,7 +365,7 @@ function position = pour_position(self,obj,held_obj)
 
             
             % Display robot
-            self.palm_model.plot3d(zeros(1,self.palm_model.n),'noarrow');
+            self.palm_model.plot3d(zeros(1,self.palm_model.n),'noarrow','workspace',self.workspace);
             if isempty(findobj(get(gca,'Children'),'Type','Light'))
                 camlight
             end  

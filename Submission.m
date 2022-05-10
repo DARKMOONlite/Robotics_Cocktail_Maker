@@ -37,17 +37,17 @@ UR10e = UR10e();
 
 
 
-% Environment class 
+Environment class 
 environment = Environment(base);
 
  
 [PuttingSimulatedObjectsIntoTheEnvironment] = environment.build(base);
-
+% 
 Gripper = Gripper();
 Gripper.move_gripper(UR10e.model.fkine(UR10e.currentJoints))
 Objects = Create_Drinks();
-
-
-hold on;
+% 
+% 
+% hold on;
 
 
