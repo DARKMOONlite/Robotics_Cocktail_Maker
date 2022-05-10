@@ -11,7 +11,7 @@ classdef Hand < handle
     end
     
     methods
-        function self = R_Object(PLY_File,Position)
+        function self = Hand(Position)
             hold on
             
             if size(Position,2) ~= 4 && size(Position,1) ~= 4
@@ -28,7 +28,7 @@ classdef Hand < handle
 
 
             hold on
-            self.model = PlaceObject("LightCurtain/"+PLY_File+".ply",self.Position);
+            self.model = PlaceObject("LightCurtain/Hand.ply",self.Position);
 
             self.Vertices(:,:) = get(self.model,'Vertices')
 
