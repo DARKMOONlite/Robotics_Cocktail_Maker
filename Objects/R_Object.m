@@ -1,4 +1,4 @@
-classdef R_Object
+classdef R_Object < handle
     %OBJECT Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -10,6 +10,7 @@ classdef R_Object
         Position; % position in x,y,z terms should only be used for reference
         model; % Storage for the ply file class
         Vertices %required to move object
+        Corner_Points;
     end
     
     methods
@@ -26,8 +27,9 @@ classdef R_Object
             
 
 
-        
-            self.T_form = Position;
+            
+            self.T_form = transl(0,0,0);
+            self.Position = [self.T_form(1,4),self.T_form(2,4), self.T_form(3,4)]
 
 
             hold on
@@ -41,17 +43,22 @@ classdef R_Object
 
             drawnow
             
-              
+              self.move_object(Position);
+              self.Corner_Points = self.boundingbox();
         end
 
         function move_object(self,T_mat)
                
+            Verticies = [self.Vertices,ones(size(self.Vertices,1),1)]
+            
                 
                 transformed_Vertices = [self.Vertices,ones(size(self.Vertices,1),1)]/self.T_form' *T_mat';
                 set(self.model,'Vertices',transformed_Vertices(:,1:3))
                 
                 drawnow
                 pause(0.01);
+                self.T_form = T_mat;
+                self.Position = [T_mat(1,4),T_mat(2,4),T_mat(3,4)];
 
         end
 
