@@ -6,32 +6,30 @@ classdef UR10e < handle
         %> workspace
         workspace = [0 0 0 0 0 0];   
                
-        %> If we have a tool model which will replace the final links model, combined ply file of the tool model and the final link models
-        toolModelFilename = []; % Available are: 'DabPrintNozzleTool.ply';        
-        toolParametersFilename = []; % Available are: 'DabPrintNozzleToolParameters.mat';    
+%         %> If we have a tool model which will replace the final links model, combined ply file of the tool model and the final link models
+%         toolModelFilename = []; % Available are: 'DabPrintNozzleTool.ply';        
+%         toolParametersFilename = []; % Available are: 'DabPrintNozzleToolParameters.mat';    
         currentJoints = [];
-        Objects_;
+%         safePosJoints1 = [];
+        
     end
     
     methods%% Class for UR10 robot simulation
         function self = UR10e()
-
-
             
-
-       
             self.GetUR10eRobot();
             self.PlotAndColourRobot();%robot,workspace);
-            self.model.plot([0 0 0 0 0 0], 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow');
-
+            % self.model.plot([0 0 0 0 0 0], 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow'); %comment out if using animate
             self.currentJoints = ([0 0 0 0 0 0]);
-            
-            
-
-            
-            
+            % self.safePosJoints1 = ([]);
             drawnow            
+            % camzoom(2)
+            % campos([6.9744    3.5061    1.8165]);
 
+%             camzoom(4)
+%             view([122,14]);
+%             camzoom(8)
+%             teach(self.model);
         end
 
         %% GetUR10Robot
@@ -41,11 +39,11 @@ classdef UR10e < handle
             name = ['UR_10_',datestr(now,'yyyymmddTHHMMSSFFF')];
 
             L1 = Link('d',0.1807,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]), 'offset', 0);
-            L2 = Link('d',0+0.15,'a',-0.6127,'alpha',0,'qlim', deg2rad([-180 180]), 'offset', 0); % was 'offset',pi/2
-            L3 = Link('d',0-0.15,'a',-0.5716,'alpha',0,'qlim', deg2rad([-360 360]), 'offset', 0);
+            L2 = Link('d',0+0.15,'a',-0.6127,'alpha',0,'qlim', deg2rad([0 180]), 'offset', pi); % was 'offset',pi/2
+            L3 = Link('d',0-0.15,'a',-0.5716,'alpha',0,'qlim', deg2rad([-150 150]), 'offset', 0);
             L4 = Link('d',0.17415,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]),'offset', 0); % was 'offset',pi/2
-            L5 = Link('d',0.11985,'a',0,'alpha',-pi/2,'qlim',deg2rad([-360,360]), 'offset',0);
-            L6 = Link('d',0.11655,'a',0,'alpha',0,'qlim',deg2rad([-360,360]), 'offset', 0);
+            L5 = Link('d',0.11985,'a',0,'alpha',-pi/2,'qlim',deg2rad([-120 120]), 'offset', 0);
+            L6 = Link('d',0.11655,'a',0,'alpha',0,'qlim',deg2rad([-360 360]), 'offset', 0);
 
             self.model = SerialLink([L1 L2 L3 L4 L5 L6],'name',name);
             self.model.plotopt = ('noname');
@@ -61,17 +59,18 @@ classdef UR10e < handle
                 self.model.points{linkIndex + 1} = vertexData;
             end
 
-            if ~isempty(self.toolModelFilename)
-                [ faceData, vertexData, plyData{self.model.n + 1} ] = plyread(self.toolModelFilename,'tri'); 
-                self.model.faces{self.model.n + 1} = faceData;
-                self.model.points{self.model.n + 1} = vertexData;
-                toolParameters = load(self.toolParametersFilename);
-                self.model.tool = toolParameters.tool;
-                self.model.qlim = toolParameters.qlim;
-                warning('Please check the joint limits. They may be unsafe')
-            end
+%             if ~isempty(self.toolModelFilename)
+%                 [ faceData, vertexData, plyData{self.model.n + 1} ] = plyread(self.toolModelFilename,'tri'); 
+%                 self.model.faces{self.model.n + 1} = faceData;
+%                 self.model.points{self.model.n + 1} = vertexData;
+%                 toolParameters = load(self.toolParametersFilename);
+%                 self.model.tool = toolParameters.tool;
+%                 self.model.qlim = toolParameters.qlim;
+%                 warning('Please check the joint limits. They may be unsafe')
+%             end
             % Display robot
-            self.model.plot3d(zeros(1,self.model.n));
+            self.model.base = transl(0,0,0);
+            self.model.plot3d(zeros(1,self.model.n),'noarrow','workspace',self.workspace);
             if isempty(findobj(get(gca,'Children'),'Type','Light'))
                 camlight
             end  
@@ -92,41 +91,48 @@ classdef UR10e < handle
                 end
             end
         end
-        %% Animates UR10e from current EE position to another EE position
-        function basic_animate(self, pos)
+        %% Animates UR10e from current EE position to another EE position using animate
+        function moveBasicA(self, pos)
+            step = 60;
+            currentQ = self.currentJoints;
+            
+                    
+            newQ = self.model.ikcon(pos, [1 1 1 1 1 1]);
+            qMatrix = jtraj(currentQ, newQ, step); %traj from current position to new position
+
+            for i = 1:size(qMatrix, 1)
+                self.model.animate(qMatrix(i,:));
+                self.currentJoints = (qMatrix(i,:))
+                drawnow();
+            end
+        end      
+                %% Animates UR10e from current EE position to another EE position using plot
+        function moveBasic(self, pos)
             step = 30;
             currentQ = self.currentJoints;
             
                     
-            move = self.model.ikcon(pos);
-            qMatrix = jtraj(currentQ, move, step); %traj from current position to new position
-            
-            %q = traj(i,:)
-            %self.model.animate(q);
+            newQ = self.model.ikcon(pos, [1 1 1 1 1 1]);
+            qMatrix = jtraj(currentQ, newQ, step); %traj from current position to new position
+
             for i = 1:size(qMatrix, 1)
                 self.model.plot(qMatrix(i,:));
                 self.currentJoints = (qMatrix(i,:))
             end
         end      
-        %% Animates UR10e to go to a specific position based on obj_data
-        function comp_animate(self, gripper, obj,motiontype,destination)
-            if obj.Object_Type =="Large"
+        %% Animates UR10e to go to a specific position based on obj_data **NOT COMPLETE**
+        function move(self, gripper, obj_data)
+            if obj_data.Object_Type == "Large"
                 % determine position to move gripper to, therefore the
                 % position to move end effector to
             else
+                
+
             end
 
-
-
-                
-                %% we need to actually make the gripper be slightly away and then move in to grasp it.
-
-
-
             step = 30;
-            q1= self.currentJoints;
-            q2 = self.model.ikcon(destination);
-
+            q1 = self.currentJoints;
+            q2 = self.model.ikcon(pos);
             qMatrix = jtraj(q1, q2, step); %traj from current position to new position
 
             for i = 1:size(qMatrix, 1)
@@ -134,14 +140,42 @@ classdef UR10e < handle
                 self.currentJoints = (qMatrix(i,:))
                 T_Form = self.model.fkine(qMatrix(i,:))
                 gripper.move_gripper(T_Form);
-                if motiontype == "Pickup" 
-                    obj.move_object(T_Form);
-                end
+                obj_data.move_object(T_Form);
             end
                     
            
         end   
-
+    %% Rotates final UR10e link to pour a drink
+    function pour(self,seconds)
+%   function pour(self, gripper, obj_data)
+        step = 30;
+        temp1 = self.currentJoints;
+        temp2 = [self.currentJoints(1), self.currentJoints(2), self.currentJoints(3), self.currentJoints(4), self.currentJoints(5), self.currentJoints(6) + pi/3]
+        q1 = temp1;
+        q2 = temp2;
+        
+        qMatrix1 = jtraj(q1, q2, step);
+        for i = 1:size(qMatrix1, 1)
+                self.model.animate(qMatrix1(i,:));
+                self.currentJoints = (qMatrix1(i,:))
+%                 T_Form = self.model.fkine(qMatrix1(i,:))
+%                 gripper.move_gripper(T_Form);
+%                 obj_data.move_object(T_Form);
+                drawnow();
+        end
+        
+        pause(seconds);
+        
+        qMatrix2 = jtraj(q2, q1, step);
+        for i = 1:size(qMatrix2, 1)
+                self.model.animate(qMatrix2(i,:));
+                self.currentJoints = (qMatrix2(i,:))
+%                 T_Form = self.model.fkine(qMatrix2(i,:))
+%                 gripper.move_gripper(T_Form);
+%                 obj_data.move_object(T_Form);
+                drawnow();
+        end
+    end
     %% Accepts a code from the GUI and runs the procedure to make a drink
         function run(self, gripper, code)
 
@@ -152,48 +186,6 @@ classdef UR10e < handle
 %% Put methods in here if you want to make them private
     methods (Access = private)
     
-
-
-        %% function that will close the shaker and then shake the drink
-        function shake(self,shaker_top,shaker_bottom)
-
-            % pick up shaker top and put it on shaker bottom
-
-                % go to shaker top
-
-                %Grip shaker top
-
-                % move to above shaker with shaker top
-
-                % move down onto shaker
-
-        % now with shaker top ontop of shaker bottom.
-            
-            % pick up shaker bottom
-
-            % raise above robot to shaker pose
-
-            %shake shaker
-
-
-            % return to shaker original position
-
-            % take shaker top off
-
-
-            % place shaker top back
-
-
-
-
-
-           
-
-
-        end
-
-
-
 
 
     end
