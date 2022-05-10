@@ -20,7 +20,7 @@ classdef Gripper < handle
     
     properties (Access = private) % Certain Properties don't need to be accessed outside of this class therefore they are placed here.
    
-    workspace = [-0.2 0.2 -0.2 0.2 -0.1 0.4]; 
+    workspace = [0 0 0 0 0 0]; 
 
     end
     

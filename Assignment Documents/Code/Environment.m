@@ -45,7 +45,7 @@ PuttingSimulatedObjectsIntoTheEnvironment = 0;
     
             tableMesh_h = trisurf(f,v(:,1) ,v(:,2), v(:,3) ...
         ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
-    transformationMatrix = makehgtform('translate',[0,0.15,-0.25]); % new transform
+    transformationMatrix = makehgtform('translate',[0,0.2,-0.2]); % new transform
             rotationMatrix = makehgtform('xrotate',deg2rad(90)); % new rotation
             Points = [transformationMatrix * rotationMatrix * [tableVerts,ones(tableVertexCount,1)]']';
             tableMesh_h.Vertices = Points(:,1:3); % Plots these new points

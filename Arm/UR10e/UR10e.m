@@ -21,13 +21,11 @@ classdef UR10e < handle
             
             self.GetUR10eRobot();
             self.PlotAndColourRobot();%robot,workspace);
-            % self.model.plot([0 0 0 0 0 0], 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow'); %comment out if using animate
-            self.currentJoints = ([0 0 0 0 0 0]);
             % self.safePosJoints1 = ([]);
-            drawnow            
-            % camzoom(2)
-            % campos([6.9744    3.5061    1.8165]);
-
+        
+            self.model.base = transl(0,0,0)
+            self.currentJoints = [90 -60 -90 180 -90 0]*pi/180;
+            self.model.plot(self.currentJoints, 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow'); %comment out if using animate
 %             camzoom(4)
 %             view([122,14]);
 %             camzoom(8)
@@ -72,7 +70,7 @@ classdef UR10e < handle
 %             end
             % Display robot
             self.model.base = transl(0,0,0);
-            self.model.plot3d(zeros(1,self.model.n),'noarrow','workspace',self.workspace);
+            self.model.plot3d(zeros(1,self.model.n),'noarrow','notiles');
             if isempty(findobj(get(gca,'Children'),'Type','Light'))
                 camlight
             end  
