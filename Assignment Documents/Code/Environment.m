@@ -45,7 +45,7 @@ PuttingSimulatedObjectsIntoTheEnvironment = 0;
     
             tableMesh_h = trisurf(f,v(:,1) ,v(:,2), v(:,3) ...
         ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
-    transformationMatrix = makehgtform('translate',[0,0,1.1]); % new transform
+    transformationMatrix = makehgtform('translate',[0,0.15,-0.25]); % new transform
             rotationMatrix = makehgtform('xrotate',deg2rad(90)); % new rotation
             Points = [transformationMatrix * rotationMatrix * [tableVerts,ones(tableVertexCount,1)]']';
             tableMesh_h.Vertices = Points(:,1:3); % Plots these new points
@@ -101,14 +101,14 @@ PuttingSimulatedObjectsIntoTheEnvironment = 0;
  
         x = [-2.5 2.5]; %plot image these coordinates on x axis 
         y = [-2.5 2.5]; %plot image with these coordinates on y axis
-        z = [0 0; 0 0]; %plot image with these coordinates on z axis 
+        z = [-1.25 -1.25; -1.25 -1.25]; %plot image with these coordinates on z axis 
         surf(x, y, z,'CData',imread('floor2.jpg'),'FaceColor','texturemap');
 
 %% Load Lab
  
         x = [2.5 -2.5];
         y = [2.5 2.5];
-        z = [2.5 2.5; 0 0];
+        z = [1.25 1.25; -1.25 -1.25];
         surf(x, y, z,'CData',imread('bar.jfif'),'FaceColor','texturemap');
 %% Load stop button
 [f,v,data] = plyread('StopButton.ply','tri');

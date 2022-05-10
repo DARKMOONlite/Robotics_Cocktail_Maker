@@ -23,13 +23,13 @@ classdef UR10e < handle
             
             self.GetUR10eRobot();
             self.PlotAndColourRobot();%robot,workspace);
-            self.model.base = transl(0,-0.25,1.25)
-            self.model.plot([deg2rad([90 -60 -90 0 90 0])], 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow');
+            self.model.base = transl(0,0,0)
+            self.currentJoints = [90 -60 -90 180 -90 0]*pi/180;
+            %self.model.plot(self.currentJoints, 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow');
             
 
             
-            
-
+SerialLink
             
             
             drawnow            
@@ -73,7 +73,7 @@ classdef UR10e < handle
                 warning('Please check the joint limits. They may be unsafe')
             end
             % Display robot
-            self.model.plot3d(zeros(1,self.model.n));
+            self.model.plot3d(zeros(1,self.model.n),'notiles');
             if isempty(findobj(get(gca,'Children'),'Type','Light'))
                 camlight
             end  

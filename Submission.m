@@ -32,8 +32,8 @@ UR10e = UR10e();
  
 
 %% drink object
-pos = transl(0,0,1.9)
-% Gin = R_Object("Vodka",1,1,pos,"Large");
+
+
 
 
 
@@ -43,6 +43,8 @@ environment = Environment(base);
  
 [PuttingSimulatedObjectsIntoTheEnvironment] = environment.build(base);
 
+% Gripper = Gripper();
+% Gripper.move_gripper(UR10e.model.fkine(UR10e.currentJoints))
 Objects = Create_Drinks();
 
 
