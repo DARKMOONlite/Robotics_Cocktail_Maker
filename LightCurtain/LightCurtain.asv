@@ -1,0 +1,23 @@
+classdef LightCurtain < handle
+    %LIGHTCURTAIN Summary of this class goes here
+    %   Detailed explanation goes here
+    
+    properties
+        Plane
+        Plane_normal
+        Light_Hand
+    end
+    
+    methods
+        function self = LightCurtain()
+            pos = transl(0.5,-2,0.3)
+
+            self.Light_Hand = Hand(pos)
+        end
+        
+        function Intersect = CheckIntersection()
+
+        end
+    end
+end
+
