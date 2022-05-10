@@ -7,6 +7,10 @@ addpath(genpath('Arm'))
 addpath(genpath("Objects"))
 addpath(genpath("Assignment Documents"))
 
+Axis_Control = gca;
+Axis_Control.Clipping = "off";
+set(Axis_Control,'CameraViewAngleMode','Manual');
+hold on
 
 
 try
@@ -36,8 +40,8 @@ UR10e = UR10e();
 % % Transform = transl(0.7,0.4,1.7)
 % % Transform = transl(1.35,0.4,1.7)
 % Gin.move_object(Transform)
-%% Environment class 
-environment = Environment(base);
+% Environment class 
+environment = Environment();
 
  
 [PuttingSimulatedObjectsIntoTheEnvironment] = environment.build(base);
