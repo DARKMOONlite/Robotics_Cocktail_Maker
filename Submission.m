@@ -46,6 +46,7 @@ environment = Environment(base);
  
 [PuttingSimulatedObjectsIntoTheEnvironment] = environment.build(base);
 
+Objects = Create_Drinks();
 
 
 hold on;

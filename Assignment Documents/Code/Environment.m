@@ -29,7 +29,7 @@ function [PuttingSimulatedObjectsIntoTheEnvironment] = build(self,base)
     view(3);
     hold on;
 
-
+PuttingSimulatedObjectsIntoTheEnvironment = 0;
 
 
 % clf

@@ -13,20 +13,21 @@ classdef R_Object
     end
     
     methods
-        function self = R_Object(PLY_File,Radius,Height,Position,Type);
-            Position
-            if size(Position,2) ~= 3
+        function self = R_Object(PLY_File,Radius,Height,Position,Type)
+            hold on
+            
+            if size(Position,2) ~= 4 && size(Position,1) ~= 4
             error("Not enough values in Position")
             end
             if strcmp(Type,"Large") && strcmp(Type,"Small")
                 error("Type not declared correctly. Object must be large or small")
             end
             self.Object_Type = Type;
+            
 
 
-
-            self.Position = Position
-            self.T_form = transl(Position(1),Position(2),Position(3));
+        
+            self.T_form = Position;
 
 
             hold on
@@ -36,6 +37,9 @@ classdef R_Object
 
             self.Diameter = Radius;
             self.Height = Height;
+
+
+            drawnow
             
               
         end
@@ -78,5 +82,7 @@ classdef R_Object
 
         
     end
+    end
+
 end
 
