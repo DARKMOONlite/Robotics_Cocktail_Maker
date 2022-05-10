@@ -24,7 +24,7 @@ classdef UR10e < handle
             % self.safePosJoints1 = ([]);
         
             self.model.base = transl(0,0,0)
-            self.currentJoints = [90 -60 -90 180 -90 0]*pi/180;
+            self.currentJoints = [-90 80 -110 180 -90 0]*pi/180;
             self.model.plot(self.currentJoints, 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow'); %comment out if using animate
 %             camzoom(4)
 %             view([122,14]);
