@@ -25,7 +25,7 @@ classdef UR10e < handle
         
             self.model.base = transl(0,0,0)
             self.currentJoints = [-90 80 -110 180 -90 0]*pi/180;
-            self.model.plot(self.currentJoints, 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow'); %comment out if using animate
+%             self.model.plot(self.currentJoints, 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow'); %comment out if using animate
 %             camzoom(4)
 %             view([122,14]);
 %             camzoom(8)
@@ -71,6 +71,7 @@ classdef UR10e < handle
             % Display robot
             self.model.base = transl(0,0,0);
             self.model.plot3d(zeros(1,self.model.n),'noarrow','notiles');
+            %self.model.plot3d(self.currentJoints, 'noarrow', 'notiles');
             if isempty(findobj(get(gca,'Children'),'Type','Light'))
                 camlight
             end  
@@ -92,8 +93,8 @@ classdef UR10e < handle
             end
         end
         %% Animates UR10e from current EE position to another EE position using animate
-        function moveBasicA(self, pos)
-            step = 60;
+        function moveBasicA(self, pos, g)
+            step = 30;
             currentQ = self.currentJoints;
             
                     
@@ -103,7 +104,9 @@ classdef UR10e < handle
             for i = 1:size(qMatrix, 1)
                 self.model.animate(qMatrix(i,:));
                 self.currentJoints = (qMatrix(i,:))
+                g.move_gripper(self.model.fkine(self.currentJoints));
                 drawnow();
+                pause(0.05);
             end
         end      
                 %% Animates UR10e from current EE position to another EE position using plot

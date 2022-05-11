@@ -54,13 +54,13 @@ classdef Gripper < handle
     % Allows the gripper to be moved based on a transformation
     function move_gripper(self, T_form)
         self.palm_model.base = T_form;
-        self.palm_model.plot(0);
+        self.palm_model.animate(0);
         for count = 1:size(self.models,2)
             count
              self.models(count).base = self.palm_model.base * self.relative_finger_t(:,:,count);
              self.models(count).base
 %             self.current_joints(count,:)
-            self.models(count).plot(self.current_joints(count,:))
+            self.models(count).animate(self.current_joints(count,:))
         end
     end
     
@@ -350,7 +350,8 @@ function position = pour_position(self,obj,held_obj)
                         continue;
                     end
                 end
-                self.models(1,count).plot([0,0,0,0],'scale',0.25,'noarrow','fps',30, 'nowrist','nojaxes','workspace',self.workspace)
+                %self.models(1,count).plot([0,0,0,0],'scale',0.25,'noarrow','fps',30, 'nowrist','nojaxes','workspace',self.workspace)
+                self.models(1,count).animate([0,0,0,0])
             end
         end
 

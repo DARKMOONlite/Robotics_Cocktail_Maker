@@ -20,7 +20,7 @@ classdef Gripper < handle
     
     properties (Access = private) % Certain Properties don't need to be accessed outside of this class therefore they are placed here.
    
-    workspace = [-0.2 0.2 -0.2 0.2 -0.1 0.4]; 
+    workspace = [0 0 0 0 0 0]; 
 
     end
     
@@ -54,7 +54,7 @@ classdef Gripper < handle
     % Allows the gripper to be moved based on a transformation
     function move_gripper(self, T_form)
         self.palm_model.base = T_form;
-        self.palm_model.plot(0);
+        self.palm_model.animate(0);
         for count = 1:size(self.models,2)
             count
              self.models(count).base = self.palm_model.base * self.relative_finger_t(:,:,count);
@@ -69,7 +69,7 @@ classdef Gripper < handle
     
     
     %% A function to pick up small objects by pinching them with the fingers
-    function [finger_angles, distance] = pinch_grip(self,diameter,dis_to_palm)
+    function [finger_angles, distance] = pinch_grip(self,obj,dis_to_palm)
         
         obj_pos = [0,0,0;0,0,0;0,0,0];
         obj
@@ -162,7 +162,8 @@ function grab_position =  Grab_Object(self,obj)
 
     if obj_data.Object_Type =="Large"
         
-    
+
+        inter_dist = 0.05 % the distance away the gripper should get to before going in to grab the object
 
         finger_angles = encompassing_grip(obj.Diameter/2) % check if this works, i'm getting weird prompt from matlab when i use this function
         dist = obj.Diamter/2+self.palm_depth;
@@ -173,12 +174,24 @@ function grab_position =  Grab_Object(self,obj)
         dy = dist*cos(theta);
         dz = obj.Height/2; 
 
-        grap_position(:,:,1) = transl(obj.T_form(1,4)-dx,obj.T_form(2,4)-dy,obj.T_form(3,4)+dz)*angle*trotz(90,"deg"); %  last rotation is to ensure that gripper is facing horizontally
-        grap_position(:,:,2) = transl(obj.T_form(1,4)+dx,obj.T_form(2,4)+dy,obj.T_form(3,4)+dz)*angle*trotz(90,"deg");
+        inter_x = 0.05*sin(theta) % same structure as above, but this just dictates how far away the hand should be before it reaches for the object
+        inter_y = 0.05*cos(theta)
+        
+
+        grap_position(:,:,1) = transl(obj.T_form(1,4)-dx,obj.T_form(2,4)-dy,obj.T_form(3,4)+dz)*angle*troty(90,"deg"); %  last rotation is to ensure that gripper is facing horizontally
+        grap_position(:,:,2) = transl(obj.T_form(1,4)-dx-inter_x,obj.T_form(2,4)-dy-inter_y,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
+        grap_position(:,:,3) = transl(obj.T_form(1,4)+dx,obj.T_form(2,4)+dy,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
+        grap_position(:,:,4) = transl(obj.T_form(1,4)+dx+inter_x,obj.T_form(2,4)+dy+inter_y,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
         % if the object is large i want to grab it from the side closest to
         % the robot if possible otherwise grab it from the oposite side
     else
         if obj_data.Object_Type =="Small"
+
+            
+
+
+
+
 
         else %calls if object is neither set as large or small
             error("unrecognised object type")
@@ -210,14 +223,15 @@ function position = pour_position(self,obj,held_obj)
          vz = sqrt(1+y^2);
 
          direction = [1/vz,vy/vz]; % this is a vecor that points perpendicular to the vector from the base to the cup
-            direction = direction*
+            direction = direction*sin(60*pi/180);
            delta = atan2(obj.T_form(1,4),obj.T_form(2,4)); %% this line will need to be edited during testing
             
             % the rotation is based on the necessary rotation of the end
             % effector for whatever direction it may be facing.
             %The first transl relates to the object, while the 2nd relates
             %to what we are pouring
-         position = trotz(delta)+transl(obj.T_form(1,4),obj.T_form(2,4),obj.Height)+transl()
+            
+         position = trotz(delta)+transl(obj.T_form(1,4),obj.T_form(2,4),obj.Height)+(transl(direction(1),direction(2),cos(60*pi/180))*held_obj.Height/2)
 
 
 
@@ -336,7 +350,7 @@ function position = pour_position(self,obj,held_obj)
                         continue;
                     end
                 end
-                self.models(1,count).plot([0,0,0,0],'scale',0.25,'noarrow','fps',30, 'nowrist','nojaxes')
+                self.models(1,count).plot([0,0,0,0],'scale',0.25,'noarrow','fps',30, 'nowrist','nojaxes','workspace',self.workspace)
             end
         end
 
@@ -351,7 +365,7 @@ function position = pour_position(self,obj,held_obj)
 
             
             % Display robot
-            self.palm_model.plot3d(zeros(1,self.palm_model.n),'noarrow');
+            self.palm_model.plot3d(zeros(1,self.palm_model.n),'noarrow','workspace',self.workspace);
             if isempty(findobj(get(gca,'Children'),'Type','Light'))
                 camlight
             end  
