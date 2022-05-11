@@ -30,10 +30,10 @@ objects = Create_Drinks();
 
 %%
 pos = transl(0.6, 0.8, 0.5)* trotx(3*pi/2);;
-UR10e.moveBasicA(pos)
+UR10e.moveBasicA(pos,g)
 %%
-x = g.grabObject(objects(1,3))
-pos2 = x(:,:,1) * trotz(pi/2) %*trotx(pi/2) * troty(2*pi/2) %* trotz(pi);;
+x = g.grabObject(objects(1,9))
+pos2 = x(:,:,1) * trotz(pi/2) 
 %pos2 = transl(0.6, -0.4, 0.3) * trotx(3*pi/2) * troty(pi/2);  
 UR10e.moveBasicA(pos2, g);
 

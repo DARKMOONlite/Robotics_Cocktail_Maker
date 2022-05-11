@@ -87,7 +87,7 @@ classdef Gripper < handle
 
     %% function to grip a large object by wrapping the fingers around it.
     function [finger_angles] = encompassing_grip(self,radius)
-        if radius >= 0.155/2
+        if radius >= 0.155
             error("the Provided Radius is too large at : %f m",radius)
         end
     %Step 1 move the 1st joint to be in contact with the+ object assuming
@@ -165,11 +165,11 @@ function grab_position =  grabObject(self,obj)
 
         %inter_dist = 0.05 % the distance away the gripper should get to before going in to grab the object
 
-        finger_angles = encompassing_grip(obj.Diameter/2) % check if this works, i'm getting weird prompt from matlab when i use this function
+        finger_angles = self.encompassing_grip(obj.Radius) % check if this works, i'm getting weird prompt from matlab when i use this function
         dist = obj.Radius+self.palm_depth;
 
         theta = atan2(obj.T_form(1,4),obj.T_form(2,4))
-        angle = trotz(theta);
+        angle = trotz(90-rad2deg(theta),"deg");%trotz(theta);
         dx = dist*sin(theta);
         dy = dist*cos(theta);
         dz = obj.Height/2; 
