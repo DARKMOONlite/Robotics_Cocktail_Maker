@@ -54,13 +54,13 @@ classdef Gripper < handle
     % Allows the gripper to be moved based on a transformation
     function move_gripper(self, T_form)
         self.palm_model.base = T_form;
-        self.palm_model.plot(0);
+        self.palm_model.animate(0);
         for count = 1:size(self.models,2)
             count
              self.models(count).base = self.palm_model.base * self.relative_finger_t(:,:,count);
              self.models(count).base
 %             self.current_joints(count,:)
-            self.models(count).plot(self.current_joints(count,:))
+            self.models(count).animate(self.current_joints(count,:))
         end
     end
     
@@ -158,12 +158,12 @@ self.current_joints = -qe;
 end
 
 %% Generalised Grab function to grab any object  TBD
-function grab_position =  Grab_Object(self,obj)
+function grab_position =  grabObject(self,obj)
 
-    if obj_data.Object_Type =="Large"
+    if obj.Object_Type == "Large"
         
 
-        inter_dist = 0.05 % the distance away the gripper should get to before going in to grab the object
+        %inter_dist = 0.05 % the distance away the gripper should get to before going in to grab the object
 
         finger_angles = encompassing_grip(obj.Diameter/2) % check if this works, i'm getting weird prompt from matlab when i use this function
         dist = obj.Radius+self.palm_depth;
@@ -178,10 +178,10 @@ function grab_position =  Grab_Object(self,obj)
         inter_y = 0.05*cos(theta)
         
 
-        grap_position(:,:,1) = transl(obj.T_form(1,4)-dx,obj.T_form(2,4)-dy,obj.T_form(3,4)+dz)*angle*troty(90,"deg"); %  last rotation is to ensure that gripper is facing horizontally
-        grap_position(:,:,2) = transl(obj.T_form(1,4)-dx-inter_x,obj.T_form(2,4)-dy-inter_y,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
-        grap_position(:,:,3) = transl(obj.T_form(1,4)+dx,obj.T_form(2,4)+dy,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
-        grap_position(:,:,4) = transl(obj.T_form(1,4)+dx+inter_x,obj.T_form(2,4)+dy+inter_y,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
+        grab_position(:,:,1) = transl(obj.T_form(1,4)-dx,obj.T_form(2,4)-dy,obj.T_form(3,4)+dz)*angle*troty(90,"deg"); %  last rotation is to ensure that gripper is facing horizontally
+        grab_position(:,:,2) = transl(obj.T_form(1,4)-dx-inter_x,obj.T_form(2,4)-dy-inter_y,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
+        grab_position(:,:,3) = transl(obj.T_form(1,4)+dx,obj.T_form(2,4)+dy,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
+        grab_position(:,:,4) = transl(obj.T_form(1,4)+dx+inter_x,obj.T_form(2,4)+dy+inter_y,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
         % if the object is large i want to grab it from the side closest to
         % the robot if possible otherwise grab it from the oposite side
     else
@@ -202,13 +202,6 @@ function grab_position =  Grab_Object(self,obj)
         % end effector should always point down.
 
     end
-
-
-
-
-    
-
-
 end
 %% Function to either pour drink into glass or shaker
 
@@ -350,7 +343,8 @@ function position = pour_position(self,obj,held_obj)
                         continue;
                     end
                 end
-                self.models(1,count).plot([0,0,0,0],'scale',0.25,'noarrow','fps',30, 'nowrist','nojaxes','workspace',self.workspace)
+                %self.models(1,count).plot([0,0,0,0],'scale',0.25,'noarrow','fps',30, 'nowrist','nojaxes','workspace',self.workspace)
+                self.models(1,count).animate([0,0,0,0])
             end
         end
 
