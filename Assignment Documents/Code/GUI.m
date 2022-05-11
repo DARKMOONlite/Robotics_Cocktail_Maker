@@ -21,7 +21,7 @@ function varargout = untitledGUI(varargin)
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 % Edit the above text to modify the response to help untitledGUI
-% Last Modified by GUIDE v2.5 03-May-2022 19:51:37
+% Last Modified by GUIDE v2.5 11-May-2022 21:53:52
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -67,54 +67,63 @@ function varargout = untitledGUI_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 % --- Executes on button press in pushbutton1.
 function pushbutton1_Callback(hObject, eventdata, handles)
-cla
+ cla
 axes(handles.axes1);
-            L1 = Link('d',0.1807,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]), 'offset', 0);
-            L2 = Link('d',0,'a',-0.6127,'alpha',0,'qlim', deg2rad([-360 360]), 'offset',0); % was 'offset',pi/2
-            L3 = Link('d',0,'a',-0.5716,'alpha',0,'qlim', deg2rad([-360 360]), 'offset', 0);
-            L4 = Link('d',0.17415,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]),'offset', 0); % was 'offset',pi/2
-            L5 = Link('d',0.11985,'a',0,'alpha',-pi/2,'qlim',deg2rad([-360,360]), 'offset',0);
-            L6 = Link('d',0.11655,'a',0,'alpha',0,'qlim',deg2rad([-360,360]), 'offset', 0); 
+%             L1 = Link('d',0.1807,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]), 'offset', 0);
+%             L2 = Link('d',0,'a',-0.6127,'alpha',0,'qlim', deg2rad([-360 360]), 'offset',0); % was 'offset',pi/2
+%             L3 = Link('d',0,'a',-0.5716,'alpha',0,'qlim', deg2rad([-360 360]), 'offset', 0);
+%             L4 = Link('d',0.17415,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]),'offset', 0); % was 'offset',pi/2
+%             L5 = Link('d',0.11985,'a',0,'alpha',-pi/2,'qlim',deg2rad([-360,360]), 'offset',0);
+%             L6 = Link('d',0.11655,'a',0,'alpha',0,'qlim',deg2rad([-360,360]), 'offset', 0); 
+% 
+% model = SerialLink([L1 L2 L3 L4 L5 L6],'name','UR10e'); 
+% 
+% for linkIndex = 0:model.n 
+%     [ faceData, vertexData, plyData{linkIndex+1} ] = plyread(['UR10eLink',num2str(linkIndex),'.ply'],'tri'); %#ok<AGROW>         
+%     model.faces{linkIndex+1} = faceData; 
+%     model.points{linkIndex+1} = vertexData; 
+% end 
+% % Display robot 
+% workspace = [-2 2 -2 2 -0.3 2];    
+% model.plot3d(zeros(1,model.n),'noarrow','workspace',workspace); 
+% if isempty(findobj(get(gca,'Children'),'Type','Light')) 
+%     camlight 
+% end   
+% model.delay = 0; 
+% % Try to correctly colour the arm (if colours are in ply file data) 
+% for linkIndex = 0:model.n 
+ % handles = findobj('Tag', model.name); 
+%     h = get(handles,'UserData'); 
+%     try  
+%         h.link(linkIndex+1).Children.FaceVertexCData = [plyData{linkIndex+1}.vertex.red ... 
+%                                                       , plyData{linkIndex+1}.vertex.green ... 
+%                                                       , plyData{linkIndex+1}.vertex.blue]/255; 
+%         h.link(linkIndex+1).Children.FaceColor = 'interp'; 
+%     catch ME_1 
+%         disp(ME_1); 
+%         continue; 
+%     end 
+% end 
+ur10e = UR10e()
+model = ur10e.model;
+Estop = ur10e.Estop;
 
-model = SerialLink([L1 L2 L3 L4 L5 L6],'name','UR10e'); 
+data = guidata(hObject);
+data.model = model;
+data.Estop = Estop;
+data.ur10e = ur10e;
+guidata(hObject,data);
 
-for linkIndex = 0:model.n 
-    [ faceData, vertexData, plyData{linkIndex+1} ] = plyread(['UR10eLink',num2str(linkIndex),'.ply'],'tri'); %#ok<AGROW>         
-    model.faces{linkIndex+1} = faceData; 
-    model.points{linkIndex+1} = vertexData; 
-end 
-% Display robot 
-workspace = [-2 2 -2 2 -0.3 2];    
-model.plot3d(zeros(1,model.n),'noarrow','workspace',workspace); 
-if isempty(findobj(get(gca,'Children'),'Type','Light')) 
-    camlight 
-end   
-model.delay = 0; 
-% Try to correctly colour the arm (if colours are in ply file data) 
-for linkIndex = 0:model.n 
-    handles = findobj('Tag', model.name); 
-    h = get(handles,'UserData'); 
-    try  
-        h.link(linkIndex+1).Children.FaceVertexCData = [plyData{linkIndex+1}.vertex.red ... 
-                                                      , plyData{linkIndex+1}.vertex.green ... 
-                                                      , plyData{linkIndex+1}.vertex.blue]/255; 
-        h.link(linkIndex+1).Children.FaceColor = 'interp'; 
-    catch ME_1 
-        disp(ME_1); 
-        continue; 
-    end 
-end 
-data = guidata(hObject); 
-data.model = model; 
-guidata(hObject,data); 
-  
+
 set(handles.pushbutton2,'Enable','off')
 set(handles.pushbutton3,'Enable','off')
 set(handles.pushbutton8,'Enable','off')
+set(handles.pushbutton4,'Enable','off')
 set(handles.pushbutton5,'Enable','off')
 set(handles.pushbutton6,'Enable','off')
 set(handles.pushbutton7,'Enable','off')
 set(handles.pushbutton9,'Enable','on')
+set(handles.pushbutton10,'Enable','off')
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -190,6 +199,13 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+% q = ur10e.model.getpos;
+% 
+% tr = ur10e.model.fkine(q); 
+% tr(1,4) = tr(1,4) + 0.01; 
+% newQ = ur10e.model.ikcon(tr,q); 
+% ur10e.model.animate(newQ); 
+
 q = handles.model.getpos; 
 tr = handles.model.fkine(q); 
 tr(1,4) = tr(1,4) + 0.01; 
@@ -238,6 +254,13 @@ set(handles.pushbutton8,'Enable','off')
 set(handles.pushbutton5,'Enable','off')
 set(handles.pushbutton6,'Enable','off')
 set(handles.pushbutton7,'Enable','off')
+
+
+
+handles.Estop = 1;
+display(handles.Estop);
+
+
 % --- Executes on button press in pushbutton5. (+y)
 function pushbutton5_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton5 (see GCBO)
@@ -283,6 +306,7 @@ newQ = handles.model.ikcon(tr,q);
 handles.model.animate(newQ); 
 
 
+
 % --- Executes on button press in pushbutton9. (Start button)
 function pushbutton9_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton9 (see GCBO)
@@ -290,7 +314,16 @@ function pushbutton9_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.pushbutton2,'Enable','on')
 set(handles.pushbutton3,'Enable','on')
+set(handles.pushbutton4,'Enable','on')
 set(handles.pushbutton8,'Enable','on')
 set(handles.pushbutton5,'Enable','on')
 set(handles.pushbutton6,'Enable','on')
 set(handles.pushbutton7,'Enable','on')
+set(handles.pushbutton10,'Enable','on')
+
+% --- Executes on button press in pushbutton10. (make drink 1)
+function pushbutton10_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton10 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.ur10e.pour(10);
