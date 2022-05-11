@@ -158,15 +158,15 @@ self.current_joints = -qe;
 end
 
 %% Generalised Grab function to grab any object  TBD
-function grab_position =  Grab_Object(self,obj)
+function grab_position =  grabObject(self,obj)
 
-    if obj_data.Object_Type =="Large"
+    if obj.Object_Type == "Large"
         
 
-        inter_dist = 0.05 % the distance away the gripper should get to before going in to grab the object
+        %inter_dist = 0.05 % the distance away the gripper should get to before going in to grab the object
 
-        finger_angles = encompassing_grip(obj.Diameter/2) % check if this works, i'm getting weird prompt from matlab when i use this function
-        dist = obj.Diamter/2+self.palm_depth;
+        %finger_angles = encompassing_grip(obj.Diameter/2) % check if this works, i'm getting weird prompt from matlab when i use this function
+        dist = obj.Diameter/2+self.palm_depth;
 
         theta = atan2(obj.T_form(1,4),obj.T_form(2,4))
         angle = trotz(theta);
@@ -178,10 +178,10 @@ function grab_position =  Grab_Object(self,obj)
         inter_y = 0.05*cos(theta)
         
 
-        grap_position(:,:,1) = transl(obj.T_form(1,4)-dx,obj.T_form(2,4)-dy,obj.T_form(3,4)+dz)*angle*troty(90,"deg"); %  last rotation is to ensure that gripper is facing horizontally
-        grap_position(:,:,2) = transl(obj.T_form(1,4)-dx-inter_x,obj.T_form(2,4)-dy-inter_y,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
-        grap_position(:,:,3) = transl(obj.T_form(1,4)+dx,obj.T_form(2,4)+dy,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
-        grap_position(:,:,4) = transl(obj.T_form(1,4)+dx+inter_x,obj.T_form(2,4)+dy+inter_y,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
+        grab_position(:,:,1) = transl(obj.T_form(1,4)-dx,obj.T_form(2,4)-dy,obj.T_form(3,4)+dz)*angle*troty(90,"deg"); %  last rotation is to ensure that gripper is facing horizontally
+        grab_position(:,:,2) = transl(obj.T_form(1,4)-dx-inter_x,obj.T_form(2,4)-dy-inter_y,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
+        grab_position(:,:,3) = transl(obj.T_form(1,4)+dx,obj.T_form(2,4)+dy,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
+        grab_position(:,:,4) = transl(obj.T_form(1,4)+dx+inter_x,obj.T_form(2,4)+dy+inter_y,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
         % if the object is large i want to grab it from the side closest to
         % the robot if possible otherwise grab it from the oposite side
     else
@@ -202,13 +202,6 @@ function grab_position =  Grab_Object(self,obj)
         % end effector should always point down.
 
     end
-
-
-
-
-    
-
-
 end
 %% Function to either pour drink into glass or shaker
 

@@ -39,7 +39,7 @@ classdef UR10e < handle
             name = ['UR_10_',datestr(now,'yyyymmddTHHMMSSFFF')];
 
             L1 = Link('d',0.1807,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]), 'offset', 0);
-            L2 = Link('d',0+0.15,'a',-0.6127,'alpha',0,'qlim', deg2rad([0 180]), 'offset', pi); % was 'offset',pi/2
+            L2 = Link('d',0+0.15,'a',-0.6127,'alpha',0,'qlim', deg2rad([-30 210]), 'offset', pi); % was 'offset',pi/2
             L3 = Link('d',0-0.15,'a',-0.5716,'alpha',0,'qlim', deg2rad([-150 150]), 'offset', 0);
             L4 = Link('d',0.17415,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]),'offset', 0); % was 'offset',pi/2
             L5 = Link('d',0.11985,'a',0,'alpha',-pi/2,'qlim',deg2rad([-120 120]), 'offset', 0);
