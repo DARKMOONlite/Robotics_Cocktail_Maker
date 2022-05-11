@@ -10,7 +10,12 @@ classdef UR10e < handle
         toolModelFilename = []; % Available are: 'DabPrintNozzleTool.ply';        
         toolParametersFilename = []; % Available are: 'DabPrintNozzleToolParameters.mat';    
         currentJoints = [];
+<<<<<<< Updated upstream
         safePosJoints1 = [];
+=======
+        idleJoints = [270 80 240 220 270 0]*pi/180;
+        Estop = 0;
+>>>>>>> Stashed changes
         
     end
     
@@ -22,10 +27,18 @@ classdef UR10e < handle
             %self.model.plot([0 0 0 0 0 0], 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow'); %comment out if using animate
             self.currentJoints = ([0 0 0 0 0 0]);
             % self.safePosJoints1 = ([]);
+<<<<<<< Updated upstream
             drawnow            
             % camzoom(2)
             % campos([6.9744    3.5061    1.8165]);
 
+=======
+        
+            self.model.base = transl(0,0,0)
+            self.currentJoints = [270 80 240 220 270 0]*pi/180;
+
+%             self.model.plot(self.currentJoints, 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow'); %comment out if using animate
+>>>>>>> Stashed changes
 %             camzoom(4)
 %             view([122,14]);
 %             camzoom(8)
@@ -40,10 +53,17 @@ classdef UR10e < handle
 
             L1 = Link('d',0.1807,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]), 'offset', 0);
             L2 = Link('d',0+0.15,'a',-0.6127,'alpha',0,'qlim', deg2rad([0 180]), 'offset', pi); % was 'offset',pi/2
+<<<<<<< Updated upstream
             L3 = Link('d',0-0.15,'a',-0.5716,'alpha',0,'qlim', deg2rad([-150 150]), 'offset', 0);
             L4 = Link('d',0.17415,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]),'offset', 0); % was 'offset',pi/2
             L5 = Link('d',0.11985,'a',0,'alpha',-pi/2,'qlim',deg2rad([-120 120]), 'offset', 0);
             L6 = Link('d',0.11655,'a',0,'alpha',0,'qlim',deg2rad([-360 360]), 'offset', 0);
+=======
+            L3 = Link('d',0-0.15,'a',-0.5716,'alpha',0,'qlim', deg2rad([200 300]), 'offset', 0);
+            L4 = Link('d',0.17415,'a',0,'alpha',pi/2,'qlim',deg2rad([90 270]),'offset', 0); % was 'offset',pi/2
+            L5 = Link('d',0.11985,'a',0,'alpha',-pi/2,'qlim',deg2rad([180 360]), 'offset', 0);
+            L6 = Link('d',0.11655,'a',0,'alpha',0,'qlim',deg2rad([-90 90]), 'offset', 0);
+>>>>>>> Stashed changes
 
             self.model = SerialLink([L1 L2 L3 L4 L5 L6],'name',name);
             self.model.plotopt = ('noname');
@@ -92,20 +112,50 @@ classdef UR10e < handle
             end
         end
         %% Animates UR10e from current EE position to another EE position using animate
+<<<<<<< Updated upstream
         function moveBasicA(self, pos)
             step = 60;
             currentQ = self.currentJoints;
             
                     
             newQ = self.model.ikcon(pos, [1 1 1 1 1 1]);
+=======
+        function moveBasicA(self, pos, g)
+            step = 30;
+            currentQ = self.currentJoints;             
+            [newQ, error] = self.model.ikcon(pos, [1 1 1 1 1 1]);
+            error
+>>>>>>> Stashed changes
             qMatrix = jtraj(currentQ, newQ, step); %traj from current position to new position
-
+  
             for i = 1:size(qMatrix, 1)
+<<<<<<< Updated upstream
                 self.model.animate(qMatrix(i,:));
                 self.currentJoints = (qMatrix(i,:))
                 drawnow();
+=======
+                    self.model.animate(qMatrix(i,:));
+                    self.currentJoints = (qMatrix(i,:));
+                    g.move_gripper(self.model.fkine(self.currentJoints));
+                    drawnow();
+>>>>>>> Stashed changes
             end
         end      
+        %% Animates UR10e from current EE position to another EE position using animate
+        function moveBasicB(self, pos, g)
+            step = 30;
+            currentQ = self.currentJoints;             
+            newQ = pos;
+            
+            qMatrix = jtraj(currentQ, newQ, step); %traj from current position to new position
+  
+            for i = 1:size(qMatrix, 1)
+                    self.model.animate(qMatrix(i,:));
+                    self.currentJoints = (qMatrix(i,:))
+                    g.move_gripper(self.model.fkine(self.currentJoints));
+                    drawnow();
+            end
+        end     
                 %% Animates UR10e from current EE position to another EE position using plot
         function moveBasic(self, pos)
             step = 30;
@@ -146,21 +196,22 @@ classdef UR10e < handle
            
         end   
     %% Rotates final UR10e link to pour a drink
-    function pour(self,seconds)
+    function pour(self, g, seconds)
 %   function pour(self, gripper, obj_data)
         step = 30;
         temp1 = self.currentJoints;
-        temp2 = [self.currentJoints(1), self.currentJoints(2), self.currentJoints(3), self.currentJoints(4), self.currentJoints(5), self.currentJoints(6) + pi/3]
+        temp2 = [self.currentJoints(1), self.currentJoints(2), self.currentJoints(3), self.currentJoints(4), self.currentJoints(5), self.currentJoints(6) - pi/3];
         q1 = temp1;
         q2 = temp2;
         
         qMatrix1 = jtraj(q1, q2, step);
         for i = 1:size(qMatrix1, 1)
                 self.model.animate(qMatrix1(i,:));
-                self.currentJoints = (qMatrix1(i,:))
-%                 T_Form = self.model.fkine(qMatrix1(i,:))
-%                 gripper.move_gripper(T_Form);
-%                 obj_data.move_object(T_Form);
+                self.currentJoints = (qMatrix1(i,:));
+                g.move_gripper(self.model.fkine(self.currentJoints));
+%                T_Form = self.model.fkine(qMatrix1(i,:))
+%                gripper.move_gripper(T_Form);
+%                obj_data.move_object(T_Form);
                 drawnow();
         end
         
@@ -169,20 +220,31 @@ classdef UR10e < handle
         qMatrix2 = jtraj(q2, q1, step);
         for i = 1:size(qMatrix2, 1)
                 self.model.animate(qMatrix2(i,:));
-                self.currentJoints = (qMatrix2(i,:))
-%                 T_Form = self.model.fkine(qMatrix2(i,:))
-%                 gripper.move_gripper(T_Form);
-%                 obj_data.move_object(T_Form);
+                self.currentJoints = (qMatrix2(i,:));
+                g.move_gripper(self.model.fkine(self.currentJoints));
+%                T_Form = self.model.fkine(qMatrix2(i,:))
+%                gripper.move_gripper(T_Form);
+%                obj_data.move_object(T_Form);
                 drawnow();
         end
     end
+<<<<<<< Updated upstream
     %% Accepts a code from the GUI and runs the procedure to make a drink
         function run(self, gripper, code)
 
             
+=======
+%%
+    function is_safe = checkEStop(self)
+        if self.Estop == 1
+             is_safe = 0
+        else
+             is_safe = 1;
+>>>>>>> Stashed changes
 
         end
     end
+end
 %% Put methods in here if you want to make them private
     methods (Access = private)
     

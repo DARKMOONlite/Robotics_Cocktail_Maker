@@ -56,11 +56,15 @@ classdef Gripper < handle
         self.palm_model.base = T_form;
         self.palm_model.plot(0);
         for count = 1:size(self.models,2)
-            count
+            count;
              self.models(count).base = self.palm_model.base * self.relative_finger_t(:,:,count);
-             self.models(count).base
+             self.models(count).base;
 %             self.current_joints(count,:)
+<<<<<<< Updated upstream
             self.models(count).plot(self.current_joints(count,:))
+=======
+            self.models(count).animate(self.current_joints(count,:));
+>>>>>>> Stashed changes
         end
     end
     
