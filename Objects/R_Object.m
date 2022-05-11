@@ -5,12 +5,13 @@ classdef R_Object < handle
     properties
         T_form; % 4x4 matrix of position
         Object_Type; %Object type should be 
-        Diameter; % Used by gripper to determine correct finger angles
+        Radius; % Used by gripper to determine correct finger angles
         Height; %Used by gripper to grip in correct position
         Position; % position in x,y,z terms should only be used for reference
         model; % Storage for the ply file class
         Vertices %required to move object
         Corner_Points;
+        Name;
     end
     
     methods
@@ -24,7 +25,7 @@ classdef R_Object < handle
                 error("Type not declared correctly. Object must be large or small")
             end
             self.Object_Type = Type;
-            
+               self.Name = PLY_File;
 
 
             
@@ -37,7 +38,7 @@ classdef R_Object < handle
 
             self.Vertices(:,:) = get(self.model,'Vertices')
 
-            self.Diameter = Radius;
+            self.Radius = Radius;
             self.Height = Height;
 
 
@@ -72,7 +73,7 @@ classdef R_Object < handle
                     for j = -1:2:1
                         for k = -1:2:1
                             m = m+1;
-                            corner_points(m,:) = [k*(self.Diameter/2+dx)+self.T_form(1,4), j*(self.Diameter/2+dx)+self.T_form(2,4),i*(self.Height+dx)+self.T_form(3,4)];
+                            corner_points(m,:) = [k*(self.Radius/2+dx)+self.T_form(1,4), j*(self.Radius/2+dx)+self.T_form(2,4),i*(self.Height+dx)+self.T_form(3,4)];
 
 
                         end

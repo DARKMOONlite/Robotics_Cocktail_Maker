@@ -62,4 +62,10 @@ L2.CheckIntersection;
 % 
 % hold on;
 
+for i = 1: size(Objects,2)
+    if Objects(i).Name == "Gin"
+        x = i;
+    end
 
+end
+x

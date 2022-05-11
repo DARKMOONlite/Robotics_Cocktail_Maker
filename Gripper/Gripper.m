@@ -166,7 +166,7 @@ function grab_position =  Grab_Object(self,obj)
         inter_dist = 0.05 % the distance away the gripper should get to before going in to grab the object
 
         finger_angles = encompassing_grip(obj.Diameter/2) % check if this works, i'm getting weird prompt from matlab when i use this function
-        dist = obj.Diamter/2+self.palm_depth;
+        dist = obj.Radius+self.palm_depth;
 
         theta = atan2(obj.T_form(1,4),obj.T_form(2,4))
         angle = trotz(theta);

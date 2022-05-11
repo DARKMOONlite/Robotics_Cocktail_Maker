@@ -18,7 +18,7 @@ Objects(7) = R_Object("Glass",0.03,0.168,transl(0,-0.95,0.0),"Large")
 
 
 Objects(8) = R_Object("Sugar_Dispenser",0.1,0.5,transl(-1,-0.5,0.02)*trotz(90,"deg"),"Large")
-Objects(8) = R_Object("Lime_Dispenser",0.1,0.5,transl(-1,-0.1,0.02)*trotz(90,"deg"),"Large")
-Objects(8) = R_Object("ICE_Dispenser",0.1,0.5,transl(-1,0.3,0.02)*trotz(90,"deg"),"Large")
+Objects(9) = R_Object("Lime_Dispenser",0.1,0.5,transl(-1,-0.1,0.02)*trotz(90,"deg"),"Large")
+Objects(10) = R_Object("ICE_Dispenser",0.1,0.5,transl(-1,0.3,0.02)*trotz(90,"deg"),"Large")
 end
 
