@@ -48,7 +48,7 @@ classdef R_Object < handle
 
             drawnow
             
-              %self.move_object(Position);
+              self.move_object(Position);
               self.Corner_Points = self.boundingbox();
         end
 %%

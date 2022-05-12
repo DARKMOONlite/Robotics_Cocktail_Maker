@@ -60,7 +60,7 @@ classdef Gripper < handle
              self.models(count).base = self.palm_model.base * self.relative_finger_t(:,:,count);
              self.models(count).base;
 %             self.current_joints(count,:)
-            self.models(count).animate(self.current_joints(count,:));
+            self.models(count).animate(-self.current_joints(count,:));
         end
     end
     
