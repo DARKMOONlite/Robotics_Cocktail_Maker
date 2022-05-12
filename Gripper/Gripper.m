@@ -214,6 +214,23 @@ function grab_position =  grabObject(self,obj)
 
     end
 end
+
+function T_form = move_object_t_form(self,obj, init_T_form)
+    dist = obj.Radius+self.palm_depth;
+        theta = atan2(obj.T_form(1,4),obj.T_form(2,4))
+        angle = trotz(90-rad2deg(theta),"deg");%trotz(theta);
+        dx = dist*sin(theta);
+        dy = dist*cos(theta);
+        dz = obj.Height/2; 
+
+
+        T_form = init_T_form * transl(-dx,-dy,dz);
+        trplot(T_form)
+
+end
+
+
+
 %% Function to either pour drink into glass or shaker
 
 function position = pour_position(self,obj,held_obj)

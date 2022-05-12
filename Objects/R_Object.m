@@ -9,8 +9,9 @@ classdef R_Object < handle
         Height; %Used by gripper to grip in correct position
         Position; % position in x,y,z terms should only be used for reference
         model; % Storage for the ply file class
-        Vertices; %required to move object
+
         Corner_Points;
+        h;
         Name;
     end
     
@@ -35,8 +36,11 @@ classdef R_Object < handle
 
             hold on
             self.model = PlaceObject("Objects/Parts/"+PLY_File+".ply",self.Position);
+            
+            self.h = hgtransform('Parent',gca)
+            set(self.model,'Parent',self.h)
 
-            self.Vertices(:,:) = get(self.model,'Vertices')
+         
 
             self.Radius = Radius;
             self.Height = Height;
@@ -44,22 +48,14 @@ classdef R_Object < handle
 
             drawnow
             
-              self.move_object(Position);
+              %self.move_object(Position);
               self.Corner_Points = self.boundingbox();
         end
 
         function move_object(self,T_mat)
                
-            Verticies = [self.Vertices,ones(size(self.Vertices,1),1)];
-            
-                
-                transformed_Vertices = [self.Vertices,ones(size(self.Vertices,1),1)]/self.T_form' *T_mat';
-                set(self.model,'Vertices',transformed_Vertices(:,1:3))
-                
-                drawnow
-                pause(0.01);
-                self.T_form = T_mat;
-                self.Position = [T_mat(1,4),T_mat(2,4),T_mat(3,4)];
+            set(self.h,'Matrix',T_mat);
+      
 
         end
 
