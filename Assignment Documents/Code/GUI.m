@@ -67,51 +67,42 @@ function varargout = untitledGUI_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 % --- Executes on button press in pushbutton1.
 function pushbutton1_Callback(hObject, eventdata, handles)
- cla
-axes(handles.axes1);
-%             L1 = Link('d',0.1807,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]), 'offset', 0);
-%             L2 = Link('d',0,'a',-0.6127,'alpha',0,'qlim', deg2rad([-360 360]), 'offset',0); % was 'offset',pi/2
-%             L3 = Link('d',0,'a',-0.5716,'alpha',0,'qlim', deg2rad([-360 360]), 'offset', 0);
-%             L4 = Link('d',0.17415,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]),'offset', 0); % was 'offset',pi/2
-%             L5 = Link('d',0.11985,'a',0,'alpha',-pi/2,'qlim',deg2rad([-360,360]), 'offset',0);
-%             L6 = Link('d',0.11655,'a',0,'alpha',0,'qlim',deg2rad([-360,360]), 'offset', 0); 
-% 
-% model = SerialLink([L1 L2 L3 L4 L5 L6],'name','UR10e'); 
-% 
-% for linkIndex = 0:model.n 
-%     [ faceData, vertexData, plyData{linkIndex+1} ] = plyread(['UR10eLink',num2str(linkIndex),'.ply'],'tri'); %#ok<AGROW>         
-%     model.faces{linkIndex+1} = faceData; 
-%     model.points{linkIndex+1} = vertexData; 
-% end 
-% % Display robot 
-% workspace = [-2 2 -2 2 -0.3 2];    
-% model.plot3d(zeros(1,model.n),'noarrow','workspace',workspace); 
-% if isempty(findobj(get(gca,'Children'),'Type','Light')) 
-%     camlight 
-% end   
-% model.delay = 0; 
-% % Try to correctly colour the arm (if colours are in ply file data) 
-% for linkIndex = 0:model.n 
- % handles = findobj('Tag', model.name); 
-%     h = get(handles,'UserData'); 
-%     try  
-%         h.link(linkIndex+1).Children.FaceVertexCData = [plyData{linkIndex+1}.vertex.red ... 
-%                                                       , plyData{linkIndex+1}.vertex.green ... 
-%                                                       , plyData{linkIndex+1}.vertex.blue]/255; 
-%         h.link(linkIndex+1).Children.FaceColor = 'interp'; 
-%     catch ME_1 
-%         disp(ME_1); 
-%         continue; 
-%     end 
-% end 
+cla
+axes(handles.axes1); 
+
+%environment/base
+
+base = transl(0,0,0);
+
+Environment class 
+environment = Environment(base);
+ 
+[PuttingSimulatedObjectsIntoTheEnvironment] = environment.build(base);
+
+% Create drinks 
+
+Objects = Create_Drinks();
+
+%Load ur10e 
 ur10e = UR10e()
+
+% Load gripper
+gripper = Gripper()
+
+% move gripper to end-effector 
+gripper.move_gripper(ur10e.model.fkine(ur10e.currentJoints))
+
+% assign ur10e variables for data access
 model = ur10e.model;
 Estop = ur10e.Estop;
 
+%assigned variables attached to data for 'handles' structure access
 data = guidata(hObject);
+data.gripper = gripper;
 data.model = model;
 data.Estop = Estop;
 data.ur10e = ur10e;
+
 guidata(hObject,data);
 
 
@@ -199,37 +190,14 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% q = ur10e.model.getpos;
-% 
-% tr = ur10e.model.fkine(q); 
-% tr(1,4) = tr(1,4) + 0.01; 
-% newQ = ur10e.model.ikcon(tr,q); 
-% ur10e.model.animate(newQ); 
+
 
 q = handles.model.getpos; 
 tr = handles.model.fkine(q); 
 tr(1,4) = tr(1,4) + 0.01; 
 newQ = handles.model.ikcon(tr,q); 
 handles.model.animate(newQ); 
-% function plusX_pushbutton_Callback(hObject, eventdata, handles)
-% % hObject    handle to plusX_pushbutton (see GCBO)
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    structure with handles and user data (see GUIDATA)
-% q = handles.model.getpos;
-% tr = handles.model.fkine(q);
-% tr(1,4) = tr(1,4) + 0.01;
-% newQ = handles.model.ikcon(tr,q);
-% handles.model.animate(newQ);
-% --- Executes on button press in minusX_pushbutton.
-% function minusX_pushbutton_Callback(hObject, eventdata, handles)
-% % hObject    handle to minusX_pushbutton (see GCBO)
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    structure with handles and user data (see GUIDATA)
-% q = handles.model.getpos;
-% tr = handles.model.fkine(q);
-% tr(1,4) = tr(1,4) - 0.01;
-% newQ = handles.model.ikcon(tr,q);
-% handles.model.animate(newQ);
+
 
 function pushbutton3_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton3 (see GCBO)
@@ -254,7 +222,6 @@ set(handles.pushbutton8,'Enable','off')
 set(handles.pushbutton5,'Enable','off')
 set(handles.pushbutton6,'Enable','off')
 set(handles.pushbutton7,'Enable','off')
-
 
 
 handles.Estop = 1;
@@ -327,3 +294,5 @@ function pushbutton10_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles.ur10e.pour(10);
+handles.gripper.move_gripper(handles.model.fkine(handles.model.currentJoints));
+
