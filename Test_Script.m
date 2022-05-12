@@ -22,7 +22,7 @@ hold on
 % g = Gripper;
 % 
 UR10e =  UR10e();
-UR10e.model.animate
+
 
 % Objects_(1) = R_Object("Gin",10,10,[0,0,1],"Large");
 % T = transl(0,0,2)
@@ -72,4 +72,4 @@ UR10e.model.animate
 % Q = [9*pi/180,0.38,0,-0.38;0,0.38,0,-0.38;-9*pi/180,0.38,0,-0.38]
 % g.animate(Q);
 %%
-makeDrink(10);
+% makeDrink(10);

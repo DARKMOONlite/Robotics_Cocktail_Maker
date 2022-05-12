@@ -100,9 +100,10 @@ classdef Gripper < handle
     self.joint_pos(:,1) = [self.palm_width/2,0,0,];
 
  % itterate through each finger joint
-for num = 1:3
-    [angle(num)] = self.encomp_finger_angle(object,self.finger_joint_lengths(num),num);
-
+ angle(1)=0;
+for num = 2:4
+    [angle(num)] = self.encomp_finger_angle(object,self.finger_joint_lengths(num-1),num-1);
+    
 end
     
 finger_angles = angle;
@@ -269,7 +270,7 @@ function position = pour_position(self,obj,held_obj)
             L1.qlim = [0 0];
             end
             L2.qlim = [-20.96 25]*pi/180;
-            L3.qlim = [0 45]*pi/180;
+            L3.qlim = [-45 0]*pi/180;
             L4.qlim = [-45 45]*pi/180;
             if(finger_num==0)
             model = SerialLink([L1 L2 L3 L4], 'name', 'finger1');
