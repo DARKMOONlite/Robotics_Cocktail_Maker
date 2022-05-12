@@ -159,12 +159,11 @@ self.current_joints = -qe;
 end
 
 
- function idle(self)
+function idle()
     q = [0,25,-10,-15;
         0,25,-10,-15;
         0,25,-10,-15;
-    ]*-pi/180;
-    self.animate(q);
+    ]
 
 end
 
