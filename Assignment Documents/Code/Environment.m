@@ -135,7 +135,7 @@ vertexColours = [data.vertex.red, data.vertex.green, data.vertex.blue] / 255;
 % Then plot the trisurf
 StopButtonMesh_h = trisurf(f,v(:,1) -2 ,v(:,2) -1, v(:,3)  ...
     ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
-transformationMatrix = makehgtform('translate',[-1.2,-0.8,0.1]); % new transform
+transformationMatrix = makehgtform('translate',[-1.2,-0.8,0.02]); % new transform
         rotationMatrix = makehgtform('xrotate',deg2rad(90)); % new rotation
         Points = [transformationMatrix * rotationMatrix * [StopButtonVerts,ones(StopButtonVertexCount,1)]']';
         StopButtonMesh_h.Vertices = Points(:,1:3); % Plots these new points
@@ -151,7 +151,7 @@ vertexColours = [data.vertex.red, data.vertex.green, data.vertex.blue] / 255;
 % Then plot the trisurf
 StopButtonMesh_h = trisurf(f,v(:,1) -2 ,v(:,2) -1, v(:,3) + 2 ...
     ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
-transformationMatrix = makehgtform('translate',[1.2,-0.8,0.1]); % new transform
+transformationMatrix = makehgtform('translate',[1.2,-0.8,0.02]); % new transform
         rotationMatrix = makehgtform('xrotate',deg2rad(90)); % new rotation
         Points = [transformationMatrix * rotationMatrix * [StopButtonVerts,ones(StopButtonVertexCount,1)]']';
         StopButtonMesh_h.Vertices = Points(:,1:3); % Plots these new points

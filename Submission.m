@@ -48,13 +48,15 @@ Objects = Create_Drinks();
 % These are the positions of the light curtain positions. do not edit the values unless you KNOW they are wrong. 
 % Just move this code elsewhere and use it as it.
 
-% pos = transl(0.5,-2,0.3) % Position of hand
-% L1 = LightCurtain(pos,[1.45,-1.2,0.3],[-1,0,0]);
-% L1.CheckIntersection % Check intersection will return 1 if hand touches light curtain. otherwise 0;
-% 
-% pos2 = transl(2,0,0.3)*trotz(90,"deg");
-% L2 = LightCurtain(pos2,[1.45,0.4,0.3],[0,-1,0]);
-% L2.CheckIntersection;
+pos = transl(0.5,-2,0.3) % Position of hand
+L1 = LightCurtain(pos,[1.45,-1.2,0.3],[-1,0,0]);
+L1.CheckIntersection % Check intersection will return 1 if hand touches light curtain. otherwise 0;
+
+pos2 = transl(2,0,0.3)*trotz(90,"deg");
+L2 = LightCurtain(pos2,[1.45,0.4,0.3],[0,-1,0]);
+
+L2.CheckIntersection
+transl(0.5 -2 0.5);
 
 
 % hold on;

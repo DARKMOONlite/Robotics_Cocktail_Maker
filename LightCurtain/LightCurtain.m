@@ -5,7 +5,7 @@ classdef LightCurtain < handle
     properties
         Plane_
         Plane_normal_
-        Light_Hand_
+        LiHand
     end
     
     methods
@@ -13,17 +13,17 @@ classdef LightCurtain < handle
             
             self.Plane_ = plane;
             self.Plane_normal_ = plane_normal;
-            self.Light_Hand_ = Hand(hand_pos);
+            self.LiHand = R_Object("LightCurtain\Hand",0,0,hand_pos,"Large");
             
         end
         
         function check = CheckIntersection(self)
-            
+            V(:,:) = get(self.LiHand.model,"Vertices");
    
-            for i = 2:size(self.Light_Hand_.Vertices,1)
+            for i = 2:size(V,1)
                     %self.Light_Hand_.Vertices(i,:)
                     [~,check] = LinePlaneIntersection(self.Plane_normal_,self.Plane_, ...
-                        (self.Light_Hand_.Vertices(i,:)+self.Light_Hand_.Position),(self.Light_Hand_.Vertices(i-1,:))+self.Light_Hand_.Position);
+                        (V(i,:)+self.LiHand.Position),(V(i-1,:))+self.LiHand.Position);
                     
                     if check == 2 || check == 1
                         check = 1;

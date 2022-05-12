@@ -36,6 +36,7 @@ classdef UR10e < handle
                    0 0 0 0 0 0;]*pi/180; % Shaker
                    
         Estop = 0;
+        spotlight;
         
     end
     
@@ -238,13 +239,22 @@ classdef UR10e < handle
     end
 
 %%
-    function is_safe = checkEStop(self)
-        if self.Estop == 1
-             is_safe = 0
+    function  EStop(self,state)
+        self.Estop = state;
+        if size(self.spotlight,1)==0
+            self.spotlight = light;
+        end
+        if state==1 
+            
+            self.spotlight.Color = [1,0,0];
+
         else
-             is_safe = 1;
+            self.spotlight.Color = [1,1,1];
+
+
 
         end
+        
     end
 %%
     function makeDrink(self, code, g)

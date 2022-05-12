@@ -35,7 +35,7 @@ classdef R_Object < handle
 
 
             hold on
-            self.model = PlaceObject("Objects/Parts/"+PLY_File+".ply",self.Position);
+            self.model = PlaceObject(PLY_File+".ply",self.Position);
             
             self.h = hgtransform('Parent',gca)
             set(self.model,'Parent',self.h)
