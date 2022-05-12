@@ -188,7 +188,7 @@ classdef UR10e < handle
            
         end   
     %% Rotates final UR10e link to pour a drink
-    function pour(self, seconds, g)
+    function pour(self, g, seconds)
 %   function pour(self, gripper, obj_data)
         step = 30;
         temp1 = self.currentJoints;
@@ -244,7 +244,7 @@ classdef UR10e < handle
 
                 case '1' % Pour Vodka
                     disp('Drink action 1')
-%                     self.moveBasicB(self.idle(3,:), g);
+                    self.moveBasicB(self.idle(3,:), g);
                     self.moveBasicB(self.idle(2,:), g);
                     self.moveBasicB(self.idle(1,:), g);
                     
@@ -254,82 +254,17 @@ classdef UR10e < handle
                     
                     self.moveBasicB(self.idle(1,:), g);
                     self.moveBasicB(self.idle(2,:), g);
-%                     self.moveBasicB(self.idle(3,:), g);
+                    self.moveBasicB(self.idle(3,:), g);
+                    
                     self.moveBasicB(self.idle(4,:), g);
-                    
-                    self.moveBasicB(self.pourPos(1,:), g);
-                    self.pour(0.5, g);
-                    self.moveBasicB(self.idle(4,:), g);
-                    
-                    self.moveBasicB(self.idle(2,:), g);
-                    self.moveBasicB(self.idle(1,:), g);
-                    
-                    self.moveBasicB(self.drinkIdle(1,:), g);
-                    self.moveBasicB(self.drinks(1,:), g);
-                    self.moveBasicB(self.drinkIdle(1,:), g);
-                    
-                    self.moveBasicB(self.idle(1,:), g);
-%                     self.moveBasicB(self.idle(2,:), g);
-%                     self.moveBasicB(self.idle(3,:), g);
-%                     self.moveBasicB(self.idle(4,:), g);
-                    
-                case '2' % Pour Rum
+                case '2' % Pour Gin
                     disp('Drink action 2')
-                    %self.moveBasicB(self.idle(3,:), g);
-                    self.moveBasicB(self.idle(2,:), g);
-                    self.moveBasicB(self.idle(1,:), g);
-                    
-                    self.moveBasicB(self.drinkIdle(2,:), g);
-                    self.moveBasicB(self.drinks(2,:), g);
-                    self.moveBasicB(self.drinkIdle(2,:), g);
-                    
-                    self.moveBasicB(self.idle(1,:), g);
-                    self.moveBasicB(self.idle(2,:), g);
-                    %self.moveBasicB(self.idle(3,:), g);
-                    self.moveBasicB(self.idle(4,:), g);
-                    
-                    self.moveBasicB(self.pourPos(1,:), g);
-                    self.pour(0.5, g);
-                    self.moveBasicB(self.idle(4,:), g);
-                    
-                case '3' % Pour Tonic
+
+                case '3' % Pour Rum
                     disp('Drink action 3')
-                    %self.moveBasicB(self.idle(3,:), g);
-                    self.moveBasicB(self.idle(2,:), g);
-                    self.moveBasicB(self.idle(1,:), g);
-                    
-                    self.moveBasicB(self.drinkIdle(3,:), g);
-                    self.moveBasicB(self.drinks(3,:), g);
-                    self.moveBasicB(self.drinkIdle(3,:), g);
-                    
-                    self.moveBasicB(self.idle(1,:), g);
-                    self.moveBasicB(self.idle(2,:), g);
-                    %self.moveBasicB(self.idle(3,:), g);
-                    self.moveBasicB(self.idle(4,:), g);
-                    
-                    self.moveBasicB(self.pourPos(1,:), g);
-                    self.pour(0.5, g);
-                    self.moveBasicB(self.idle(4,:), g);
-                    
-                case '4' % Pour Gin
+
+                case '4' % Pour Vodka
                     disp('Drink action 4')
-                    %self.moveBasicB(self.idle(3,:), g);
-                    self.moveBasicB(self.idle(2,:), g);
-                    %self.moveBasicB(self.idle(1,:), g);
-                    
-                    self.moveBasicB(self.drinkIdle(4,:), g);
-                    self.moveBasicB(self.drinks(4,:), g);
-                    self.moveBasicB(self.drinkIdle(4,:), g);
-                    
-                    %self.moveBasicB(self.idle(1,:), g);
-                    self.moveBasicB(self.idle(2,:), g);
-                    %self.moveBasicB(self.idle(3,:), g);
-                    self.moveBasicB(self.idle(4,:), g);
-                    
-                    self.moveBasicB(self.pourPos(1,:), g);
-                    self.pour(0.5, g);
-                    self.moveBasicB(self.idle(4,:), g);
-                    
 
                 case '5' % Add Sugar
                     disp('Drink action 5')

@@ -1,17 +1,7 @@
 %% Drink Handler
 
 function drinkHandler(code)
-    posDrinks = [0.8,0.7,0.4;     % Vodka
-                 0.6,0.7,0.4;     % Rum
-                 0.2,0.7,0.4;     % Tonic Water
-                 -0.2,0.7,0.4;    % Shaker T
-                 -0.6,0.7,0.4;    % Shaker B
-                 -0.8,0.7,0.4;    % Gin
-                 0.0,-0.95,0.0;   % Glass
-                 -1.0,-0.5,0.02;  % Sugar trotz(90)
-                 -1.0,-0.1,0.02;  % Lime
-                 -1.0,0.3,0.02;]; % Ice
-         
+
     codeArray = char(code);
     
     for i = 1:size(codeArray,2)
@@ -23,7 +13,7 @@ function drinkHandler(code)
                 
             case '1' % Pour Tonic
                 disp('Drink action 1')
-                
+                u.moveBasicB(u.idle(4,:));
             case '2' % Pour Gin
                 disp('Drink action 2')
                 
