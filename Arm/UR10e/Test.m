@@ -26,9 +26,9 @@ objects = Create_Drinks();
 % 2 =   Rum
 % 3 =   Tonic Water
 % 4 =   Gin
-% 5 =   Ice
-% 6 =   Lime
-% 7 =   Sugar
+% 5 =   Dispense Ice
+% 6 =   Dispense Lime
+% 7 =   Dispense Sugar
 % 8 - Not used
 % 9 - Not used
 % 
@@ -38,13 +38,20 @@ objects = Create_Drinks();
 %       need to add drinks to glass after adding dispenser ingredients
 % c =   Return arm to idle if last igredient was drink
 
-u.makeDrink("34a56b", objects, g);
+u.makeDrink("a56b34c", objects, g);
 
 %% TEST
-u.move(u.drinkIdle(3,:), g);
+u.move(u.glass(1,:), g);
 
 %%
-u.move(u.idle(1,:), g);
+u.moveWithObj(u.glass(1,:), objects(7), g);
 
 %%
-u.moveWithObj(u.pourPos(1,:), objects(6), g);
+objects(7).set_object(transl(0,-0.95,0.0));
+
+%%
+u.moveWithObj(u.pourPos(1,:), objects(4), g);
+
+%%
+g.animate(u.gripAng2);
+u.pour(0.3, objects(4), g);

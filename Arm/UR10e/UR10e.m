@@ -17,9 +17,9 @@ classdef UR10e < handle
                      88 140 240 160 270 0; % Tonic 
                      138 140 240 160 270 0;]*pi/180; % Gin
                  
-        drinks = [57 82 256 202 272 0;
-                  70 93 247 200 270 0;
-                  88 104 240 196 270 0;
+        drinks = [57 88 261 190 272 0;
+                  70 99 248 191 270 0;
+                  88 109 243 188 270 0;
                   138 99 245 196 270 0;] * pi/180; 
         
         dispenserIdle = [172 80 240 220 270 0; % Ice
@@ -30,9 +30,9 @@ classdef UR10e < handle
                       200 53 264 222 290 0;
                       223 42 278 220 310 0;]*pi/180;
         
-        glass = [281 60 250 230 270 0;]*pi/180;
+        glass = [281 54 252 234 270 0;]*pi/180;
         
-        pourPos = [270 58 262 220 270 0; % Glass
+        pourPos = [270 65 255 220 270 0; % Glass
                    0 0 0 0 0 0;]*pi/180; % Shaker
         
         gripAng1 = [0 0.2379 0.6936 1.2574;
@@ -57,7 +57,7 @@ classdef UR10e < handle
             self.PlotAndColourRobot();%robot,workspace);
             %self.model.plot([0 0 0 0 0 0], 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow'); %comment out if using animate
             
-            self.model.base = transl(0,0,0)
+            self.model.base = transl(0,0,0);
             self.currentJoints = [270 80 240 220 270 0]*pi/180;
 
 %             self.model.plot(self.currentJoints, 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow'); %comment out if using animate
