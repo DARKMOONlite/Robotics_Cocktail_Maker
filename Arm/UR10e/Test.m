@@ -29,6 +29,8 @@ u.moveBasicB(u.drinks(4,:), g);
 %%
 u.moveWithObj(u.drinks(4,:), objects(6), g);
 %%
+u.moveBasicB(u.pourPos(1,:), g);
+%%
 x = g.grabObject(objects(1,7)) %4 needs trotz(pi/2)
 pos1 = x(:,:,1) * trotz(pi/2)
 %pos2 = transl(0.6, -0.4, 0.3) * trotx(3*pi/2) * troty(pi/2);  
