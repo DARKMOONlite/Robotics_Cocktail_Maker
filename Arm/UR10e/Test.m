@@ -25,7 +25,9 @@ hold on
 objects = Create_Drinks();
 
 %% TEST
-u.moveBasicB(u.idle(4,:), g)
+u.moveBasicB(u.drinks(4,:), g);
+%%
+u.moveWithObj(u.drinks(4,:), objects(6), g);
 %%
 x = g.grabObject(objects(1,7)) %4 needs trotz(pi/2)
 pos1 = x(:,:,1) * trotz(pi/2)
@@ -45,4 +47,21 @@ u.moveBasicA(pos1, g);
 u.pour(g, 1);
 
 %%
-u.makeDrink("1",g);
+u.makeDrink("2",g);
+
+%%
+x1 = g.encompassing_grip(0.035);
+y1(1,:) = x1;
+y1(2,:) = x1;
+y1(3,:) = x1;
+y1(4,:) = x1;
+y1
+g.animate(y1);
+%%
+x2 = g.encompassing_grip(0.1);
+y2(1,:) = x2;
+y2(2,:) = x2;
+y2(3,:) = x2;
+y2(4,:) = x2;
+y2
+g.animate(y2);
