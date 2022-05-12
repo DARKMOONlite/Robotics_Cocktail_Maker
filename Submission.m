@@ -49,15 +49,28 @@ Objects = Create_Drinks();
 % Just move this code elsewhere and use it as it.
 
 pos = transl(0.5,-2,0.3) % Position of hand
-L1 = LightCurtain(pos,[1.45,-1.2,0.3],[-1,0,0]);
-L1.CheckIntersection % Check intersection will return 1 if hand touches light curtain. otherwise 0;
+ L1 = LightCurtain(pos,[1.45,-1.2,0.3],[0,-1,0],[-1.45,1.45;0,0;0,0.3]);
+%L1 = LightCurtain(pos,[0.5,-2,0.3],[-1,0,0]);
+ L1.CheckIntersection % Check intersection will return 1 if hand touches light curtain. otherwise 0;
 
-pos2 = transl(2,0,0.3)*trotz(90,"deg");
-L2 = LightCurtain(pos2,[1.45,0.4,0.3],[0,-1,0]);
+% pos2 = transl(2,0,0.3)*trotz(90,"deg");
+% L2 = LightCurtain(pos2,[1.45,0.4,0.3],[0,-1,0]);
+% 
+% L2.CheckIntersection
 
-L2.CheckIntersection
-transl(0.5 -2 0.5);
+% L1.Show_Plane();
 
+while 1
+
+    L1.control_hand();
+    x = L1.CheckIntersection();
+
+    if x==1
+       UR10e.EStop(1);
+    else
+        UR10e.EStop(0);
+    end
+end
 
 % hold on;
 
