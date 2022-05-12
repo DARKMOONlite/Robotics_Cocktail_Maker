@@ -147,7 +147,23 @@ classdef UR10e < handle
                     g.move_gripper(self.model.fkine(self.currentJoints));
                     drawnow();
             end
-        end     
+        end  
+        %%
+        function moveWithObj(self, pos, obj, g)
+            step = 30;
+            currentQ = self.currentJoints;             
+            newQ = pos;
+            
+            qMatrix = jtraj(currentQ, newQ, step); %traj from current position to new position
+  
+            for i = 1:size(qMatrix, 1)
+                    self.model.animate(qMatrix(i,:));
+                    self.currentJoints = (qMatrix(i,:))
+                    g.move_gripper(self.model.fkine(self.currentJoints));
+                    obj.move_object(self.model.fkine(self.currentJoints));
+                    drawnow();
+            end
+        end   
                 %% Animates UR10e from current EE position to another EE position using plot
         function moveBasic(self, pos)
             step = 30;
@@ -250,6 +266,7 @@ classdef UR10e < handle
                     
                     self.moveBasicB(self.drinkIdle(1,:), g);
                     self.moveBasicB(self.drinks(1,:), g);
+%                     call encompassing grip to pickup
                     self.moveBasicB(self.drinkIdle(1,:), g);
                     
                     self.moveBasicB(self.idle(1,:), g);
@@ -266,6 +283,7 @@ classdef UR10e < handle
                     
                     self.moveBasicB(self.drinkIdle(1,:), g);
                     self.moveBasicB(self.drinks(1,:), g);
+%                     call encompassing grip to release
                     self.moveBasicB(self.drinkIdle(1,:), g);
                     
                     self.moveBasicB(self.idle(1,:), g);
