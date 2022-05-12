@@ -48,18 +48,35 @@ classdef R_Object < handle
 
             drawnow
             
-              self.move_object(Position);
+              self.set_object(Position);
               self.Corner_Points = self.boundingbox();
         end
 %%
         function move_object(self,T_mat)
-               
-            set(self.h,'Matrix',T_mat);
-      
+
+            dist = self.Radius + 0.09208;
+%             T_mat_quat = quaternion(T_mat);
+%             angles = quat2angle(T_mat_quat)
+%             
+%             theta = T_mat %atan2(obj.T_form(1,4),obj.T_form(2,4));
+%             x = T_mat(1,4)
+%             y = T_mat(2,4)
+%             z = T_mat(3,4)
+%             
+%             angle = trotz(90-rad2deg(theta),"deg");%trotz(theta);
+%             dx = dist*sin(theta);
+%             dy = dist*cos(theta);
+%             dz = obj.Height/2; 
+            x = T_mat*transl(0,-self.Height/2,dist) * trotx(-pi/2);
+            
+            set(self.h,'Matrix',x); 
 
         end
-
-
+%%
+        function set_object(self,T_mat) 
+            set(self.h,'Matrix',T_mat); 
+            
+        end
 %% Creates corners of a bounding box around an object. for object avoidance 
         function corner_points = boundingbox(self)
                 m=0;

@@ -15,6 +15,7 @@ g = Gripper();
 u.model.base = transl(0,0,0); %* trotz(pi);
 u.model.animate(u.currentJoints);
 g.move_gripper(u.model.fkine(u.currentJoints));
+g.idle();
 
 hold on         
 
@@ -25,9 +26,11 @@ hold on
 objects = Create_Drinks();
 
 %% TEST
-u.moveBasicB(u.drinks(4,:), g);
+u.move(u.glass(1,:), g);
 %%
-u.moveWithObj(u.drinks(4,:), objects(6), g);
+u.moveWithObj(u.glass(1,:), objects(7), g);
+%%
+u.moveWithObj(u.pourPos(1,:), objects(6), g);
 %%
 x = g.grabObject(objects(1,7)) %4 needs trotz(pi/2)
 pos1 = x(:,:,1) * trotz(pi/2)
@@ -44,10 +47,19 @@ u.moveBasicA(pos1, g);
 % pos4 = transl(objects(1,1).Position) * trotx(3*pi/2);
 % u.moveBasicA(pos4, g);
 %%
-u.pour(g, 1);
+u.pour(1, objects(6), g);
 
 %%
-u.makeDrink("2",g);
+0 = Pick glass up
+1 = Vodka
+2 = Rum
+3 = Tonic Water
+4 = Gin
+5 = Ice
+6 = Lime
+7 = Sugar
+8
+u.makeDrink("3r", objects, g);
 
 %%
 x1 = g.encompassing_grip(0.035);
@@ -58,7 +70,7 @@ y1(4,:) = x1;
 y1
 g.animate(y1);
 %%
-x2 = g.encompassing_grip(0.1);
+x2 = g.encompassing_grip(0.042);
 y2(1,:) = x2;
 y2(2,:) = x2;
 y2(3,:) = x2;
