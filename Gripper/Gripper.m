@@ -56,11 +56,11 @@ classdef Gripper < handle
         self.palm_model.base = T_form;
         self.palm_model.animate(0);
         for count = 1:size(self.models,2)
-            count
+            count;
              self.models(count).base = self.palm_model.base * self.relative_finger_t(:,:,count);
-             self.models(count).base
+             self.models(count).base;
 %             self.current_joints(count,:)
-            self.models(count).animate(self.current_joints(count,:))
+            self.models(count).animate(self.current_joints(count,:));
         end
     end
     
@@ -166,7 +166,7 @@ function grab_position =  grabObject(self,obj)
 
         %inter_dist = 0.05 % the distance away the gripper should get to before going in to grab the object
 
-        finger_angles = self.encompassing_grip(obj.Radius) % check if this works, i'm getting weird prompt from matlab when i use this function
+        finger_angles = self.encompassing_grip(obj.Radius); % check if this works, i'm getting weird prompt from matlab when i use this function
         dist = obj.Radius+self.palm_depth;
 
         theta = atan2(obj.T_form(1,4),obj.T_form(2,4))

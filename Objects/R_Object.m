@@ -9,7 +9,7 @@ classdef R_Object < handle
         Height; %Used by gripper to grip in correct position
         Position; % position in x,y,z terms should only be used for reference
         model; % Storage for the ply file class
-        Vertices %required to move object
+        Vertices; %required to move object
         Corner_Points;
         Name;
     end
@@ -50,7 +50,7 @@ classdef R_Object < handle
 
         function move_object(self,T_mat)
                
-            Verticies = [self.Vertices,ones(size(self.Vertices,1),1)]
+            Verticies = [self.Vertices,ones(size(self.Vertices,1),1)];
             
                 
                 transformed_Vertices = [self.Vertices,ones(size(self.Vertices,1),1)]/self.T_form' *T_mat';
