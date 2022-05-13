@@ -21,7 +21,7 @@ function varargout = untitledGUI(varargin)
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 % Edit the above text to modify the response to help untitledGUI
-% Last Modified by GUIDE v2.5 11-May-2022 21:53:52
+% Last Modified by GUIDE v2.5 12-May-2022 21:56:57
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -81,7 +81,7 @@ environment = Environment(base);
 
 % Create drinks 
 
-Objects = Create_Drinks();
+objects = Create_Drinks();
 
 %Load ur10e 
 ur10e = UR10e()
@@ -102,6 +102,7 @@ data.gripper = gripper;
 data.model = model;
 data.Estop = Estop;
 data.ur10e = ur10e;
+data.objects = objects;
 
 guidata(hObject,data);
 
@@ -288,11 +289,27 @@ set(handles.pushbutton6,'Enable','on')
 set(handles.pushbutton7,'Enable','on')
 set(handles.pushbutton10,'Enable','on')
 
-% --- Executes on button press in pushbutton10. (make drink 1)
+% --- Executes on button press in pushbutton10. (make gin and tonic)
 function pushbutton10_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton10 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.ur10e.pour(10);
-handles.gripper.move_gripper(handles.model.fkine(handles.model.currentJoints));
+% 0 - Not used
+% 1 =   Vodka
+% 2 =   Rum
+% 3 =   Tonic Water
+% 4 =   Gin
+% 5 =   Dispense Ice
+% 6 =   Dispense Lime
+% 7 =   Dispense Sugar
+% 8 - Not used
+% 9 - Not used
+% 
+% a =   Pick glass up - Needed before adding dispenser ingredients otherwise
+%       things will teleport 
+% b =   Return glass if last ingredient was from dispenser - Also needed if
+%       need to add drinks to glass after adding dispenser ingredients
+% c =   Return arm to idle if last igredient was drink
 
+handles.ur10e.makeDrink("a56b34c", handles.objects, handles.gripper);
+%handles.gripper.move_gripper(handles.model.fkine(handles.model.currentJoints));

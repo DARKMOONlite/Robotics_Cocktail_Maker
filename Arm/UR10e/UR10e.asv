@@ -17,9 +17,9 @@ classdef UR10e < handle
                      88 140 240 160 270 0; % Tonic 
                      138 140 240 160 270 0;]*pi/180; % Gin
                  
-        drinks = [57 88 261 190 272 0;
-                  70 99 248 191 270 0;
-                  88 109 243 188 270 0;
+        drinks = [57 82 256 202 272 0;
+                  70 93 247 200 270 0;
+                  88 104 240 196 270 0;
                   138 99 245 196 270 0;] * pi/180; 
         
         dispenserIdle = [172 80 240 220 270 0; % Ice
@@ -30,9 +30,9 @@ classdef UR10e < handle
                       200 53 264 222 290 0;
                       223 42 278 220 310 0;]*pi/180;
         
-        glass = [281 54 252 234 270 0;]*pi/180;
+        glass = [281 60 250 230 270 0;]*pi/180;
         
-        pourPos = [270 65 255 220 270 0; % Glass
+        pourPos = [270 58 262 220 270 0; % Glass
                    0 0 0 0 0 0;]*pi/180; % Shaker
         
         gripAng1 = [0 0.2379 0.6936 1.2574;
@@ -46,7 +46,6 @@ classdef UR10e < handle
                     0 0.0578 0.5851 1.0896;];
                 
         Estop = 0;
-        spotlight;
         
     end
     
@@ -57,7 +56,7 @@ classdef UR10e < handle
             self.PlotAndColourRobot();%robot,workspace);
             %self.model.plot([0 0 0 0 0 0], 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow'); %comment out if using animate
             
-            self.model.base = transl(0,0,0);
+            self.model.base = transl(0,0,0)
             self.currentJoints = [270 80 240 220 270 0]*pi/180;
 
 %             self.model.plot(self.currentJoints, 'scale', 0.05, 'noarrow', 'nobase', 'nojoints','notiles','noshadow'); %comment out if using animate
@@ -214,22 +213,13 @@ classdef UR10e < handle
     end
 
 %%
-    function  EStop(self,state)
-        self.Estop = state;
-        if size(self.spotlight,1)==0
-            self.spotlight = light;
-        end
-        if state==1 
-            
-            self.spotlight.Color = [1,0,0];
-
+    function is_safe = checkEStop(self)
+        if self.Estop == 1
+             is_safe = 0
         else
-            self.spotlight.Color = [1,1,1];
-
-
+             is_safe = 1;
 
         end
-        
     end
 %%
     function makeDrink(self, code, obj, g)
@@ -357,8 +347,8 @@ classdef UR10e < handle
                 case '4' % Pour Gin
                     disp('Drink action 4')
                     %self.move(self.idle(3,:), g);
-                    %self.move(self.idle(2,:), g);
-                    self.move(self.idle(1,:), g);
+                    self.move(self.idle(2,:), g);
+                    %self.move(self.idle(1,:), g);
                     
                     self.move(self.drinkIdle(4,:), g);
                     self.move(self.drinks(4,:), g);
@@ -429,23 +419,20 @@ classdef UR10e < handle
                 case '9' % Pour Shaker
                     disp('Drink action 9')
 
-                case 'a' % Pick glass up
+                case 'a' % Change pour location to Glass
                     disp('Drink action a')
-                    self.move(self.idle(2,:), g);
-                    self.move(self.idle(4,:), g);
+
+                case 'b' % Change pour location to Shaker
+                    disp('Drink action b')
                     
-                    self.move(self.glass(1,:), g);
-                    g.animate(self.gripAng1);
-                    self.moveWithObj(self.idle(4,:), obj(7), g)
-                    
-                case 'b' % Return drink if dispensers used
+                case 'c' % Return drink if dispensers used
                     self.moveWithObj(self.idle(4,:), obj(7), g);
                     self.moveWithObj(self.glass(1,:), obj(7), g);
                     g.idle();
                     obj(7).set_object(transl(0,-0.95,0.0));
                     self.move(self.idle(4,:), g);
                     
-                case 'c' % Return arm to idle if drinks used last
+                case 'd' % Return arm to idle if drinks used last
                     self.move(self.idle(4,:), g);
                     
                 otherwise

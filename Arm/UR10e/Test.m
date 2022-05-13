@@ -15,55 +15,43 @@ g = Gripper();
 u.model.base = transl(0,0,0); %* trotz(pi);
 u.model.animate(u.currentJoints);
 g.move_gripper(u.model.fkine(u.currentJoints));
+g.idle();
 
-hold on         
-
-% for i=1:size(posDrinks,1)
-%         x = transl(posDrinks(i,:));
-%         trplot(x)1
-% end
 objects = Create_Drinks();
 
+%% Drink Making Function
+
+% 0 - Not used
+% 1 =   Vodka
+% 2 =   Rum
+% 3 =   Tonic Water
+% 4 =   Gin
+% 5 =   Dispense Ice
+% 6 =   Dispense Lime
+% 7 =   Dispense Sugar
+% 8 - Not used
+% 9 - Not used
+% 
+% a =   Pick glass up - Needed before adding dispenser ingredients otherwise
+%       things will teleport 
+% b =   Return glass if last ingredient was from dispenser - Also needed if
+%       need to add drinks to glass after adding dispenser ingredients
+% c =   Return arm to idle if last igredient was drink
+
+u.makeDrink("a56b34c", objects, g);
+
 %% TEST
-u.moveBasicB(u.drinks(4,:), g);
-%%
-u.moveWithObj(u.drinks(4,:), objects(6), g);
-%%
-u.moveBasicB(u.pourPos(1,:), g);
-%%
-x = g.grabObject(objects(1,7)) %4 needs trotz(pi/2)
-pos1 = x(:,:,1) * trotz(pi/2)
-%pos2 = transl(0.6, -0.4, 0.3) * trotx(3*pi/2) * troty(pi/2);  
-u.moveBasicA(pos1, g);
-% %%
-% y = g.grabObject(objects(1,4));
-% pos2 = y(:,:,1) * trotz(pi/2)%* troty(2*pi);
-% u.moveBasicA(pos2, g);
-% %%
-% pos3 = transl(0, 0.2, 0.5) * trotx(3*pi/2);
-% u.moveBasicA(pos3, g);
-% %%
-% pos4 = transl(objects(1,1).Position) * trotx(3*pi/2);
-% u.moveBasicA(pos4, g);
-%%
-u.pour(g, 1);
+u.move(u.glass(1,:), g);
 
 %%
-u.makeDrink("2",g);
+u.moveWithObj(u.glass(1,:), objects(7), g);
 
 %%
-x1 = g.encompassing_grip(0.035);
-y1(1,:) = x1;
-y1(2,:) = x1;
-y1(3,:) = x1;
-y1(4,:) = x1;
-y1
-g.animate(y1);
+objects(7).set_object(transl(0,-0.95,0.0));
+
 %%
-x2 = g.encompassing_grip(0.1);
-y2(1,:) = x2;
-y2(2,:) = x2;
-y2(3,:) = x2;
-y2(4,:) = x2;
-y2
-g.animate(y2);
+u.moveWithObj(u.pourPos(1,:), objects(4), g);
+
+%%
+g.animate(u.gripAng2);
+u.pour(0.3, objects(4), g);
