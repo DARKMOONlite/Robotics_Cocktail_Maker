@@ -242,7 +242,7 @@ classdef UR10e < handle
             switch action
                 case '0' % Pick Glass Up *Required if using dispensers*
                     disp('Drink action 0')
-                    self.move(self.idle(2,:), g);
+%                     self.move(self.idle(2,:), g);
                     self.move(self.idle(4,:), g);
                     
                     self.move(self.glass(1,:), g);
@@ -431,7 +431,7 @@ classdef UR10e < handle
 
                 case 'a' % Pick glass up
                     disp('Drink action a')
-                    self.move(self.idle(2,:), g);
+                    %self.move(self.idle(2,:), g);
                     self.move(self.idle(4,:), g);
                     
                     self.move(self.glass(1,:), g);
