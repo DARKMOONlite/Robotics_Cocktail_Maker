@@ -7,6 +7,7 @@ addpath(genpath('Arm'))
 addpath(genpath("Objects"))
 addpath(genpath("Assignment Documents"))
 addpath(genpath("LightCurtain"))
+addpath(genpath("GUI&Environment"))
 
 Axis_Control = gca;
 Axis_Control.Clipping = "off";
@@ -81,5 +82,4 @@ pos = transl(0.5,-2,0.3) % Position of hand
 
 % end
 % x
-camva
-camroll
+
