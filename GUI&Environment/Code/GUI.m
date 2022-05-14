@@ -21,7 +21,7 @@ function varargout = untitledGUI(varargin)
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 % Edit the above text to modify the response to help untitledGUI
-% Last Modified by GUIDE v2.5 14-May-2022 15:44:09
+% Last Modified by GUIDE v2.5 14-May-2022 20:52:01
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -122,6 +122,7 @@ set(handles.pushbutton7,'Enable','off')
 set(handles.pushbutton9,'Enable','on')
 set(handles.pushbutton10,'Enable','off')
 set(handles.pushbutton11,'Enable','off')
+set(handles.pushbutton12,'Enable','off')
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -231,11 +232,14 @@ set(handles.pushbutton5,'Enable','off')
 set(handles.pushbutton6,'Enable','off')
 set(handles.pushbutton7,'Enable','off')
 set(handles.pushbutton11,'Enable','off')
+set(handles.pushbutton12,'Enable','on')
 
 
 handles.Estop = 1;
 display(handles.Estop);
 
+%pause(inf);
+uiwait
 
 % --- Executes on button press in pushbutton5. (+y)
 function pushbutton5_Callback(hObject, eventdata, handles)
@@ -298,6 +302,7 @@ set(handles.pushbutton6,'Enable','on')
 set(handles.pushbutton7,'Enable','on')
 set(handles.pushbutton10,'Enable','on')
 set(handles.pushbutton11,'Enable','on')
+set(handles.pushbutton12,'Enable','on')
 
 %handles.currentJoints = [270 80 240 220 270 0]*pi/180;
 %handles.currentJoints = [0 0 0 0 0 0]*pi/180;
@@ -322,12 +327,17 @@ function pushbutton10_Callback(hObject, eventdata, handles)
 % b =   Return glass if last ingredient was from dispenser - Also needed if
 %       need to add drinks to glass after adding dispenser ingredients
 % c =   Return arm to idle if last igredient was drink
-startPose = [270 80 240 220 270 0]*pi/180;
-handles.ur10e.model.animate(startPose); %figure out how to animate to startPose
+ while handles.Estop == 0
+
 
 handles.ur10e.makeDrink("a56b34c", handles.objects, handles.gripper);
 %handles.gripper.move_gripper(handles.model.fkine(handles.model.currentJoints));
+ drawnow
+if handles.Estop == 1
+break;
 
+end
+ end
 
 % --- Executes on button press in pushbutton11.
 function pushbutton11_Callback(hObject, eventdata, handles)
@@ -336,3 +346,11 @@ function pushbutton11_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 handles.ur10e.model.teach;
+
+
+% --- Executes on button press in pushbutton12.
+function pushbutton12_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton12 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+uiresume
