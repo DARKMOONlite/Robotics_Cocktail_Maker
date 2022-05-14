@@ -21,7 +21,7 @@ function varargout = untitledGUI(varargin)
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 % Edit the above text to modify the response to help untitledGUI
-% Last Modified by GUIDE v2.5 12-May-2022 21:56:57
+% Last Modified by GUIDE v2.5 14-May-2022 15:44:09
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -53,7 +53,8 @@ guidata(hObject, handles);
 % This sets up the initial plot - only do when we are invisible
 % so window can get raised using untitledGUI.
 if strcmp(get(hObject,'Visible'),'off')
-    plot(rand(5));
+   % plot(rand(5));
+    bar(1:.5:10);
 end
 % UIWAIT makes untitledGUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -71,6 +72,7 @@ cla
 axes(handles.axes1); 
 
 %environment/base
+ 
 
 base = transl(0,0,0);
 
@@ -84,7 +86,8 @@ environment = Environment(base);
 objects = Create_Drinks();
 
 %Load ur10e 
-ur10e = UR10e()
+ur10e = UR10e();
+ur10e.model.animate(ur10e.currentJoints);
 
 % Load gripper
 gripper = Gripper()
@@ -95,6 +98,8 @@ gripper.move_gripper(ur10e.model.fkine(ur10e.currentJoints))
 % assign ur10e variables for data access
 model = ur10e.model;
 Estop = ur10e.Estop;
+
+%set(gcf,"position",[100,100,1200,1200]);
 
 %assigned variables attached to data for 'handles' structure access
 data = guidata(hObject);
@@ -116,6 +121,7 @@ set(handles.pushbutton6,'Enable','off')
 set(handles.pushbutton7,'Enable','off')
 set(handles.pushbutton9,'Enable','on')
 set(handles.pushbutton10,'Enable','off')
+set(handles.pushbutton11,'Enable','off')
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -197,7 +203,8 @@ q = handles.model.getpos;
 tr = handles.model.fkine(q); 
 tr(1,4) = tr(1,4) + 0.01; 
 newQ = handles.model.ikcon(tr,q); 
-handles.model.animate(newQ); 
+handles.model.animate(newQ);
+handles.gripper.move_gripper(handles.ur10e.model.fkine(newQ))
 
 
 function pushbutton3_Callback(hObject, eventdata, handles)
@@ -209,7 +216,7 @@ tr = handles.model.fkine(q);
 tr(1,4) = tr(1,4) - 0.01; 
 newQ = handles.model.ikcon(tr,q); 
 handles.model.animate(newQ); 
-
+handles.gripper.move_gripper(handles.ur10e.model.fkine(newQ))
 
 
 % --- Executes on button press in pushbutton4. (E-stop)
@@ -223,6 +230,7 @@ set(handles.pushbutton8,'Enable','off')
 set(handles.pushbutton5,'Enable','off')
 set(handles.pushbutton6,'Enable','off')
 set(handles.pushbutton7,'Enable','off')
+set(handles.pushbutton11,'Enable','off')
 
 
 handles.Estop = 1;
@@ -239,7 +247,7 @@ tr = handles.model.fkine(q);
 tr(2,4) = tr(2,4) + 0.01; 
 newQ = handles.model.ikcon(tr,q); 
 handles.model.animate(newQ); 
-
+handles.gripper.move_gripper(handles.ur10e.model.fkine(newQ))
 % --- Executes on button press in pushbutton6. (-y)
 function pushbutton6_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton6 (see GCBO)
@@ -250,6 +258,7 @@ tr = handles.model.fkine(q);
 tr(2,4) = tr(2,4) - 0.01; 
 newQ = handles.model.ikcon(tr,q); 
 handles.model.animate(newQ); 
+handles.gripper.move_gripper(handles.ur10e.model.fkine(newQ))
 
 % --- Executes on button press in pushbutton7. (+z)
 function pushbutton7_Callback(hObject, eventdata, handles)
@@ -261,7 +270,7 @@ tr = handles.model.fkine(q);
 tr(3,4) = tr(3,4) + 0.01; 
 newQ = handles.model.ikcon(tr,q); 
 handles.model.animate(newQ); 
-
+handles.gripper.move_gripper(handles.ur10e.model.fkine(newQ))
 % --- Executes on button press in pushbutton8. (-z)
 function pushbutton8_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton8 (see GCBO)
@@ -272,7 +281,7 @@ tr = handles.model.fkine(q);
 tr(3,4) = tr(3,4) - 0.01; 
 newQ = handles.model.ikcon(tr,q); 
 handles.model.animate(newQ); 
-
+handles.gripper.move_gripper(handles.ur10e.model.fkine(newQ))
 
 
 % --- Executes on button press in pushbutton9. (Start button)
@@ -288,7 +297,10 @@ set(handles.pushbutton5,'Enable','on')
 set(handles.pushbutton6,'Enable','on')
 set(handles.pushbutton7,'Enable','on')
 set(handles.pushbutton10,'Enable','on')
+set(handles.pushbutton11,'Enable','on')
 
+%handles.currentJoints = [270 80 240 220 270 0]*pi/180;
+%handles.currentJoints = [0 0 0 0 0 0]*pi/180;
 % --- Executes on button press in pushbutton10. (make gin and tonic)
 function pushbutton10_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton10 (see GCBO)
@@ -310,6 +322,17 @@ function pushbutton10_Callback(hObject, eventdata, handles)
 % b =   Return glass if last ingredient was from dispenser - Also needed if
 %       need to add drinks to glass after adding dispenser ingredients
 % c =   Return arm to idle if last igredient was drink
+startPose = [270 80 240 220 270 0]*pi/180;
+handles.ur10e.model.animate(startPose); %figure out how to animate to startPose
 
 handles.ur10e.makeDrink("a56b34c", handles.objects, handles.gripper);
 %handles.gripper.move_gripper(handles.model.fkine(handles.model.currentJoints));
+
+
+% --- Executes on button press in pushbutton11.
+function pushbutton11_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton11 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+handles.ur10e.model.teach;
