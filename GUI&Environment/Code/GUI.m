@@ -53,8 +53,8 @@ guidata(hObject, handles);
 % This sets up the initial plot - only do when we are invisible
 % so window can get raised using untitledGUI.
 if strcmp(get(hObject,'Visible'),'off')
-   % plot(rand(5));
-    bar(1:.5:10);
+    plot(rand(5));
+    
 end
 % UIWAIT makes untitledGUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -71,18 +71,17 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 cla
 axes(handles.axes1); 
 
-%environment/base
+%base established
  
-
 base = transl(0,0,0);
 
+% Environment plotted
 Environment class 
 environment = Environment(base);
- 
 [PuttingSimulatedObjectsIntoTheEnvironment] = environment.build(base);
 
-% Create drinks 
 
+% Create drinks 
 objects = Create_Drinks();
 
 %Load ur10e 
@@ -111,7 +110,7 @@ data.objects = objects;
 
 guidata(hObject,data);
 
-
+%buttons are set when system is initially run
 set(handles.pushbutton2,'Enable','off')
 set(handles.pushbutton3,'Enable','off')
 set(handles.pushbutton8,'Enable','off')
@@ -142,6 +141,7 @@ set(handles.pushbutton12,'Enable','off')
 %     case 5
 %         surf(peaks);
 % end
+function axes1_CreateFcn(hObject, eventdata, handles) 
 % --------------------------------------------------------------------
 function FileMenu_Callback(hObject, eventdata, handles)
 % hObject    handle to FileMenu (see GCBO)
@@ -199,12 +199,18 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-
+% get current pose of ur10e robot
 q = handles.model.getpos; 
+% get transform of current pose
 tr = handles.model.fkine(q); 
+% access the x-axis and change in positive x-direction when button is
+% pressed
 tr(1,4) = tr(1,4) + 0.01; 
+% new q-matrix w/ new transform
 newQ = handles.model.ikcon(tr,q); 
+% animate new matrix 
 handles.model.animate(newQ);
+% gripper is attached to new end effector 
 handles.gripper.move_gripper(handles.ur10e.model.fkine(newQ))
 
 
@@ -225,6 +231,8 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+%buttons are set after E-stop is pressed
 set(handles.pushbutton2,'Enable','off')
 set(handles.pushbutton3,'Enable','off')
 set(handles.pushbutton8,'Enable','off')
@@ -232,13 +240,15 @@ set(handles.pushbutton5,'Enable','off')
 set(handles.pushbutton6,'Enable','off')
 set(handles.pushbutton7,'Enable','off')
 set(handles.pushbutton11,'Enable','off')
+set(handles.pushbutton9, 'Enable','off')
+set(handles.pushbutton10, 'Enable','off')
 set(handles.pushbutton12,'Enable','on')
 
-
+% Estop variable in ur10e class is changed to 1
 handles.Estop = 1;
 display(handles.Estop);
 
-%pause(inf);
+% system has stopped
 uiwait
 
 % --- Executes on button press in pushbutton5. (+y)
@@ -293,6 +303,8 @@ function pushbutton9_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton9 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+%set buttons once system has started
 set(handles.pushbutton2,'Enable','on')
 set(handles.pushbutton3,'Enable','on')
 set(handles.pushbutton4,'Enable','on')
@@ -302,10 +314,9 @@ set(handles.pushbutton6,'Enable','on')
 set(handles.pushbutton7,'Enable','on')
 set(handles.pushbutton10,'Enable','on')
 set(handles.pushbutton11,'Enable','on')
-set(handles.pushbutton12,'Enable','on')
+set(handles.pushbutton12,'Enable','off')
 
-%handles.currentJoints = [270 80 240 220 270 0]*pi/180;
-%handles.currentJoints = [0 0 0 0 0 0]*pi/180;
+
 % --- Executes on button press in pushbutton10. (make gin and tonic)
 function pushbutton10_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton10 (see GCBO)
@@ -327,13 +338,17 @@ function pushbutton10_Callback(hObject, eventdata, handles)
 % b =   Return glass if last ingredient was from dispenser - Also needed if
 %       need to add drinks to glass after adding dispenser ingredients
 % c =   Return arm to idle if last igredient was drink
- while handles.Estop == 0
 
+% when estop is not initiated 
+while handles.Estop == 0
 
+%makes gin and tonic
 handles.ur10e.makeDrink("a56b34c", handles.objects, handles.gripper);
-%handles.gripper.move_gripper(handles.model.fkine(handles.model.currentJoints));
+
  drawnow
-if handles.Estop == 1
+
+ %if estop is initiated break the loop
+ if handles.Estop == 1
 break;
 
 end
@@ -345,6 +360,7 @@ function pushbutton11_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+%initializes teach functionality
 handles.ur10e.model.teach;
 
 
@@ -353,4 +369,6 @@ function pushbutton12_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton12 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+%allows system to resume after being paused
 uiresume
