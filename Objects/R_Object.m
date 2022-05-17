@@ -3,11 +3,11 @@ classdef R_Object < handle
     %   Detailed explanation goes here
     
     properties
-        T_form; % 4x4 matrix of position
+        
         Object_Type; %Object type should be 
         Radius; % Used by gripper to determine correct finger angles
         Height; %Used by gripper to grip in correct position
-        Position; % position in x,y,z terms should only be used for reference
+    
         model; % Storage for the ply file class
 
         Corner_Points;
@@ -30,12 +30,11 @@ classdef R_Object < handle
 
 
             
-            self.T_form = transl(0,0,0);
-            self.Position = [self.T_form(1,4),self.T_form(2,4), self.T_form(3,4)]
+            
 
 
             hold on
-            self.model = PlaceObject(PLY_File+".ply",self.Position);
+            self.model = PlaceObject(PLY_File+".ply",[0,0,0]);
             
             self.h = hgtransform('Parent',gca)
             set(self.model,'Parent',self.h)
@@ -86,7 +85,7 @@ classdef R_Object < handle
                     for j = -1:2:1
                         for k = -1:2:1
                             m = m+1;
-                            corner_points(m,:) = [k*(self.Radius/2+dx)+self.T_form(1,4), j*(self.Radius/2+dx)+self.T_form(2,4),i*(self.Height+dx)+self.T_form(3,4)];
+                            corner_points(m,:) = [k*(self.Radius/2+dx)+self.h.Matrix(1,4), j*(self.Radius/2+dx)+self.h.Matrix(2,4),i*(self.Height+dx)+self.h.Matrix(3,4)];
 
 
                         end

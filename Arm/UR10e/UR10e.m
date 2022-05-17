@@ -4,6 +4,8 @@ classdef UR10e < handle
         model;    
         %> workspace
         workspace = [0 0 0 0 0 0];   
+
+        arm_intrinsic_offset = 0.15;
          
         currentJoints = [];
         
@@ -75,7 +77,7 @@ classdef UR10e < handle
 
             L1 = Link('d',0.1807,'a',0,'alpha',pi/2,'qlim',deg2rad([40 320]), 'offset', 0);
             L2 = Link('d',0+0.15,'a',-0.6127,'alpha',0,'qlim', deg2rad([40 180]), 'offset', pi); % was 'offset',pi/2
-            L3 = Link('d',0-0.15,'a',-0.5716,'alpha',0,'qlim', deg2rad([200 300]), 'offset', 0);
+            L3 = Link('d',0-0.15,'a',-0.5716,'alpha',0,'qlim', deg2rad([200 300]), 'offset', 0);     L3 = Link('d',0- self.arm_intrinsic_offset,'a',-0.5716,'alpha',0,'qlim', deg2rad([200 300]), 'offset', 0);
             L4 = Link('d',0.17415,'a',0,'alpha',pi/2,'qlim',deg2rad([150 250]),'offset', 0); % was 'offset',pi/2
             L5 = Link('d',0.11985,'a',0,'alpha',-pi/2,'qlim',deg2rad([-360 360]), 'offset', 0);
             L6 = Link('d',0.11655,'a',0,'alpha',0,'qlim',deg2rad([-360 360]), 'offset', 0);
@@ -106,7 +108,7 @@ classdef UR10e < handle
 %             end
             % Display robot
             self.model.base = transl(0,0,0);
-            self.model.plot3d(zeros(1,self.model.n),'noarrow','workspace',self.workspace);
+            self.model.plot3d(zeros(1,self.model.n),'noarrow','workspace',self.workspace,'scale', 0.05);
             if isempty(findobj(get(gca,'Children'),'Type','Light'))
                 camlight
             end  

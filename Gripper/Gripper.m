@@ -176,23 +176,53 @@ function grab_position =  grabObject(self,obj)
 
         %inter_dist = 0.05 % the distance away the gripper should get to before going in to grab the object
 
-        finger_angles = self.encompassing_grip(obj.Radius); % check if this works, i'm getting weird prompt from matlab when i use this function
-        dist = obj.Radius+self.palm_depth;
+        
+%         finger_angles = self.encompassing_grip(obj.Radius); % check if this works, i'm getting weird prompt from matlab when i use this function
+%         cist = sqrt(obj.h.Matrix(1,4)^2+obj.h.Matrix(2,4)^2)
+%         dist = sqrt(cist^2-0.15^2)      
+hd = obj.Radius+self.palm_depth;
+% 
+%         gamma = atan2(obj.h.Matrix(1,4),obj.h.Matrix(2,4))
+%         tau = asin(dist/cist);
+%         theta = gamma- tau+pi/2
 
-        theta = atan2(obj.T_form(1,4),obj.T_form(2,4))
-        angle = trotz(90-rad2deg(theta),"deg");%trotz(theta);
-        dx = dist*sin(theta);
-        dy = dist*cos(theta);
-        dz = obj.Height/2; 
+        if  obj.h.Matrix(2,4) >0
 
-        inter_x = 0.05*sin(theta) % same structure as above, but this just dictates how far away the hand should be before it reaches for the object
-        inter_y = 0.05*cos(theta)
+            pos = transl(obj.h.Matrix(1,4),obj.h.Matrix(2,4)-hd,obj.h.Matrix(3,4));
+            grab_position(:,:,1)  = pos%troty(-90,"deg")*pos *trotx(-90,"deg");
+        else
+            pos = transl(obj.h.Matrix(1,4),obj.h.Matrix(2,4)+hd,obj.h.Matrix(3,4));
+            grab_position(:,:,1)  = pos%troty(-90,"deg")*pos *trotx(90,"deg");
+
+
+        end
+        if obj.h.Matrix(1,4) >0
+            pos = transl(obj.h.Matrix(1,4)-hd,obj.h.Matrix(2,4),obj.h.Matrix(3,4));
+            grab_position(:,:,2)  =pos% troty(-90,"deg")*pos *trotx(0,"deg");
+
+
+        else
+            pos = transl(obj.h.Matrix(1,4)+hd,obj.h.Matrix(2,4),obj.h.Matrix(3,4));
+            grab_position(:,:,2)  =pos% troty(-90,"deg")*pos *trotx(180,"deg");
+        end
+
+%         angle = trotz(90-rad2deg(theta),"deg");%trotz(theta);
+%         dx = hd*sin(theta);
+%         dy = hd*cos(theta);
+%         dz = obj.Height/2; 
+% 
+%         inter_x = 0.05*sin(theta) % same structure as above, but this just dictates how far away the hand should be before it reaches for the object
+%         inter_y = 0.05*cos(theta)
+%         inter_z = 0.1;
+        
+%         grab_position(:,:,1) = transl(obj.h.Matrix(1,4),obj.h.Matrix(2,4),obj.h.Matrix(3,4)+dz)*angle*troty(90,"deg"); %  last rotation is to ensure that gripper is facing horizontally
         
 
-        grab_position(:,:,1) = transl(obj.T_form(1,4)-dx,obj.T_form(2,4)-dy,obj.T_form(3,4)+dz)*angle*troty(90,"deg"); %  last rotation is to ensure that gripper is facing horizontally
-        grab_position(:,:,2) = transl(obj.T_form(1,4)-dx-inter_x,obj.T_form(2,4)-dy-inter_y,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
-        grab_position(:,:,3) = transl(obj.T_form(1,4)+dx,obj.T_form(2,4)+dy,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
-        grab_position(:,:,4) = transl(obj.T_form(1,4)+dx+inter_x,obj.T_form(2,4)+dy+inter_y,obj.T_form(3,4)+dz)*angle*troty(90,"deg");
+
+%         grab_position(:,:,1) = transl(obj.h.Matrix(1,4)-dx,obj.h.Matrix(2,4)-dy,obj.h.Matrix(3,4)+dz)*angle*troty(90,"deg"); %  last rotation is to ensure that gripper is facing horizontally
+%         grab_position(:,:,2) = transl(obj.h.Matrix(1,4)-dx-inter_x,obj.h.Matrix(2,4)-dy-inter_y,obj.h.Matrix(3,4)+dz+inter_z)*angle*troty(90,"deg");
+%         grab_position(:,:,3) = transl(obj.h.Matrix(1,4)+dx,obj.h.Matrix(2,4)+dy,obj.h.Matrix(3,4)+dz)*angle*troty(90,"deg");
+%         grab_position(:,:,4) = transl(obj.h.Matrix(1,4)+dx+inter_x,obj.h.Matrix(2,4)+dy+inter_y,obj.h.Matrix(3,4)+dz+inter_z)*angle*troty(90,"deg");
         % if the object is large i want to grab it from the side closest to
         % the robot if possible otherwise grab it from the oposite side
     else
@@ -217,7 +247,7 @@ end
 
 function T_form = move_object_t_form(self,obj, init_T_form)
     dist = obj.Radius+self.palm_depth;
-        theta = atan2(obj.T_form(1,4),obj.T_form(2,4))
+        theta = atan2(obj.h.Matrix(1,4),obj.h.Matrix(2,4))
         angle = trotz(90-rad2deg(theta),"deg");%trotz(theta);
         dx = dist*sin(theta);
         dy = dist*cos(theta);
@@ -235,7 +265,7 @@ end
 
 function position = pour_position(self,obj,held_obj)
         
-        vector = [obj.T_form(1,4),obj.T_form(2,4)]/sqrt(obj.T_form(1,4)^2+obj.T_form(2,4)^2); % 2d vector to object
+        vector = [obj.h/Matrix(1,4),obj.h.Matrix(2,4)]/sqrt(obj.h.Matrix(1,4)^2+obj.h.Matrix(2,4)^2); % 2d vector to object
         
         syms vx
         eqn = dot(vector,[1,vx]); % create vector that is perpendicular to vector to obj
@@ -245,14 +275,14 @@ function position = pour_position(self,obj,held_obj)
 
          direction = [1/vz,vy/vz]; % this is a vecor that points perpendicular to the vector from the base to the cup
             direction = direction*sin(60*pi/180);
-           delta = atan2(obj.T_form(1,4),obj.T_form(2,4)); %% this line will need to be edited during testing
+           delta = atan2(obj.h.Matrix(1,4),obj.h.Matrix(2,4)); %% this line will need to be edited during testing
             
             % the rotation is based on the necessary rotation of the end
             % effector for whatever direction it may be facing.
             %The first transl relates to the object, while the 2nd relates
             %to what we are pouring
             
-         position = trotz(delta)+transl(obj.T_form(1,4),obj.T_form(2,4),obj.Height)+(transl(direction(1),direction(2),cos(60*pi/180))*held_obj.Height/2)
+         position = trotz(delta)+transl(obj.h.Matrix(1,4),obj.h.Matrix(2,4),obj.Height)+(transl(direction(1),direction(2),cos(60*pi/180))*held_obj.Height/2)
 
 
 
