@@ -41,106 +41,106 @@ end
 % End initialization code - DO NOT EDIT
 % --- Executes just before untitledGUI is made visible.
 function untitledGUI_OpeningFcn(hObject, eventdata, handles, varargin)
-% This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to untitledGUI (see VARARGIN)
-% Choose default command line output for untitledGUI
-handles.output = hObject;
-% Update handles structure
-guidata(hObject, handles);
-% This sets up the initial plot - only do when we are invisible
-% so window can get raised using untitledGUI.
-if strcmp(get(hObject,'Visible'),'off')
-    plot(rand(5));
-    
-end
-% UIWAIT makes untitledGUI wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
-% --- Outputs from this function are returned to the command line.
+    % This function has no output args, see OutputFcn.
+    % hObject    handle to figure
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    % varargin   command line arguments to untitledGUI (see VARARGIN)
+    % Choose default command line output for untitledGUI
+    handles.output = hObject;
+    % Update handles structure
+    guidata(hObject, handles);
+    % This sets up the initial plot - only do when we are invisible
+    % so window can get raised using untitledGUI.
+    if strcmp(get(hObject,'Visible'),'off')
+        plot(rand(5));
+        
+    end
+    % UIWAIT makes untitledGUI wait for user response (see UIRESUME)
+    % uiwait(handles.figure1);
+    % --- Outputs from this function are returned to the command line.
 function varargout = untitledGUI_OutputFcn(hObject, eventdata, handles)
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Get default command line output from handles structure
-varargout{1} = handles.output;
+    % varargout  cell array for returning output args (see VARARGOUT);
+    % hObject    handle to figure
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    % Get default command line output from handles structure
+    varargout{1} = handles.output;
 % --- Executes on button press in pushbutton1.
 function pushbutton1_Callback(hObject, eventdata, handles)
-cla
-axes(handles.axes1); 
-
-%base established
- 
-base = transl(0,0,0);
-
-% Environment plotted
-Environment class 
-environment = Environment(base);
-[PuttingSimulatedObjectsIntoTheEnvironment] = environment.build(base);
-
-
-% Create drinks 
-objects = Create_Drinks();
-
-%Load ur10e 
-ur10e = UR10e();
-ur10e.model.animate(ur10e.currentJoints);
-
-% Load gripper
-gripper = Gripper()
-
-% move gripper to end-effector 
-gripper.move_gripper(ur10e.model.fkine(ur10e.currentJoints))
-
-% assign ur10e variables for data access
-model = ur10e.model;
-Estop = ur10e.Estop;
-
-%set(gcf,"position",[100,100,1200,1200]);
-
-%assigned variables attached to data for 'handles' structure access
-data = guidata(hObject);
-data.gripper = gripper;
-data.model = model;
-data.Estop = Estop;
-data.ur10e = ur10e;
-data.objects = objects;
-
-guidata(hObject,data);
-
-%buttons are set when system is initially run
-set(handles.pushbutton2,'Enable','off')
-set(handles.pushbutton3,'Enable','off')
-set(handles.pushbutton8,'Enable','off')
-set(handles.pushbutton4,'Enable','off')
-set(handles.pushbutton5,'Enable','off')
-set(handles.pushbutton6,'Enable','off')
-set(handles.pushbutton7,'Enable','off')
-set(handles.pushbutton9,'Enable','on')
-set(handles.pushbutton10,'Enable','off')
-set(handles.pushbutton11,'Enable','off')
-set(handles.pushbutton12,'Enable','off')
-% hObject    handle to pushbutton1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% axes(handles.axes1);
-% cla;
-% 
-% popup_sel_index = get(handles.popupmenu1, 'Value');
-% switch popup_sel_index
-%     case 1
-%         plot(rand(5));
-%     case 2
-%         plot(sin(1:0.01:25.99));
-%     case 3
-%         bar(1:.5:10);
-%     case 4
-%         plot(membrane);
-%     case 5
-%         surf(peaks);
-% end
+    cla
+    axes(handles.axes1); 
+    
+    %base established
+     
+    base = transl(0,0,0);
+    
+    % Environment plotted
+    Environment class 
+    environment = Environment(base);
+    [PuttingSimulatedObjectsIntoTheEnvironment] = environment.build(base);
+    
+    
+    % Create drinks 
+    objects = Create_Drinks();
+    
+    %Load ur10e 
+    ur10e = UR10e();
+    ur10e.model.animate(ur10e.currentJoints);
+    
+    % Load gripper
+    gripper = Gripper()
+    
+    % move gripper to end-effector 
+    gripper.move_gripper(ur10e.model.fkine(ur10e.currentJoints))
+    
+    % assign ur10e variables for data access
+    model = ur10e.model;
+    Estop = ur10e.Estop;
+    
+    %set(gcf,"position",[100,100,1200,1200]);
+    
+    %assigned variables attached to data for 'handles' structure access
+    data = guidata(hObject);
+    data.gripper = gripper;
+    data.model = model;
+    data.Estop = Estop;
+    data.ur10e = ur10e;
+    data.objects = objects;
+    
+    guidata(hObject,data);
+    
+    %buttons are set when system is initially run
+    set(handles.pushbutton2,'Enable','off')
+    set(handles.pushbutton3,'Enable','off')
+    set(handles.pushbutton8,'Enable','off')
+    set(handles.pushbutton4,'Enable','off')
+    set(handles.pushbutton5,'Enable','off')
+    set(handles.pushbutton6,'Enable','off')
+    set(handles.pushbutton7,'Enable','off')
+    set(handles.pushbutton9,'Enable','on')
+    set(handles.pushbutton10,'Enable','off')
+    set(handles.pushbutton11,'Enable','off')
+    set(handles.pushbutton12,'Enable','off')
+    % hObject    handle to pushbutton1 (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    % axes(handles.axes1);
+    % cla;
+    % 
+    % popup_sel_index = get(handles.popupmenu1, 'Value');
+    % switch popup_sel_index
+    %     case 1
+    %         plot(rand(5));
+    %     case 2
+    %         plot(sin(1:0.01:25.99));
+    %     case 3
+    %         bar(1:.5:10);
+    %     case 4
+    %         plot(membrane);
+    %     case 5
+    %         surf(peaks);
+    % end
 function axes1_CreateFcn(hObject, eventdata, handles) 
 % --------------------------------------------------------------------
 function FileMenu_Callback(hObject, eventdata, handles)

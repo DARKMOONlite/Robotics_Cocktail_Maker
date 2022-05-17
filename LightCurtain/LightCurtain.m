@@ -17,7 +17,7 @@ classdef LightCurtain < handle
             self.Plane_normal_ = plane_normal;
             self.LiHand = R_Object("LightCurtain\Hand",0,0,hand_pos,"Large");
         
-                self.Joy = vrjoystick(1);
+                
 
        
         end
@@ -84,6 +84,9 @@ classdef LightCurtain < handle
 
 
 
+        end
+        function Connect_Joystick(self)
+            self.Joy = vrjoystick(1);
         end
 
         function control_hand(self)

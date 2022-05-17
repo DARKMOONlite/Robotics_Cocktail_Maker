@@ -38,7 +38,7 @@ Gripper.move_gripper(UR10e.model.fkine(UR10e.currentJoints))
 
 %% Environment
 
-Environment class 
+% Environment class 
 environment = Environment(base);
 
 [PuttingSimulatedObjectsIntoTheEnvironment] = environment.build(base);
