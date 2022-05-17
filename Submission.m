@@ -46,6 +46,8 @@ environment = Environment(base);
 Objects = Create_Drinks();
 
 %% Light curtains
+pos = transl(0.5,-2,0.3) % Position of hand
+L1 = LightCurtain(pos,[1.45,-1.2,0.3],[0,-1,0],[-1.45,1.45;0,0;0,0.3]);
 % These are the positions of the light curtain positions. do not edit the values unless you KNOW they are wrong. 
 % Just move this code elsewhere and use it as it.
 % set(gcf, "Position",[100,100,900,900])

@@ -42,7 +42,7 @@ poseAvoid1 = [252 110 250 180 278 0]*pi/180;
 qMatrix = jtraj(u.currentJoints, u.idle(3,:), 30); %traj from current position to new position
   
     for i = 1:size(qMatrix, 1)
-        u.model.animate(qMatrix(i,:));u
+        u.model.animate(qMatrix(i,:));
         u.currentJoints = (qMatrix(i,:));
         g.move_gripper(u.model.fkine(u.currentJoints));
         
