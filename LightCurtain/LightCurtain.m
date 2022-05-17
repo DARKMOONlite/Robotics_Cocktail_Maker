@@ -91,13 +91,13 @@ classdef LightCurtain < handle
 
         function control_hand(self)
         [axes, buttons, povs] = read(self.Joy);
-            dx = 0.1*axes(1);
-            dy = -0.1*axes(2);
+            dx = 0.06*axes(1);
+            dy = -0.06*axes(2);
             mtx = get(self.LiHand.h,"matrix");
             mtx(1,4) =mtx(1,4)+ dx;
             mtx(2,4) =mtx(2,4)+ dy;
             
-            pause(0.05);
+            pause(0.02);
                 
             set(self.LiHand.h,'Matrix',mtx)
         end
