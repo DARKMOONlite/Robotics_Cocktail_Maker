@@ -140,41 +140,26 @@ classdef UR10e < handle
         end
         
         %current q  (self.current joints)
-        %new q (
-        function alternateMove(self,pos,g,collision) %sebastian function)
-            
-            if collision == 1%(sebastian function true)
-            
-            step = 50; 
-            currentQ = self.currentJoints;
-            newQ = self.idle2;
-            
-            qMatrix = jtraj(currentQ, newQ, step); %traj from current to alternate
-            
-            for i = 1:size(qMatrix, 1)
-            
-                    self.model.animate(qMatrix(i,:));
-                    self.currentJoints = (qMatrix(i,:));
-                    g.move_gripper(self.model.fkine(self.currentJoints));
-                    drawnow();
-            end
-            
-            elseif collision == 0
-                
+     %% Check Path
+        function qMatrix = checkPath(self,pos) %sebastian function)
             step = 30;
-            currentQ = self.currentJoints;             
-            newQ = pos;
-            
-            qMatrix = jtraj(currentQ, newQ, step); %traj from current position to new position
-  
-            for i = 1:size(qMatrix, 1)
-                    self.model.animate(qMatrix(i,:));
-                    self.currentJoints = (qMatrix(i,:));
-                    g.move_gripper(self.model.fkine(self.currentJoints));
-                    drawnow();
-            end 
+            qMatrix = jtraj(self.currentJoints, pos, step)
+            collision = RogueObject(qMatrix)
 
+            if collision ==1
             
+                step = 50; 
+                currentQ = self.currentJoints;
+                newQ = self.idle2;
+                
+                qMatrix = jtraj(currentQ, newQ, step); %traj from current to alternate
+                    
+                collision = RogueObject(qMatrix)
+                if collision ==1
+
+
+                end
+
             end
         end
             
