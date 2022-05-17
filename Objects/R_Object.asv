@@ -89,29 +89,9 @@ classdef R_Object < handle
         function corners_to_plane(self)
             v1 = self.corner_points(1,:) - self.corner_points(2,:);
             v2 = self.corner_points(3,:) - self.corner_points(4,:);
-            n1 = cross(v1, v2);
+            normal1 = cross(v1, v2);
             
-            v3 = self.corner_points(5,:) - self.corner_points(6,:);
-            v4 = self.corner_points(7,:) - self.corner_points(8,:);
-            n2 = cross(v3, v4);
-            
-            v5 = self.corner_points(2,:) - self.corner_points(4,:);
-            v6 = self.corner_points(6,:) - self.corner_points(8,:);
-            n3 = cross(v5, v6);
-            
-            v7 = self.corner_points(1,:) - self.corner_points(3,:);
-            v8 = self.corner_points(5,:) - self.corner_points(7,:);
-            n4 = cross(v7, v8);
-            
-            v9  = self.corner_points(1,:) - self.corner_points(2,:);
-            v10 = self.corner_points(5,:) - self.corner_points(6,:);
-            n5 = cross(v5, v6);
-            
-            v11 = self.corner_points(3,:) - self.corner_points(4,:);
-            v12 = self.corner_points(7,:) - self.corner_points(8,:);
-            n6 = cross(v5, v6);
-            
-            normal_ = [n1 n2 n3 n4 n5 n6];
+            v3 = self
         end 
     end
 end
