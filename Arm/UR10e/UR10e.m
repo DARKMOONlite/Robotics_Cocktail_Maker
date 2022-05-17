@@ -53,7 +53,11 @@ classdef UR10e < handle
                     0 0.0578 0.5851 1.0896;];
                 
         Estop = 0;
+        LightCurtains;
+        HandTrigger=0;
         spotlight;
+        RogueObj
+        RogueTrigger=0;
         
     end
     
@@ -190,9 +194,19 @@ classdef UR10e < handle
                     self.model.animate(qMatrix(i,:));
                     self.currentJoints = (qMatrix(i,:));
                     g.move_gripper(self.model.fkine(self.currentJoints));
+                    self.Interface();
                     drawnow();
             end
         end      
+
+%% Set LightCurtains
+
+function SetLightCurtains(self, LC)
+    self.LightCurtains = LC;
+
+
+end
+
         %% Animates UR10e from current pose/position to another pose
         function move(self, pos, g)
             step = 30;
@@ -205,6 +219,7 @@ classdef UR10e < handle
                     self.model.animate(qMatrix(i,:));
                     self.currentJoints = (qMatrix(i,:));
                     g.move_gripper(self.model.fkine(self.currentJoints));
+                    self.Interface();
                     drawnow();
             end
         end  
@@ -221,6 +236,7 @@ classdef UR10e < handle
                     self.currentJoints = (qMatrix(i,:));
                     g.move_gripper(self.model.fkine(self.currentJoints));
                     obj.move_object(self.model.fkine(self.currentJoints));
+                    self.Interface();
                     drawnow();
             end
         end   
@@ -502,7 +518,39 @@ classdef UR10e < handle
             end
         end
     end
-    
+        function Control_Hand(self)
+        if size(self.LightCurtains.Joy) ==0
+            self.LightCurtains.Connect_Joystick();
+        end
+
+         self.LightCurtains.control_hand();
+          x = self.LightCurtains.CheckIntersection();
+
+          if x==1
+            self.EStop(1);
+          else
+            self.EStop(0);
+          end 
+
+
+    end
+    function Interface(self)
+            if self.HandTrigger
+             self.Control_Hand()
+            end
+            if self.RogueTrigger
+                self.RogueObj.control();
+
+            end
+            while self.Estop
+                if self.HandTrigger
+                self.Control_Hand()
+                end
+                drawnow();
+
+            end
+
+    end
             function collision = RogueObject(self, QMatrix)
 
         for i = 1:size(QMatrix,1)
