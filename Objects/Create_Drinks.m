@@ -1,7 +1,7 @@
 function [Objects] = Create_Drinks()
     %%Creates drink and dispenser objects in the environment
     
-    Objects(1) = R_Object("Objects/Parts/Vodka",0.035,0.296,transl(0.6,0.6,0.4),"Large");
+    Objects(1) = R_Object("Objects/Parts/GingerBeer",0.035,0.296,transl(0.6,0.6,0.4),"Large");
     Objects(2) = R_Object("Objects/Parts/Rum",0.035,0.296,transl(0.4,0.6,0.4),"Large");
     Objects(3) = R_Object("Objects/Parts/Tonic_Water",0.04,0.3,transl(0.2,0.6,0.4),"Large");
     Objects(4) = R_Object("Objects/Parts/Gin",0.043,0.221,transl(-0.4,0.6,0.4),"Large");
