@@ -13,7 +13,12 @@ classdef UR10e < handle
                 180 140 240 160 270 0; % Dispenser high 
                 208 80 240 220 298 0; % Dispenser low
                 270 80 240 220 270 0;]*pi/180; % Glass/Default
-            
+        %function  
+        idle2 = [90 136 255 150 270 0;
+                 180 144 254 150 270 0;
+                208 120 228 196 298 0;
+                270 116 234 192 270 0;]*pi/180;
+        
         drinkIdle = [57 140 240 160 270 0; % Vodka
                      70 140 240 160 270 0; % Rum
                      88 140 240 160 270 0; % Tonic 
@@ -48,11 +53,7 @@ classdef UR10e < handle
                     0 0.0578 0.5851 1.0896;];
                 
         Estop = 0;
-        LightCurtains;
-        HandTrigger=0;
         spotlight;
-        RogueObj
-        RogueTrigger=0;
         
     end
     
@@ -91,13 +92,6 @@ classdef UR10e < handle
             self.model.plotopt = ('noname');
         end
 
-%% Set LightCurtains
-
-function SetLightCurtains(self, LC)
-    self.LightCurtains = LC;
-
-
-end
         %% PlotAndColourRobot
         % Given a robot index, add the glyphs (vertices and faces) and
         % colour them in if data is available 
@@ -140,6 +134,48 @@ end
                 end
             end
         end
+        
+        %current q  (self.current joints)
+        %new q (
+        function alternateMove(self,pos,g,collision) %sebastian function)
+            
+            if collision == 1%(sebastian function true)
+            
+            step = 50; 
+            currentQ = self.currentJoints;
+            newQ = self.idle2;
+            
+            qMatrix = jtraj(currentQ, newQ, step); %traj from current to alternate
+            
+            for i = 1:size(qMatrix, 1)
+            
+                    self.model.animate(qMatrix(i,:));
+                    self.currentJoints = (qMatrix(i,:));
+                    g.move_gripper(self.model.fkine(self.currentJoints));
+                    drawnow();
+            end
+            
+            elseif collision == 0
+                
+            step = 30;
+            currentQ = self.currentJoints;             
+            newQ = pos;
+            
+            qMatrix = jtraj(currentQ, newQ, step); %traj from current position to new position
+  
+            for i = 1:size(qMatrix, 1)
+                    self.model.animate(qMatrix(i,:));
+                    self.currentJoints = (qMatrix(i,:));
+                    g.move_gripper(self.model.fkine(self.currentJoints));
+                    drawnow();
+            end 
+
+            
+            end
+        end
+            
+
+        
         %% Animates UR10e from current pose/position to another position
         function moveBasicA(self, pos, g)
             step = 30;
@@ -169,7 +205,6 @@ end
                     self.model.animate(qMatrix(i,:));
                     self.currentJoints = (qMatrix(i,:));
                     g.move_gripper(self.model.fkine(self.currentJoints));
-                        self.Interface();
                     drawnow();
             end
         end  
@@ -186,8 +221,6 @@ end
                     self.currentJoints = (qMatrix(i,:));
                     g.move_gripper(self.model.fkine(self.currentJoints));
                     obj.move_object(self.model.fkine(self.currentJoints));
-                    self.Interface();
-                    
                     drawnow();
             end
         end   
@@ -231,22 +264,21 @@ end
 
 %%
     function  EStop(self,state)
-        
+        self.Estop = state;
         if size(self.spotlight,1)==0
             self.spotlight = light;
         end
         if state==1 
             
             self.spotlight.Color = [1,0,0];
-            
 
         else
             self.spotlight.Color = [1,1,1];
-            
+
 
 
         end
-        self.Estop = state;
+        
     end
 %%
     function makeDrink(self, code, obj, g)
@@ -470,41 +502,8 @@ end
             end
         end
     end
-    function Control_Hand(self)
-        if size(self.LightCurtains.Joy) ==0
-            self.LightCurtains.Connect_Joystick();
-        end
-
-         self.LightCurtains.control_hand();
-          x = self.LightCurtains.CheckIntersection();
-                    
-          if x==1
-            self.EStop(1);
-          else
-            self.EStop(0);
-          end 
-
-
-    end
-    function Interface(self)
-            if self.HandTrigger
-             self.Control_Hand()
-            end
-            if self.RogueTrigger
-                self.RogueObj.control();
-
-            end
-            while self.Estop
-                if self.HandTrigger
-                self.Control_Hand()
-                end
-                drawnow();
-                   
-            end
-
-    end
-
-    function collision = RogueObject(self, QMatrix)
+    
+            function collision = RogueObject(self, QMatrix)
 
         for i = 1:size(QMatrix,1)
                 
@@ -537,10 +536,7 @@ end
          
     end
 
-
-
-
-end
+    end
 %% Put methods in here if you want to make them private
     methods (Access = private)
     
