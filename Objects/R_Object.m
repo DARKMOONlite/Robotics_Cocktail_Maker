@@ -105,13 +105,13 @@ classdef R_Object < handle
             
             v9  = self.corner_points(1,:) - self.corner_points(2,:);
             v10 = self.corner_points(5,:) - self.corner_points(6,:);
-            n5 = cross(v5, v6);
+            n5 = cross(v9, v10);
             
             v11 = self.corner_points(3,:) - self.corner_points(4,:);
             v12 = self.corner_points(7,:) - self.corner_points(8,:);
-            n6 = cross(v5, v6);
+            n6 = cross(v11, v12);
             
-            normal_ = [n1 n2 n3 n4 n5 n6];
+            normals = [n1 n2 n3 n4 n5 n6];
         end 
     end
 end
