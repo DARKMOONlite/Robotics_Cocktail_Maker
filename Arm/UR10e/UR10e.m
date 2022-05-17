@@ -52,6 +52,7 @@ classdef UR10e < handle
         HandTrigger=0;
         spotlight;
         RogueObj
+        RogueTrigger=0;
         
     end
     
@@ -489,6 +490,10 @@ end
             if self.HandTrigger
              self.Control_Hand()
             end
+            if self.RogueTrigger
+                self.RogueObj.control();
+
+            end
             while self.Estop
                 if self.HandTrigger
                 self.Control_Hand()
@@ -507,7 +512,7 @@ end
             
                 for j = 1:size(T_Forms,3)
                 [point,check(j)] = LinePlaneIntersection(RogueObj.Plane_Normal,RogueObj.Pop,TR(1:3,4,i),TR(1:3,4,i+1));
-
+                   
                 end
                 if any(ismember([1,2],check))
                     collision = 1;

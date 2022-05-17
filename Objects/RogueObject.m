@@ -23,7 +23,7 @@ classdef RogueObject
             self.Joy = vrjoystick(1);
         end
 
-        function control_hand(self)
+        function control(self)
         [axes, buttons, povs] = read(self.Joy);
             dx = 0.1*axes(1);
             dy = -0.1*axes(2);
