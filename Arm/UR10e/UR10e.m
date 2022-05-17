@@ -156,7 +156,7 @@ classdef UR10e < handle
   
             for i = 1:size(qMatrix, 1)
                     self.model.animate(qMatrix(i,:));
-                    self.currentJoints = (qMatrix(i,:))
+                    self.currentJoints = (qMatrix(i,:));
                     g.move_gripper(self.model.fkine(self.currentJoints));
                     drawnow();
             end
@@ -171,7 +171,7 @@ classdef UR10e < handle
   
             for i = 1:size(qMatrix, 1)
                     self.model.animate(qMatrix(i,:));
-                    self.currentJoints = (qMatrix(i,:))
+                    self.currentJoints = (qMatrix(i,:));
                     g.move_gripper(self.model.fkine(self.currentJoints));
                     obj.move_object(self.model.fkine(self.currentJoints));
                     drawnow();
