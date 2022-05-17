@@ -78,8 +78,8 @@ classdef R_Object < handle
         end
 %% Creates corners of a bounding box around an object. for object avoidance 
         function corner_points = boundingbox(self)
-                m=0;
-                dx = 0.03;
+            m = 0;
+            dx = 0.03;
             corner_points = zeros(8,3);
                 for i =-1:2:1
                     for j = -1:2:1

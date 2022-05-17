@@ -30,7 +30,7 @@ objects = Create_Drinks();
 colOffset = 0.55;
 colObjectLoc = [-0.5,-0.4,-0.2];
 
-colObject = R_Object("Objects/Parts/Fire_Ext",0.1,0.4,transl(colObjectLoc)*trotz(90,"deg"),"Large");
+colObject = R_Object("Objects/Parts/Ice_Bucket",0.1,0.4,transl(colObjectLoc)*trotz(90,"deg"),"Large");
 
 %%
 % poseAvoid1 = [256 80 240 220 270 0]*pi/180;
