@@ -511,7 +511,7 @@ end
             T_Forms = self.JointTrans(QMatrix(i,:))
             
                 for j = 1:size(T_Forms,3)
-                [point,check(j)] = LinePlaneIntersection(RogueObj.Plane_Normal,RogueObj.Pop,TR(1:3,4,i),TR(1:3,4,i+1));
+                [point,check(j)] = LinePlaneIntersection(RogueObj.Plane_Normal,RogueObj.Plane_,TR(1:3,4,i),TR(1:3,4,i+1));
                    
                 end
                 if any(ismember([1,2],check))
