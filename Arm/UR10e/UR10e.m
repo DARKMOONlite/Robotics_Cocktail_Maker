@@ -146,14 +146,16 @@ classdef UR10e < handle
         function qMatrix = checkPath(self,pos) %sebastian function)
             step = 30;
             qMatrix = jtraj(self.currentJoints, pos, step)
-            collision = RogueObject(qMatrix)
+            collision = self.InterCheck(qMatrix)
 
             if collision ==1
             
                 step = 50; 
                 currentQ = self.currentJoints;
-                newQ = self.idle2;
+                newQ = self.idle2; 
                 
+                %% Currently if an error appears here stating Arrays have incompatible signs that is good. we just need to change newQ
+
                 qMatrix = jtraj(currentQ, newQ, step); %traj from current to alternate
                 qMatrix2 = jtraj(newQ,pos,30);
                 qMatrix = cat(1,qMatrix,qMatrix2)
@@ -194,6 +196,12 @@ classdef UR10e < handle
 
 function SetLightCurtains(self, LC)
     self.LightCurtains = LC;
+
+
+end
+
+function SetRO(self, RO)
+    self.RogueObj = RO;
 
 
 end
@@ -546,18 +554,21 @@ end
             Running = 1;
 
     end
-            function collision = RogueObject(self, QMatrix)
-
+    function collision = InterCheck(self, QMatrix)
+    check = 0;
         for i = 1:size(QMatrix,1)
                 
-            T_Forms = self.JointTrans(QMatrix(i,:))
+            T_Forms = self.JointTrans(QMatrix(i,:));
             
-                for j = 1:size(T_Forms,3)
-                [point,check(j)] = LinePlaneIntersection(self.RogueObj.Plane_Normal,self.RogueObj.Plane_,TR(1:3,4,i),TR(1:3,4,i+1));
-                   
+                for j = 1:size(T_Forms,3)-1
+                    for k = 1:size(self.RogueObj.Plane_normal_,1)-1
+                        [point,check(j)] = LinePlaneIntersection(self.RogueObj.Plane_normal_(k,:),self.RogueObj.Plane_(k,:),T_Forms(1:3,4,j)',T_Forms(1:3,4,j+1)');
+                    end
                 end
                 if any(ismember([1,2],check))
+                    %% Add Check
                     collision = 1;
+
                     return;
                     
                 else
@@ -568,7 +579,7 @@ end
     end
 
 
-    function JointTrans(self,q)
+    function TR = JointTrans(self,q)
         TR = zeros(4,4,size(q,2));
          TR(:,:,1) = self.model.base;
          for i = 1 : 1 : size(q,2)

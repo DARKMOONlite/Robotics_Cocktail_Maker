@@ -9,7 +9,7 @@ classdef R_Object < handle
         Height; %Used by gripper to grip in correct position
     
         model; % Storage for the ply file class
-
+         
         corner_points;
         h;
         Name;
@@ -86,33 +86,49 @@ classdef R_Object < handle
             end
         end
         %%
-        function corners_to_plane(self)
+        function normals = corners_to_plane(self)
+            self.corner_points = self.boundingbox();
             v1 = self.corner_points(1,:) - self.corner_points(2,:);
-            v2 = self.corner_points(3,:) - self.corner_points(4,:);
+            v2 = self.corner_points(3,:) - self.corner_points(1,:);
             n1 = cross(v1, v2);
             
             v3 = self.corner_points(5,:) - self.corner_points(6,:);
-            v4 = self.corner_points(7,:) - self.corner_points(8,:);
+            v4 = self.corner_points(7,:) - self.corner_points(5,:);
             n2 = cross(v3, v4);
             
             v5 = self.corner_points(2,:) - self.corner_points(4,:);
-            v6 = self.corner_points(6,:) - self.corner_points(8,:);
+            v6 = self.corner_points(6,:) - self.corner_points(2,:);
             n3 = cross(v5, v6);
             
             v7 = self.corner_points(1,:) - self.corner_points(3,:);
-            v8 = self.corner_points(5,:) - self.corner_points(7,:);
+            v8 = self.corner_points(5,:) - self.corner_points(1,:);
             n4 = cross(v7, v8);
             
             v9  = self.corner_points(1,:) - self.corner_points(2,:);
-            v10 = self.corner_points(5,:) - self.corner_points(6,:);
+            v10 = self.corner_points(5,:) - self.corner_points(1,:);
             n5 = cross(v9, v10);
             
             v11 = self.corner_points(3,:) - self.corner_points(4,:);
-            v12 = self.corner_points(7,:) - self.corner_points(8,:);
+            v12 = self.corner_points(7,:) - self.corner_points(3,:);
             n6 = cross(v11, v12);
             
-            normals = [n1 n2 n3 n4 n5 n6];
+            normals = [n1; n2; n3; n4; n5; n6];
         end 
+        function planes_ = Planes(self)
+            v1 = self.corner_points(1,:) ;
+            v3 = self.corner_points(5,:) ;
+            v5 = self.corner_points(2,:) ;
+            v7 = self.corner_points(1,:) ;
+            v9  = self.corner_points(1,:) ;
+            v11 = self.corner_points(3,:) ;
+            planes_ = [v1;v3;v5;v7;v9;v11];
+        end
+    
+    
+    
     end
+
+
+
 end
 

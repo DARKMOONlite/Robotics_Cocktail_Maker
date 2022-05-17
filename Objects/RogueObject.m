@@ -24,6 +24,10 @@ classdef RogueObject <handle
         end
 
         function control(self)
+
+         if size(self.Joy) ==0
+            self.Connect_Joystick();
+        end
         [axes, buttons, povs] = read(self.Joy);
             dx = 0.1*axes(1);
             dy = -0.1*axes(2);
@@ -33,13 +37,18 @@ classdef RogueObject <handle
             
             pause(0.05);
                 
-            set(self.Object.h,'Matrix',mtx)
+            set(self.Object.h,'Matrix',mtx);
+            self.Object.corners_to_plane();
+          
+              self.Plane_normal_ =  self.Object. corners_to_plane();
+              self.Plane_ = self.Object.Planes()
+
         end
 
 
         function Show_Plane(self,Index)
             w = null(self.Plane_normal_(Index,:));
-            [P,Q] = meshgrid(-5:5);
+            [P,Q] = meshgrid(-1:1);
             X = self.Plane_(1)+w(1,1)*P+w(1,2)*Q;
             Y = self.Plane_(2)+w(2,1)*P+w(2,2)*Q; %   using the two vectors in w
             Z = self.Plane_(3)+w(3,1)*P+w(3,2)*Q;
