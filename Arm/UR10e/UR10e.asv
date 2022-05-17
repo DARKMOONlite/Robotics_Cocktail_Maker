@@ -499,7 +499,7 @@ end
 
     end
 
-    function collision = RogueObject(self, QMatrix)
+    function RogueObject(self, QMatrix)
 
         for i = 1:size(QMatrix,1)
                 
@@ -508,15 +508,8 @@ end
                 [point,check(i)] = LinePlaneIntersection(RogueObj.Plane_Normal,RogueObj.Pop,TR(1:3,4,i),TR(1:3,4,i+1));
 
                 end
-                if any(ismember([1,2],check))
-                    collision = 1;
-                    return;
-                    
-                else
-                   collision = 0;
-                end
+if any(ismember([1,2],x))
         end
-        
     end
 
 
