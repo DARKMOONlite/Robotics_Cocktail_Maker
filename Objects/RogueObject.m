@@ -5,10 +5,12 @@ classdef RogueObject
     properties
         Object
         Joy
+        Plane_
+        Plane_normal_
     end
     
     methods
-        function self = RogueObject(Object,inputArg2)
+        function self = RogueObject(Object)
             self.Object = Object
         end
         
@@ -32,6 +34,16 @@ classdef RogueObject
             pause(0.05);
                 
             set(self.Object.h,'Matrix',mtx)
+        end
+
+
+        function Show_Plane(self,Index)
+            w = null(self.Plane_normal_(Index,:));
+            [P,Q] = meshgrid(-5:5);
+            X = self.Plane_(1)+w(1,1)*P+w(1,2)*Q;
+            Y = self.Plane_(2)+w(2,1)*P+w(2,2)*Q; %   using the two vectors in w
+            Z = self.Plane_(3)+w(3,1)*P+w(3,2)*Q;
+            surf(X,Y,Z);
         end
     end
 end
