@@ -26,12 +26,7 @@ classdef R_Object < handle
                 error("Type not declared correctly. Object must be large or small")
             end
             self.Object_Type = Type;
-               self.Name = PLY_File;
-
-
-            
-            
-
+            self.Name = PLY_File;
 
             hold on
             self.model = PlaceObject(PLY_File+".ply",[0,0,0]);
@@ -78,31 +73,18 @@ classdef R_Object < handle
         end
 %% Creates corners of a bounding box around an object. for object avoidance 
         function corner_points = boundingbox(self)
-                m=0;
-                dx = 0.03;
+            m = 0;
+            dx = 0.03;
             corner_points = zeros(8,3);
-                for i =-1:2:1
-                    for j = -1:2:1
-                        for k = -1:2:1
-                            m = m+1;
-                            corner_points(m,:) = [k*(self.Radius/2+dx)+self.h.Matrix(1,4), j*(self.Radius/2+dx)+self.h.Matrix(2,4),i*(self.Height+dx)+self.h.Matrix(3,4)];
-
-
-                        end
-
-                    end
-
-                end
-
-            
-
-
-
-
-
-        
+            for i =-1:2:1
+                for j = -1:2:1
+                    for k = -1:2:1
+                        m = m+1;
+                        corner_points(m,:) = [k*(self.Radius/2+dx)+self.h.Matrix(1,4), j*(self.Radius/2+dx)+self.h.Matrix(2,4),i*(self.Height+dx)+self.h.Matrix(3,4)];
+                    end 
+                end    
+            end
+        end
     end
-    end
-
 end
 
