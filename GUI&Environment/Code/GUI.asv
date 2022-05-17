@@ -137,24 +137,24 @@ set(handles.pushbutton10,'Enable','off')
 % end
 % --------------------------------------------------------------------
 function FileMenu_Callback(hObject, eventdata, handles)
-    % hObject    handle to FileMenu (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
+% hObject    handle to FileMenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 % --------------------------------------------------------------------
 function OpenMenuItem_Callback(hObject, eventdata, handles)
-    % hObject    handle to OpenMenuItem (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    file = uigetfile('*.fig');
-    if ~isequal(file, 0)
-        open(file);
-    end
+% hObject    handle to OpenMenuItem (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+file = uigetfile('*.fig');
+if ~isequal(file, 0)
+    open(file);
+end
 % --------------------------------------------------------------------
 function PrintMenuItem_Callback(hObject, eventdata, handles)
-    % hObject    handle to PrintMenuItem (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    printdlg(handles.figure1)
+% hObject    handle to PrintMenuItem (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+printdlg(handles.figure1)
 % --------------------------------------------------------------------
 function CloseMenuItem_Callback(hObject, eventdata, handles)
     % hObject    handle to CloseMenuItem (see GCBO)
@@ -277,39 +277,39 @@ function pushbutton8_Callback(hObject, eventdata, handles)
 
 % --- Executes on button press in pushbutton9. (Start button)
 function pushbutton9_Callback(hObject, eventdata, handles)
-    % hObject    handle to pushbutton9 (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    set(handles.pushbutton2,'Enable','on')
-    set(handles.pushbutton3,'Enable','on')
-    set(handles.pushbutton4,'Enable','on')
-    set(handles.pushbutton8,'Enable','on')
-    set(handles.pushbutton5,'Enable','on')
-    set(handles.pushbutton6,'Enable','on')
-    set(handles.pushbutton7,'Enable','on')
-    set(handles.pushbutton10,'Enable','on')
+% hObject    handle to pushbutton9 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(handles.pushbutton2,'Enable','on')
+set(handles.pushbutton3,'Enable','on')
+set(handles.pushbutton4,'Enable','on')
+set(handles.pushbutton8,'Enable','on')
+set(handles.pushbutton5,'Enable','on')
+set(handles.pushbutton6,'Enable','on')
+set(handles.pushbutton7,'Enable','on')
+set(handles.pushbutton10,'Enable','on')
 
 % --- Executes on button press in pushbutton10. (make gin and tonic)
 function pushbutton10_Callback(hObject, eventdata, handles)
-    % hObject    handle to pushbutton10 (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    % 0 - Not used
-    % 1 =   Vodka
-    % 2 =   Rum
-    % 3 =   Tonic Water
-    % 4 =   Gin
-    % 5 =   Dispense Ice
-    % 6 =   Dispense Lime
-    % 7 =   Dispense Sugar
-    % 8 - Not used
-    % 9 - Not used
-    % 
-    % a =   Pick glass up - Needed before adding dispenser ingredients otherwise
-    %       things will teleport 
-    % b =   Return glass if last ingredient was from dispenser - Also needed if
-    %       need to add drinks to glass after adding dispenser ingredients
-    % c =   Return arm to idle if last igredient was drink
+% hObject    handle to pushbutton10 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% 0 - Not used
+% 1 =   Vodka
+% 2 =   Rum
+% 3 =   Tonic Water
+% 4 =   Gin
+% 5 =   Dispense Ice
+% 6 =   Dispense Lime
+% 7 =   Dispense Sugar
+% 8 - Not used
+% 9 - Not used
+% 
+% a =   Pick glass up - Needed before adding dispenser ingredients otherwise
+%       things will teleport 
+% b =   Return glass if last ingredient was from dispenser - Also needed if
+%       need to add drinks to glass after adding dispenser ingredients
+% c =   Return arm to idle if last igredient was drink
 
 handles.ur10e.makeDrink("a56b34c", handles.objects, handles.gripper);
-    %handles.gripper.move_gripper(handles.model.fkine(handles.model.currentJoints));
+%handles.gripper.move_gripper(handles.model.fkine(handles.model.currentJoints));
