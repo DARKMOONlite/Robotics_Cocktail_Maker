@@ -21,7 +21,7 @@ function varargout = GUI(varargin)
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 % Edit the above text to modify the response to help untitledGUI
-% Last Modified by GUIDE v2.5 12-May-2022 21:56:57
+% Last Modified by GUIDE v2.5 14-May-2022 20:52:01
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -54,6 +54,7 @@ guidata(hObject, handles);
 % so window can get raised using untitledGUI.
 if strcmp(get(hObject,'Visible'),'off')
     plot(rand(5));
+    
 end
 % UIWAIT makes untitledGUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -70,21 +71,22 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 cla
 axes(handles.axes1); 
 
-%environment/base
-
+%base established
+ 
 base = transl(0,0,0);
 
+% Environment plotted
 Environment class 
 environment = Environment(base);
- 
 [PuttingSimulatedObjectsIntoTheEnvironment] = environment.build(base);
 
-% Create drinks 
 
+% Create drinks 
 objects = Create_Drinks();
 
 %Load ur10e 
-ur10e = UR10e()
+ur10e = UR10e();
+ur10e.model.animate(ur10e.currentJoints);
 
 % Load gripper
 gripper = Gripper()
@@ -96,6 +98,8 @@ gripper.move_gripper(ur10e.model.fkine(ur10e.currentJoints))
 model = ur10e.model;
 Estop = ur10e.Estop;
 
+%set(gcf,"position",[100,100,1200,1200]);
+
 %assigned variables attached to data for 'handles' structure access
 data = guidata(hObject);
 data.gripper = gripper;
@@ -106,7 +110,7 @@ data.objects = objects;
 
 guidata(hObject,data);
 
-
+%buttons are set when system is initially run
 set(handles.pushbutton2,'Enable','off')
 set(handles.pushbutton3,'Enable','off')
 set(handles.pushbutton8,'Enable','off')
@@ -116,6 +120,8 @@ set(handles.pushbutton6,'Enable','off')
 set(handles.pushbutton7,'Enable','off')
 set(handles.pushbutton9,'Enable','on')
 set(handles.pushbutton10,'Enable','off')
+set(handles.pushbutton11,'Enable','off')
+set(handles.pushbutton12,'Enable','off')
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -135,6 +141,7 @@ set(handles.pushbutton10,'Enable','off')
 %     case 5
 %         surf(peaks);
 % end
+function axes1_CreateFcn(hObject, eventdata, handles) 
 % --------------------------------------------------------------------
 function FileMenu_Callback(hObject, eventdata, handles)
     % hObject    handle to FileMenu (see GCBO)
@@ -187,107 +194,128 @@ function popupmenu1_CreateFcn(hObject, eventdata, handles)
     set(hObject, 'String', {'plot(rand(5))', 'plot(sin(1:0.01:25))', 'bar(1:.5:10)', 'plot(membrane)', 'surf(peaks)'});
 % --- Executes on button press in plusX_pushbutton.
 function pushbutton2_Callback(hObject, eventdata, handles)
-    % hObject    handle to pushbutton2 (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    
-    
-    
-    q = handles.model.getpos; 
-    tr = handles.model.fkine(q); 
-    tr(1,4) = tr(1,4) + 0.01; 
-    newQ = handles.model.ikcon(tr,q); 
-    handles.model.animate(newQ); 
+% hObject    handle to pushbutton2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% get current pose of ur10e robot
+q = handles.model.getpos; 
+% get transform of current pose
+tr = handles.model.fkine(q); 
+% access the x-axis and change in positive x-direction when button is
+% pressed
+tr(1,4) = tr(1,4) + 0.01; 
+% new q-matrix w/ new transform
+newQ = handles.model.ikcon(tr,q); 
+% animate new matrix 
+handles.model.animate(newQ);
+% gripper is attached to new end effector 
+handles.gripper.move_gripper(handles.ur10e.model.fkine(newQ))
 
 
 function pushbutton3_Callback(hObject, eventdata, handles)
-    % hObject    handle to pushbutton3 (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    q = handles.model.getpos; 
-    tr = handles.model.fkine(q); 
-    tr(1,4) = tr(1,4) - 0.01; 
-    newQ = handles.model.ikcon(tr,q); 
-    handles.model.animate(newQ); 
-
+% hObject    handle to pushbutton3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+q = handles.model.getpos; 
+tr = handles.model.fkine(q); 
+tr(1,4) = tr(1,4) - 0.01; 
+newQ = handles.model.ikcon(tr,q); 
+handles.model.animate(newQ); 
+handles.gripper.move_gripper(handles.ur10e.model.fkine(newQ))
 
 
 % --- Executes on button press in pushbutton4. (E-stop)
 function pushbutton4_Callback(hObject, eventdata, handles)
-    % hObject    handle to pushbutton4 (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    set(handles.pushbutton2,'Enable','off')
-    set(handles.pushbutton3,'Enable','off')
-    set(handles.pushbutton8,'Enable','off')
-    set(handles.pushbutton5,'Enable','off')
-    set(handles.pushbutton6,'Enable','off')
-    set(handles.pushbutton7,'Enable','off')
-    
-    
-    handles.Estop = 1;
-    display(handles.Estop);
+% hObject    handle to pushbutton4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 
+%buttons are set after E-stop is pressed
+set(handles.pushbutton2,'Enable','off')
+set(handles.pushbutton3,'Enable','off')
+set(handles.pushbutton8,'Enable','off')
+set(handles.pushbutton5,'Enable','off')
+set(handles.pushbutton6,'Enable','off')
+set(handles.pushbutton7,'Enable','off')
+set(handles.pushbutton11,'Enable','off')
+set(handles.pushbutton9, 'Enable','off')
+set(handles.pushbutton10, 'Enable','off')
+set(handles.pushbutton12,'Enable','on')
+
+% Estop variable in ur10e class is changed to 1
+handles.Estop = 1;
+display(handles.Estop);
+
+% system has stopped
+uiwait
 
 % --- Executes on button press in pushbutton5. (+y)
 function pushbutton5_Callback(hObject, eventdata, handles)
-    % hObject    handle to pushbutton5 (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    q = handles.model.getpos; 
-    tr = handles.model.fkine(q); 
-    tr(2,4) = tr(2,4) + 0.01; 
-    newQ = handles.model.ikcon(tr,q); 
-    handles.model.animate(newQ); 
-
+% hObject    handle to pushbutton5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+q = handles.model.getpos; 
+tr = handles.model.fkine(q); 
+tr(2,4) = tr(2,4) + 0.01; 
+newQ = handles.model.ikcon(tr,q); 
+handles.model.animate(newQ); 
+handles.gripper.move_gripper(handles.ur10e.model.fkine(newQ))
 % --- Executes on button press in pushbutton6. (-y)
 function pushbutton6_Callback(hObject, eventdata, handles)
-    % hObject    handle to pushbutton6 (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    q = handles.model.getpos; 
-    tr = handles.model.fkine(q); 
-    tr(2,4) = tr(2,4) - 0.01; 
-    newQ = handles.model.ikcon(tr,q); 
-    handles.model.animate(newQ); 
+% hObject    handle to pushbutton6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+q = handles.model.getpos; 
+tr = handles.model.fkine(q); 
+tr(2,4) = tr(2,4) - 0.01; 
+newQ = handles.model.ikcon(tr,q); 
+handles.model.animate(newQ); 
+handles.gripper.move_gripper(handles.ur10e.model.fkine(newQ))
 
 % --- Executes on button press in pushbutton7. (+z)
 function pushbutton7_Callback(hObject, eventdata, handles)
-    % hObject    handle to pushbutton7 (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    q = handles.model.getpos; 
-    tr = handles.model.fkine(q); 
-    tr(3,4) = tr(3,4) + 0.01; 
-    newQ = handles.model.ikcon(tr,q); 
-    handles.model.animate(newQ); 
-
+% hObject    handle to pushbutton7 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+q = handles.model.getpos; 
+tr = handles.model.fkine(q); 
+tr(3,4) = tr(3,4) + 0.01; 
+newQ = handles.model.ikcon(tr,q); 
+handles.model.animate(newQ); 
+handles.gripper.move_gripper(handles.ur10e.model.fkine(newQ))
 % --- Executes on button press in pushbutton8. (-z)
 function pushbutton8_Callback(hObject, eventdata, handles)
-    % hObject    handle to pushbutton8 (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    q = handles.model.getpos; 
-    tr = handles.model.fkine(q); 
-    tr(3,4) = tr(3,4) - 0.01; 
-    newQ = handles.model.ikcon(tr,q); 
-    handles.model.animate(newQ); 
-
+% hObject    handle to pushbutton8 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+q = handles.model.getpos; 
+tr = handles.model.fkine(q); 
+tr(3,4) = tr(3,4) - 0.01; 
+newQ = handles.model.ikcon(tr,q); 
+handles.model.animate(newQ); 
+handles.gripper.move_gripper(handles.ur10e.model.fkine(newQ))
 
 
 % --- Executes on button press in pushbutton9. (Start button)
 function pushbutton9_Callback(hObject, eventdata, handles)
-    % hObject    handle to pushbutton9 (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    set(handles.pushbutton2,'Enable','on')
-    set(handles.pushbutton3,'Enable','on')
-    set(handles.pushbutton4,'Enable','on')
-    set(handles.pushbutton8,'Enable','on')
-    set(handles.pushbutton5,'Enable','on')
-    set(handles.pushbutton6,'Enable','on')
-    set(handles.pushbutton7,'Enable','on')
-    set(handles.pushbutton10,'Enable','on')
+% hObject    handle to pushbutton9 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+%set buttons once system has started
+set(handles.pushbutton2,'Enable','on')
+set(handles.pushbutton3,'Enable','on')
+set(handles.pushbutton4,'Enable','on')
+set(handles.pushbutton8,'Enable','on')
+set(handles.pushbutton5,'Enable','on')
+set(handles.pushbutton6,'Enable','on')
+set(handles.pushbutton7,'Enable','on')
+set(handles.pushbutton10,'Enable','on')
+set(handles.pushbutton11,'Enable','on')
+set(handles.pushbutton12,'Enable','off')
+
 
 % --- Executes on button press in pushbutton10. (make gin and tonic)
 function pushbutton10_Callback(hObject, eventdata, handles)
@@ -311,5 +339,36 @@ function pushbutton10_Callback(hObject, eventdata, handles)
     %       need to add drinks to glass after adding dispenser ingredients
     % c =   Return arm to idle if last igredient was drink
 
+% when estop is not initiated 
+while handles.Estop == 0
+
+%makes gin and tonic
 handles.ur10e.makeDrink("a56b34c", handles.objects, handles.gripper);
-    %handles.gripper.move_gripper(handles.model.fkine(handles.model.currentJoints));
+
+ drawnow
+
+ %if estop is initiated break the loop
+ if handles.Estop == 1
+break;
+
+end
+ end
+
+% --- Executes on button press in pushbutton11.
+function pushbutton11_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton11 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+%initializes teach functionality
+handles.ur10e.model.teach;
+
+
+% --- Executes on button press in pushbutton12.
+function pushbutton12_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton12 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+%allows system to resume after being paused
+uiresume
