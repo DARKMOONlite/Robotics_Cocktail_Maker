@@ -58,6 +58,8 @@ classdef UR10e < handle
         spotlight;
         RogueObj
         RogueTrigger=0;
+        Running = 0;
+      
         
     end
     
@@ -153,9 +155,13 @@ classdef UR10e < handle
                 newQ = self.idle2;
                 
                 qMatrix = jtraj(currentQ, newQ, step); %traj from current to alternate
-                    
+                qMatrix2 = jtraj(newQ,pos,30);
+                qMatrix = cat(1,qMatrix,qMatrix2)
                 collision = RogueObject(qMatrix)
                 if collision ==1
+
+
+
 
 
                 end
@@ -198,8 +204,8 @@ end
             currentQ = self.currentJoints;             
             newQ = pos;
             
-            qMatrix = jtraj(currentQ, newQ, step); %traj from current position to new position
-  
+%             qMatrix = jtraj(currentQ, newQ, step); %traj from current position to new position
+            qMatrix = self.checkPath(newQ)
             for i = 1:size(qMatrix, 1)
                     self.model.animate(qMatrix(i,:));
                     self.currentJoints = (qMatrix(i,:));
@@ -213,8 +219,8 @@ end
             step = 30;
             currentQ = self.currentJoints; 
             newQ = pos;
-            
-            qMatrix = jtraj(currentQ, newQ, step); %traj from current position to new position
+            qMatrix = self.checkPath(newQ);
+%             qMatrix = jtraj(currentQ, newQ, step); %traj from current position to new position
   
             for i = 1:size(qMatrix, 1)
                     self.model.animate(qMatrix(i,:));
@@ -283,7 +289,7 @@ end
     end
 %%
     function makeDrink(self, code, obj, g)
-
+    self.Running = 1;
         codeArray = char(code);
 
         for i = 1:size(codeArray,2)
@@ -502,7 +508,9 @@ end
                     disp('Error: Unassigned action code')
             end
         end
+        self.Running = 0;
     end
+    %% Control Hand
         function Control_Hand(self)
         if size(self.LightCurtains.Joy) ==0
             self.LightCurtains.Connect_Joystick();
@@ -528,12 +536,14 @@ end
 
             end
             while self.Estop
+                Running = 0;
                 if self.HandTrigger
                 self.Control_Hand()
                 end
                 drawnow();
 
             end
+            Running = 1;
 
     end
             function collision = RogueObject(self, QMatrix)
@@ -543,7 +553,7 @@ end
             T_Forms = self.JointTrans(QMatrix(i,:))
             
                 for j = 1:size(T_Forms,3)
-                [point,check(j)] = LinePlaneIntersection(RogueObj.Plane_Normal,RogueObj.Plane_,TR(1:3,4,i),TR(1:3,4,i+1));
+                [point,check(j)] = LinePlaneIntersection(self.RogueObj.Plane_Normal,self.RogueObj.Plane_,TR(1:3,4,i),TR(1:3,4,i+1));
                    
                 end
                 if any(ismember([1,2],check))
