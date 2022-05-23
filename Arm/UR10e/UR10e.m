@@ -143,7 +143,7 @@ classdef UR10e < handle
         
         %current q  (self.current joints)
      %% Check Path
-        function qMatrix = checkPath(self,pos) %sebastian function)
+     function qMatrix = checkPath(self,pos,CurIndex,NXTIndex) %sebastian function)
             step = 30;
             qMatrix = jtraj(self.currentJoints, pos, step)
             collision = self.InterCheck(qMatrix)
@@ -152,15 +152,21 @@ classdef UR10e < handle
             
                 step = 50; 
                 currentQ = self.currentJoints;
-                newQ = self.idle2; 
+                newQ = self.idle2(NXTIndex,:); 
                 
                 %% Currently if an error appears here stating Arrays have incompatible signs that is good. we just need to change newQ
 
                 qMatrix = jtraj(currentQ, newQ, step); %traj from current to alternate
                 qMatrix2 = jtraj(newQ,pos,30);
                 qMatrix = cat(1,qMatrix,qMatrix2)
-                collision = RogueObject(qMatrix)
+                collision = self.InterCheck(qMatrix)
                 if collision ==1
+                    
+                    qMatrix1 = jtraj(currentQ,self.idle2(CurIndex,:),step)
+                    qMatrix2 = jtraj(self.idle2(CurIndex,:),self.idle2(NXTIndex,:),step)
+                    qMatrix3 = jtraj(self.idle2(NXTIndex,:),pos,step)
+
+                    qMatrix = cat(1,cat(1,qMatrix1,qMatrix2),qMatrix3);
 
 
 
@@ -207,13 +213,23 @@ function SetRO(self, RO)
 end
 
         %% Animates UR10e from current pose/position to another pose
-        function move(self, pos, g)
+        function move(self, pos, g,CurIndex,NXTIndex)
+            if ~exist('CurIndex','var')
+                CurIndex = 0;
+            end
+            if ~exist('NXTIndex','var')
+                NXTIndex = 0;
+            end
             step = 30;
             currentQ = self.currentJoints;             
             newQ = pos;
             
 %             qMatrix = jtraj(currentQ, newQ, step); %traj from current position to new position
-            qMatrix = self.checkPath(newQ)
+if CurIndex ~=0
+            qMatrix = self.checkPath(newQ,CurIndex,NXTIndex)
+else
+    qMatrix = jtraj(currentQ, newQ, step);
+end
             for i = 1:size(qMatrix, 1)
                     self.model.animate(qMatrix(i,:));
                     self.currentJoints = (qMatrix(i,:));
@@ -223,13 +239,23 @@ end
             end
         end  
         %%
-        function moveWithObj(self, pos, obj, g)
+        function moveWithObj(self, pos, obj, g,CurIndex,NXTIndex)
+            if ~exist('CurIndex','var')
+                CurIndex = 0;
+            end
+            if ~exist('NXTIndex','var')
+                NXTIndex = 0;
+            end
             step = 30;
-            currentQ = self.currentJoints; 
+            currentQ = self.currentJoints;             
             newQ = pos;
-            qMatrix = self.checkPath(newQ);
+            
 %             qMatrix = jtraj(currentQ, newQ, step); %traj from current position to new position
-  
+            if CurIndex ~=0
+                 qMatrix = self.checkPath(newQ,CurIndex,NXTIndex)
+            else
+                qMatrix = jtraj(currentQ, newQ, step);
+            end
             for i = 1:size(qMatrix, 1)
                     self.model.animate(qMatrix(i,:));
                     self.currentJoints = (qMatrix(i,:));
@@ -316,8 +342,8 @@ end
                 case '1' % Pour Vodka
                     disp('Drink action 1')
 %                     self.move(self.idle(3,:), g);
-                    self.move(self.idle(2,:), g);
-                    self.move(self.idle(1,:), g);
+                    self.move(self.idle(2,:), g,4,2);
+                    self.move(self.idle(1,:), g,2,1);
                     
                     self.move(self.drinkIdle(1,:), g);
                     self.move(self.drinks(1,:), g);
@@ -326,16 +352,16 @@ end
                     self.moveWithObj(self.drinkIdle(1,:), obj(1), g);
                     
                     self.moveWithObj(self.idle(1,:), obj(1), g);
-                    self.moveWithObj(self.idle(2,:), obj(1), g);
+                    self.moveWithObj(self.idle(2,:), obj(1), g,1,2);
 %                     self.move(self.idle(3,:), g);
-                    self.moveWithObj(self.idle(4,:), obj(1), g);
+                    self.moveWithObj(self.idle(4,:), obj(1), g,2,4);
                     
                     self.moveWithObj(self.pourPos(1,:), obj(1), g);
                     self.pour(0.5, obj(1), g);
                     self.moveWithObj(self.idle(4,:), obj(1), g);
                     
-                    self.moveWithObj(self.idle(2,:), obj(1), g);
-                    self.moveWithObj(self.idle(1,:), obj(1), g);
+                    self.moveWithObj(self.idle(2,:), obj(1), g,4,2);
+                    self.moveWithObj(self.idle(1,:), obj(1), g,2,1);
                     
                     self.moveWithObj(self.drinkIdle(1,:), obj(1), g);
                     self.moveWithObj(self.drinks(1,:), obj(1), g);
@@ -351,7 +377,7 @@ end
                     
                 case '2' % Pour Rum
                     self.move(self.idle(2,:), g);
-                    self.move(self.idle(1,:), g);
+                    self.move(self.idle(1,:), g,2,1);
                     
                     self.move(self.drinkIdle(2,:), g);
                     self.move(self.drinks(2,:), g);
@@ -360,16 +386,16 @@ end
                     self.moveWithObj(self.drinkIdle(2,:), obj(2), g);
                     
                     self.moveWithObj(self.idle(1,:), obj(2), g);
-                    self.moveWithObj(self.idle(2,:), obj(2), g);
+                    self.moveWithObj(self.idle(2,:), obj(2), g,1,2);
 %                     self.move(self.idle(3,:), g);
-                    self.moveWithObj(self.idle(4,:), obj(2), g);
+                    self.moveWithObj(self.idle(4,:), obj(2), g,2,4);
                     
                     self.moveWithObj(self.pourPos(1,:), obj(2), g);
                     self.pour(0.5, obj(2), g);
                     self.moveWithObj(self.idle(4,:), obj(2), g);
                     
-                    self.moveWithObj(self.idle(2,:), obj(2), g);
-                    self.moveWithObj(self.idle(1,:), obj(2), g);
+                    self.moveWithObj(self.idle(2,:), obj(2), g,4,2);
+                    self.moveWithObj(self.idle(1,:), obj(2), g,2,1);
                     
                     self.moveWithObj(self.drinkIdle(2,:), obj(2), g);
                     self.moveWithObj(self.drinks(2,:), obj(2), g);
@@ -386,7 +412,7 @@ end
                 case '3' % Pour Tonic
                     disp('Drink action 3')
                     self.move(self.idle(2,:), g);
-                    self.move(self.idle(1,:), g);
+                    self.move(self.idle(1,:), g,2,1);
                     
                     self.move(self.drinkIdle(3,:), g);
                     self.move(self.drinks(3,:), g);
@@ -395,16 +421,16 @@ end
                     self.moveWithObj(self.drinkIdle(3,:), obj(3), g);
                     
                     self.moveWithObj(self.idle(1,:), obj(3), g);
-                    self.moveWithObj(self.idle(2,:), obj(3), g);
+                    self.moveWithObj(self.idle(2,:), obj(3), g,1,2);
 %                     self.move(self.idle(3,:), g);
-                    self.moveWithObj(self.idle(4,:), obj(3), g);
+                    self.moveWithObj(self.idle(4,:), obj(3), g,2,4);
                     
                     self.moveWithObj(self.pourPos(1,:), obj(3), g);
                     self.pour(0.5, obj(3), g);
                     self.moveWithObj(self.idle(4,:), obj(3), g);
                     
-                    self.moveWithObj(self.idle(2,:), obj(3), g);
-                    self.moveWithObj(self.idle(1,:), obj(3), g);
+                    self.moveWithObj(self.idle(2,:), obj(3), g,4,2);
+                    self.moveWithObj(self.idle(1,:), obj(3), g,2,1);
                     
                     self.moveWithObj(self.drinkIdle(3,:), obj(3), g);
                     self.moveWithObj(self.drinks(3,:), obj(3), g);
@@ -431,18 +457,18 @@ end
                     self.moveWithObj(self.drinkIdle(4,:), obj(4), g);
                     
 %                     self.moveWithObj(self.idle(1,:), obj(4), g);
-                    self.moveWithObj(self.idle(2,:), obj(4), g);
+                    self.moveWithObj(self.idle(2,:), obj(4), g,1,2);
 %                     self.move(self.idle(3,:), g);
-                    self.moveWithObj(self.idle(4,:), obj(4), g);
+                    self.moveWithObj(self.idle(4,:), obj(4), g,2,4);
                     
                     self.moveWithObj(self.pourPos(1,:), obj(4), g);
                     self.pour(0.5, obj(4), g);
                     self.moveWithObj(self.idle(4,:), obj(4), g);
                     
-                    self.moveWithObj(self.idle(2,:), obj(4), g);
+                    self.moveWithObj(self.idle(2,:), obj(4), g,4,2);
 %                     self.moveWithObj(self.idle(1,:), obj(4), g);
                     
-                    self.moveWithObj(self.drinkIdle(4,:), obj(4), g);
+                    self.moveWithObj(self.drinkIdle(4,:), obj(4), g,2,1);
                     self.moveWithObj(self.drinks(4,:), obj(4), g);
 %                     call encompassing grip to release
                     g.idle();
@@ -458,7 +484,7 @@ end
                 case '5' % Add Ice
                     disp('Drink action 5')
                     
-                    self.moveWithObj(self.idle(3,:), obj(7), g);
+                    self.moveWithObj(self.idle(3,:), obj(7), g,4,3);
                     self.moveWithObj(self.dispenserIdle(1,:), obj(7), g);
                     self.moveWithObj(self.dispensers(1,:), obj(7), g);
                     pause(1);
@@ -480,7 +506,7 @@ end
                     
                 case '7' % Add Sugar
                     disp('Drink action 7')
-                    self.moveWithObj(self.idle(3,:), obj(7), g);
+                    self.moveWithObj(self.idle(3,:), obj(7), g,4,3);
                     self.moveWithObj(self.dispenserIdle(3,:), obj(7), g);
                     self.moveWithObj(self.dispensers(3,:), obj(7), g);
                     pause(1);
@@ -503,7 +529,7 @@ end
                     self.moveWithObj(self.idle(4,:), obj(7), g)
                     
                 case 'b' % Return drink if dispensers used
-                    self.moveWithObj(self.idle(4,:), obj(7), g);
+                    self.moveWithObj(self.idle(4,:), obj(7), g,3,4);
                     self.moveWithObj(self.glass(1,:), obj(7), g);
                     g.idle();
                     obj(7).set_object(transl(0,-0.95,0.0));
@@ -562,21 +588,28 @@ end
             
                 for j = 1:size(T_Forms,3)-1
                     for k = 1:size(self.RogueObj.Plane_normal_,1)-1
-                        [point,check(j)] = LinePlaneIntersection(self.RogueObj.Plane_normal_(k,:),self.RogueObj.Plane_(k,:),T_Forms(1:3,4,j)',T_Forms(1:3,4,j+1)');
+                        [point,check(i,j,k)] = LinePlaneIntersection(self.RogueObj.Plane_normal_(k,:),self.RogueObj.Plane_(k,:),T_Forms(1:3,4,j)',T_Forms(1:3,4,j+1)');
+                         if any(ismember([1,2],check))
+                            if self.checkIntersect(point)
+
+                                collision = 1;
+                                return;
+                            end
+                        
+                         end
+
                     end
                 end
-                if any(ismember([1,2],check))
-                    %% Add Check
-                    collision = 1;
-
-                    return;
-                    
-                else
-                   collision = 0;
-                end
-        end
+               
+                    %% Need to add futher check Add Check
+        end   
+                     
+         collision = 0;
+                
         
+     
     end
+   
 
 
     function TR = JointTrans(self,q)
@@ -589,6 +622,19 @@ end
          end
          
     end
+
+
+    function collision = checkIntersect(self,point)
+            if point(1) >= min(self.RogueObj.Object.corner_points(:,1)) && point(1) <= max(self.RogueObj.Object.corner_points(:,1))
+                if point(2) >= min(self.RogueObj.Object.corner_points(:,2)) && point(2) <= max(self.RogueObj.Object.corner_points(:,2))
+                    if point(3) >= min(self.RogueObj.Object.corner_points(:,3)) && point(3) <= max(self.RogueObj.Object.corner_points(:,3))
+                        collision = 1;
+                        return
+                    end
+                end
+            end
+            collision = 0;
+        end
 
     end
 %% Put methods in here if you want to make them private
